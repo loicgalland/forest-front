@@ -28,7 +28,7 @@ export default function ActivityAdd() {
       isSpotlight,
       images,
     });
-    if (response.data.success) router.push("/hosting");
+    if (response.data.success) router.push("/activity");
   };
 
   const cancel = () => {

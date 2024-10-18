@@ -5,11 +5,16 @@ import HostingRepository from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { Hero } from "@/app/components/Hero";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
+import { ActivityInterface } from "@/app/interface/Activity.interface";
+import ActivityRepository from "@/app/repository/ActivityRepository";
+import { LongCard } from "@/app/components/LongCard";
+import Link from "next/link";
 
 export default function Home() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
+  const [activities, setActivities] = useState<ActivityInterface[]>();
 
-  const fetchData = async (): Promise<{
+  const fetchHosting = async (): Promise<{
     data: { data: HostingInterface[]; success: boolean };
   }> => {
     try {
@@ -20,11 +25,26 @@ export default function Home() {
     }
   };
 
+  const fetchActivities = async (): Promise<{
+    data: { data: ActivityInterface[]; success: boolean };
+  }> => {
+    try {
+      return await ActivityRepository.getSpotlight();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
-    fetchData().then((response) => {
+    fetchHosting().then((response) => {
       if (response && response.data) {
-        console.log(response.data);
         setHostings(response.data.data);
+      }
+    });
+    fetchActivities().then((response) => {
+      if (response && response.data) {
+        setActivities(response.data.data);
       }
     });
   }, []);
@@ -38,18 +58,52 @@ export default function Home() {
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         />
       </div>
-      {hostings && hostings.length > 0 ? (
-        <div>
-          <h2 className="text-xl font-bold mb-2">Nos coups de cœur</h2>
-          <div className="flex gap-3 flex-wrap">
-            {hostings.map((item) => {
-              return <Card key={item._id} hosting={item} type="hosting" />;
-            })}
+      <div className="mb-5">
+        {hostings && hostings.length > 0 ? (
+          <div>
+            <h2 className="text-xl font-bold mb-2">Nos coups de cœur</h2>
+            <div className="flex gap-3 flex-wrap mb-3">
+              {hostings.map((item) => {
+                return <Card key={item._id} hosting={item} type="hosting" />;
+              })}
+            </div>
+            <Link
+              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              href={"/hosting"}
+            >
+              Tous les hébergements
+            </Link>
           </div>
-        </div>
-      ) : (
-        ""
-      )}
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="mb-5">
+        {activities && activities.length > 0 ? (
+          <div>
+            <h2 className="text-xl font-bold mb-2">Découvrez nos activités</h2>
+            <div className="flex gap-3 flex-wrap mb-3">
+              {activities.map((activity) => {
+                return (
+                  <LongCard
+                    key={activity._id}
+                    activity={activity}
+                    type="activity"
+                  />
+                );
+              })}
+            </div>
+            <Link
+              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              href={"/activity"}
+            >
+              Toutes les activités
+            </Link>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 }
