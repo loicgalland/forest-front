@@ -9,6 +9,10 @@ class ActivityRepository extends AbstractRepository {
     return await this.client.get("/api/activity/spotlight");
   }
 
+  async getActivity(id: string | string[]) {
+    return await this.client.get("/api/activity/" + id);
+  }
+
   async post({
     name,
     description,
