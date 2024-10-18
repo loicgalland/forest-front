@@ -51,14 +51,14 @@ export default function Home() {
 
   return (
     <div>
-      <div className="mb-5">
+      <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
         <Hero
           title="Titre du site"
           image="https://picsum.photos/200/300?grayscale"
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         />
       </div>
-      <div className="mb-5">
+      <div className=" md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
         {hostings && hostings.length > 0 ? (
           <div>
             <h2 className="text-xl font-bold mb-2">Nos coups de cœur</h2>
@@ -78,18 +78,16 @@ export default function Home() {
           ""
         )}
       </div>
-      <div className="mb-5">
+      <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
         {activities && activities.length > 0 ? (
           <div>
             <h2 className="text-xl font-bold mb-2">Découvrez nos activités</h2>
-            <div className="flex gap-3 flex-wrap mb-3">
+            <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
               {activities.map((activity) => {
                 return (
-                  <LongCard
-                    key={activity._id}
-                    activity={activity}
-                    type="activity"
-                  />
+                  <div className="w-full" key={activity._id}>
+                    <LongCard activity={activity} type="activity" />
+                  </div>
                 );
               })}
             </div>

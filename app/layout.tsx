@@ -26,7 +26,7 @@ export default function RootLayout({
       </head>
       <body className="text-text bg-white box-border">
         <Header />
-        <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4">{children}</div>
+        <div>{children}</div>
       </body>
     </html>
   );

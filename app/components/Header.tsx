@@ -96,7 +96,10 @@ export function Header() {
               })}
               {window.sessionStorage.getItem("token") ||
               window.localStorage.getItem("token") ? (
-                <li className={isMobile ? "mb-2" : "ml-3"} onClick={signOut}>
+                <li
+                  className={"cursor-pointer " + (isMobile ? "mb-2" : "ml-3")}
+                  onClick={signOut}
+                >
                   Déconnexion
                 </li>
               ) : (

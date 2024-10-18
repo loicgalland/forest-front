@@ -35,7 +35,6 @@ const HostingDetails = () => {
     });
   }, []);
 
-  // @ts-ignore
   return (
     <div>
       <BottomBar
