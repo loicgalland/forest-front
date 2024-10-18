@@ -151,8 +151,13 @@ const EditHosting = () => {
     });
   }, []);
   return (
-    <div>
-      <h2 className="text-2xl font-bold">Modification du logement : {name}</h2>
+    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      <h2 className="text-2xl font-bold">
+        <button onClick={router.back} className="mr-2">
+          <i className="fa-solid fa-arrow-left"></i>
+        </button>
+        Modification du logement : {name}
+      </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
           <InputComponent

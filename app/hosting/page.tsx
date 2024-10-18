@@ -36,7 +36,7 @@ export default function Hosting() {
   }, []);
 
   return (
-    <div>
+    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Nos hébergements</h2>
         {userRole && userRole.role === "admin" ? (

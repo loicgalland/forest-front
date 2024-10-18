@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
@@ -51,7 +51,12 @@ export default function ActivityAdd() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold">Ajouter une activité</h2>
+      <h2 className="text-2xl font-bold">
+        <button onClick={router.back} className="mr-2">
+          <i className="fa-solid fa-arrow-left"></i>
+        </button>
+        Ajouter une activité
+      </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
           <InputComponent

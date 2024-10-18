@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import React, { useEffect, useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
@@ -13,6 +13,7 @@ const ActivityDetail = () => {
   const { id } = useParams();
   const [activity, setActivity] = useState<ActivityInterface>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
 
   const fetchData = async (): Promise<{
     data: { data: HostingInterface; success: boolean };
@@ -36,12 +37,17 @@ const ActivityDetail = () => {
   }, []);
 
   return (
-    <div>
+    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <BottomBar
         price={activity?.price ? activity.price : "Pix non définit"}
       ></BottomBar>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold mb-3">{activity?.name}</h2>
+        <h2 className="text-2xl font-bold mb-3">
+          <button onClick={router.back} className="mr-2">
+            <i className="fa-solid fa-arrow-left"></i>
+          </button>
+          {activity?.name}
+        </h2>
         {isAdmin && (
           <Link href={"/hosting/edit/" + activity?._id}>
             <i className="fa-regular fa-pen-to-square"></i>

@@ -1,6 +1,6 @@
 "use client";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { BedInterface } from "@/app/interface/Bed.interface";
 import BedRepository from "@/app/repository/BedRepository";
 import { EquipmentInterface } from "@/app/interface/Equipment.interface";
@@ -88,7 +88,6 @@ export default function HostingAdd() {
     try {
       return await BedRepository.getAll();
     } catch (error) {
-      console.error("Error fetching data:", error);
       throw error;
     }
   };
@@ -157,8 +156,13 @@ export default function HostingAdd() {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold">Ajouter un hébergement</h2>
+    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      <h2 className="text-2xl font-bold">
+        <button onClick={router.back} className="mr-2">
+          <i className="fa-solid fa-arrow-left"></i>
+        </button>
+        Ajouter un hébergement
+      </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
           <InputComponent
