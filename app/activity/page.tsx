@@ -6,6 +6,7 @@ import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
+import { LongCard } from "@/app/components/LongCard";
 
 export default function Activity() {
   const [activities, setActivities] = useState<ActivityInterface[]>([]);
@@ -44,7 +45,13 @@ export default function Activity() {
       <div className="flex gap-3 flex-wrap">
         {activities && activities.length > 0 ? (
           activities.map((activity) => {
-            return <div key={activity._id}>{activity.name}</div>;
+            return (
+              <LongCard
+                key={activity._id}
+                activity={activity}
+                type="activity"
+              />
+            );
           })
         ) : (
           <div>
