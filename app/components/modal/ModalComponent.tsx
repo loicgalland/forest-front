@@ -25,6 +25,7 @@ export const ModalComponent: React.FC<Props> = (props: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const choices = [
+    { name: "", value: "" },
     { name: "Equipement", value: "stuff" },
     { name: "Nourriture", value: "food" },
   ];

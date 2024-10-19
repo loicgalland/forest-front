@@ -14,6 +14,7 @@ export function Header() {
     { name: "Accueil", href: "/home" },
     { name: "Hébergements", href: "/hosting" },
     { name: "Activités", href: "/activity" },
+    { name: "Événements", href: "/event" },
     { name: "Contact", href: "/contact" },
   ];
 

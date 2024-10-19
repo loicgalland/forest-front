@@ -22,7 +22,7 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
         <img
           src={
             props.hosting.images && props.hosting.images.length
-              ? DB_URL_IMAGE + props.hosting.images[0]
+              ? DB_URL_IMAGE + props.hosting.images[0].path
               : "https://picsum.photos/200/300?grayscale"
           }
           alt="card-image"

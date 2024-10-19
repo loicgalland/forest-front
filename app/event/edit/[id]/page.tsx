@@ -10,8 +10,10 @@ import { DB_URL_IMAGE } from "@/app/config/database";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
+import EventRepository from "@/app/repository/EventRepository";
+import { EventInterface } from "@/app/interface/Event.interface";
 
-const EditActivity = () => {
+const EditEvent = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
 
   const [images, setImages] = useState<File[]>([]);
@@ -19,7 +21,6 @@ const EditActivity = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
 
   const { id } = useParams();
   const router = useRouter();
@@ -31,16 +32,15 @@ const EditActivity = () => {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await ActivityRepository.update(
+    const response = await EventRepository.update(
       id,
       name,
       description,
       isVisible,
-      isSpotlight,
       price,
     );
 
-    if (response.data.success) router.push("/activity");
+    if (response.data.success) router.push("/event");
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,10 +53,10 @@ const EditActivity = () => {
   };
 
   const fetchData = async (): Promise<{
-    data: { data: ActivityInterface; success: boolean };
+    data: { data: EventInterface; success: boolean };
   }> => {
     try {
-      return await ActivityRepository.getOne(id);
+      return await EventRepository.getOne(id);
     } catch (error) {
       console.error("Error fetching data:", error);
       throw error;
@@ -73,7 +73,6 @@ const EditActivity = () => {
         setDescription(response.data.data.description);
         setPrice(response.data.data.price);
         setIsVisible(response.data.data.visible);
-        setIsSpotlight(response.data.data.isSpotlight);
 
         const fetchedImagesArray: FileInterface[] = [];
         response.data.data.images?.forEach((image) => {
@@ -97,15 +96,15 @@ const EditActivity = () => {
           <InputComponent
             type="text"
             name="name"
-            label="Nom de l'activité"
-            id="activityName"
+            label="Nom de l'événement'"
+            id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="w-full mb-2">
           <TextAreaInputComponent
-            id="activityDescription"
+            id="eventDescription"
             name="description"
             label="Description"
             value={description}
@@ -120,21 +119,13 @@ const EditActivity = () => {
             value={isVisible}
             onChange={(e) => setIsVisible(e.target.checked)}
           />
-
-          <CheckBoxInputComponent
-            id="spotlight"
-            name="spotlight"
-            label="Mettre en avant"
-            value={isSpotlight}
-            onChange={(e) => setIsSpotlight(e.target.checked)}
-          />
         </div>
         <div className="w-full mb-2">
           <InputComponent
             type="number"
             name="price"
             label="Prix"
-            id="activityPrice"
+            id="eventPrice"
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
           />
@@ -186,4 +177,4 @@ const EditActivity = () => {
   );
 };
 
-export default EditActivity;
+export default EditEvent;

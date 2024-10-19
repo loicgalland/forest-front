@@ -1,6 +1,5 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { HostingInterface } from "@/app/interface/Hosting.interface";
 import React, { useEffect, useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
@@ -45,6 +44,7 @@ const ActivityDetail = () => {
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <BottomBar
+        type="activity"
         price={activity?.price ? activity.price : "Pix non définit"}
       ></BottomBar>
       <div className="flex justify-between items-center">
@@ -80,16 +80,16 @@ const ActivityDetail = () => {
               {activity.images.length > 0 && (
                 <img
                   className="h-auto max-w-full rounded-lg"
-                  src={DB_URL_IMAGE + activity.images[0]}
+                  src={DB_URL_IMAGE + activity.images[0].path}
                   alt="card-image"
                 />
               )}
               <div className="grid grid-cols-4 gap-4">
-                {(activity.images as string[]).slice(1).map((image, index) => (
+                {activity.images.slice(1).map((image, index) => (
                   <img
                     key={index}
                     className="object-cover w-full h-[100px] rounded-xl"
-                    src={DB_URL_IMAGE + image}
+                    src={DB_URL_IMAGE + image.path}
                     alt="card-image"
                   />
                 ))}

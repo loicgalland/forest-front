@@ -14,6 +14,8 @@ import { EquipmentInterface } from "@/app/interface/Equipment.interface";
 import EquipmentRepository from "@/app/repository/EquipmentRepository";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
+import { FileInterface } from "@/app/interface/File.interface";
+import { ModalComponent } from "@/app/components/modal/ModalComponent";
 
 interface BedsHostingList {
   bedId: string;
@@ -23,8 +25,7 @@ interface BedsHostingList {
 const EditHosting = () => {
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
-  const [fetchedImages, setFetchedImages] = useState<string[] | undefined>([]);
-  const [deletedImages, setDeletedImages] = useState<string[]>([]);
+  const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
 
   const [images, setImages] = useState<File[]>([]);
   const [name, setName] = useState<string>("");
@@ -95,11 +96,41 @@ const EditHosting = () => {
     }
   };
 
-  const deleteFetchedImage = (index: number) => {
-    const imageToDelete = fetchedImages![index];
+  const handleBedModalSubmit = async (name: string, value: number | string) => {
+    if (typeof value === "number") {
+      try {
+        const response = await BedRepository.post(name, value);
+        if (response.data.success) {
+          fetchBedsList().then((response) => {
+            if (response && response.data) {
+              setBedList(response.data.data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'ajout du lit", error);
+      }
+    }
+  };
 
-    setDeletedImages((prevDeleted) => [...prevDeleted, imageToDelete]);
-    setFetchedImages((prevImages) => prevImages?.filter((_, i) => i !== index));
+  const handleEquipmentModalSubmit = async (
+    name: string,
+    type: number | string,
+  ) => {
+    if (typeof type === "string") {
+      try {
+        const response = await EquipmentRepository.post(name, type);
+        if (response.data.success) {
+          fetchEquipmentsList().then((response) => {
+            if (response && response.data) {
+              setEquipmentList(response.data.data);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de l'équipement", error);
+      }
+    }
   };
 
   const fetchData = async (): Promise<{
@@ -145,7 +176,12 @@ const EditHosting = () => {
         setPrice(response.data.data.price);
         setIsVisible(response.data.data.visible);
         setIsSpotlight(response.data.data.isSpotlight);
-        setFetchedImages(response.data.data.images);
+
+        const fetchedImagesArray: FileInterface[] = [];
+        response.data.data.images?.forEach((image) => {
+          fetchedImagesArray.push(image);
+        });
+        setFetchedImages(fetchedImagesArray);
 
         const bedsList: BedsHostingList[] = [];
         response.data.data.beds.forEach((bedItem) => {
@@ -252,6 +288,11 @@ const EditHosting = () => {
                 </div>
               ))
             : ""}
+          <ModalComponent
+            title="Ajouter un lit"
+            onSubmit={handleBedModalSubmit}
+            modalType="bed"
+          />
         </div>
         <div className="w-full md:w-[50%] pl-0 md:pl-2">
           <h3 className="font-bold">Equipement</h3>
@@ -275,6 +316,11 @@ const EditHosting = () => {
                 </div>
               ))
             : ""}
+          <ModalComponent
+            title="Ajouter un équipement"
+            onSubmit={handleEquipmentModalSubmit}
+            modalType="equipment"
+          />
         </div>
         <div className="w-full">
           <FileInputComponent
@@ -291,12 +337,12 @@ const EditHosting = () => {
                       <button
                         type="button"
                         className="bg-danger text-white p-2 rounded-lg absolute top-[10px] right-[10px]"
-                        onClick={() => deleteFetchedImage(index)}
+                        onClick={() => console.log("Images supprimée")}
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
                       <img
-                        src={DB_URL_IMAGE + image}
+                        src={DB_URL_IMAGE + image.path}
                         alt="image"
                         className="object-cover w-full h-[200px] rounded-xl"
                       />

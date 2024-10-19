@@ -7,28 +7,27 @@ import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import { useRouter } from "next/navigation";
 import ActivityRepository from "@/app/repository/ActivityRepository";
+import EventRepository from "@/app/repository/EventRepository";
 
-export default function ActivityAdd() {
+export default function EventAdd() {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
   const [images, setImages] = useState<File[]>([]);
 
   const router = useRouter();
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await ActivityRepository.post({
+    const response = await EventRepository.post({
       name,
       description,
       price,
       visible: isVisible,
-      isSpotlight,
       images,
     });
-    if (response.data.success) router.push("/activity");
+    if (response.data.success) router.push("/event");
   };
 
   const cancel = () => {
@@ -55,22 +54,22 @@ export default function ActivityAdd() {
         <button onClick={router.back} className="mr-2">
           <i className="fa-solid fa-arrow-left"></i>
         </button>
-        Ajouter une activité
+        Ajouter un événements
       </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
           <InputComponent
             type="text"
             name="name"
-            label="Nom de l'activité"
-            id="activityName"
+            label="Nom de l'événement"
+            id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="w-full mb-2">
           <TextAreaInputComponent
-            id="activityDescription"
+            id="eventDescription"
             name="description"
             label="Description"
             value={description}
@@ -84,19 +83,13 @@ export default function ActivityAdd() {
             label="Visible"
             onChange={(e) => setIsVisible(e.target.checked)}
           />
-          <CheckBoxInputComponent
-            id="spotlight"
-            name="spotlight"
-            label="Mettre en avant"
-            onChange={(e) => setIsSpotlight(e.target.checked)}
-          />
         </div>
         <div className="w-full mb-2">
           <InputComponent
             type="number"
             name="price"
             label="Prix"
-            id="activityPrice"
+            id="eventPrice"
             // value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
           />

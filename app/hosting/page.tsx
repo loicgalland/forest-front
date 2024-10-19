@@ -45,7 +45,10 @@ export default function Hosting() {
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Nos hébergements</h2>
         {userRole && userRole.role === "admin" ? (
-          <Link href="/hosting/add">
+          <Link
+            href="/hosting/add"
+            className="bg-success text-white p-2 rounded-lg"
+          >
             <i className="fa-solid fa-plus"></i>
           </Link>
         ) : (
