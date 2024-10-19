@@ -7,7 +7,10 @@ interface Props {
 
 export const FileInputComponent: React.FC<Props> = (props: Props) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-col gap-3">
+      <label htmlFor={props.id} className="font-bold">
+        {props.label}
+      </label>
       <input
         type="file"
         className="rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
@@ -16,9 +19,6 @@ export const FileInputComponent: React.FC<Props> = (props: Props) => {
         multiple
         onChange={props.onChange}
       />
-      <label htmlFor={props.id} className="">
-        {props.label}
-      </label>
     </div>
   );
 };

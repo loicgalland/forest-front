@@ -12,6 +12,8 @@ import { BedInterface } from "@/app/interface/Bed.interface";
 import BedRepository from "@/app/repository/BedRepository";
 import { EquipmentInterface } from "@/app/interface/Equipment.interface";
 import EquipmentRepository from "@/app/repository/EquipmentRepository";
+import { FileInputComponent } from "@/app/components/form/FileInputComponent";
+import { DB_URL_IMAGE } from "@/app/config/database";
 
 interface BedsHostingList {
   bedId: string;
@@ -21,7 +23,10 @@ interface BedsHostingList {
 const EditHosting = () => {
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
+  const [fetchedImages, setFetchedImages] = useState<string[] | undefined>([]);
+  const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
+  const [images, setImages] = useState<File[]>([]);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -39,6 +44,8 @@ const EditHosting = () => {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    //Add new images or image to Delete
     const response = await hostingRepository.updateHosting(
       id,
       name,
@@ -49,6 +56,7 @@ const EditHosting = () => {
       beds,
       equipments,
     );
+
     if (response.data.success) router.push("/hosting");
   };
 
@@ -76,6 +84,22 @@ const EditHosting = () => {
         return [...prevBeds, { bedId, quantity }];
       }
     });
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (files) {
+      const filesArray = Array.from(files);
+      setImages((prevImages) => [...prevImages, ...filesArray]);
+    }
+  };
+
+  const deleteFetchedImage = (index: number) => {
+    const imageToDelete = fetchedImages![index];
+
+    setDeletedImages((prevDeleted) => [...prevDeleted, imageToDelete]);
+    setFetchedImages((prevImages) => prevImages?.filter((_, i) => i !== index));
   };
 
   const fetchData = async (): Promise<{
@@ -121,6 +145,8 @@ const EditHosting = () => {
         setPrice(response.data.data.price);
         setIsVisible(response.data.data.visible);
         setIsSpotlight(response.data.data.isSpotlight);
+        setFetchedImages(response.data.data.images);
+
         const bedsList: BedsHostingList[] = [];
         response.data.data.beds.forEach((bedItem) => {
           const hostingBed: { bedId: string; quantity: number } = {
@@ -249,6 +275,36 @@ const EditHosting = () => {
                 </div>
               ))
             : ""}
+        </div>
+        <div className="w-full">
+          <FileInputComponent
+            label="Images"
+            id="image"
+            name="image"
+            onChange={handleImageChange}
+          />
+          <div className="grid grid-cols-4 gap-4 mt-2">
+            {fetchedImages && fetchedImages.length
+              ? fetchedImages.map((image, index) => {
+                  return (
+                    <div key={index} className="relative">
+                      <button
+                        type="button"
+                        className="bg-danger text-white p-2 rounded-lg absolute top-[10px] right-[10px]"
+                        onClick={() => deleteFetchedImage(index)}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </button>
+                      <img
+                        src={DB_URL_IMAGE + image}
+                        alt="image"
+                        className="object-cover w-full h-[200px] rounded-xl"
+                      />
+                    </div>
+                  );
+                })
+              : ""}
+          </div>
         </div>
         <input
           value="Ajouter"

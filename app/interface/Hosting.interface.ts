@@ -5,7 +5,7 @@ export interface HostingInterface {
   _id: string;
   name: string;
   description: string;
-  images?: string;
+  images?: string[];
   isSpotlight: boolean;
   visible: boolean;
   capacity: number;

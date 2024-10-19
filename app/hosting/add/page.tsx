@@ -255,7 +255,7 @@ export default function HostingAdd() {
         </div>
         <div className="w-full">
           <FileInputComponent
-            label="image"
+            label="Images"
             id="image"
             name="image"
             onChange={handleImageChange}
