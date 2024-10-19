@@ -146,7 +146,7 @@ const EditActivity = () => {
             name="image"
             onChange={handleImageChange}
           />
-          <div className="grid grid-cols-4 gap-4 mt-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
             {fetchedImages && fetchedImages.length
               ? fetchedImages.map((image, index) => {
                   return (

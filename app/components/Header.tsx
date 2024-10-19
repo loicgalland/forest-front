@@ -29,7 +29,11 @@ export function Header() {
       !pathname.startsWith("/login") &&
       !pathname.startsWith("/register") &&
       !pathname.startsWith("/hosting/add") &&
-      !pathname.startsWith("/hosting/edit")
+      !pathname.startsWith("/hosting/edit") &&
+      !pathname.startsWith("/activity/add") &&
+      !pathname.startsWith("/activity/edit") &&
+      !pathname.startsWith("/event/add") &&
+      !pathname.startsWith("/event/edit")
     );
   };
   const signOut = () => {

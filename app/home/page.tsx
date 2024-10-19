@@ -9,10 +9,13 @@ import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import { LongCard } from "@/app/components/LongCard";
 import Link from "next/link";
+import { EventInterface } from "@/app/interface/Event.interface";
+import EventRepository from "@/app/repository/EventRepository";
 
 export default function Home() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [activities, setActivities] = useState<ActivityInterface[]>();
+  const [events, setEvents] = useState<EventInterface[]>();
 
   const fetchHosting = async (): Promise<{
     data: { data: HostingInterface[]; success: boolean };
@@ -36,6 +39,17 @@ export default function Home() {
     }
   };
 
+  const fetchEvent = async (): Promise<{
+    data: { data: EventInterface[]; success: boolean };
+  }> => {
+    try {
+      return await EventRepository.getAll();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchHosting().then((response) => {
       if (response && response.data) {
@@ -45,6 +59,11 @@ export default function Home() {
     fetchActivities().then((response) => {
       if (response && response.data) {
         setActivities(response.data.data);
+      }
+    });
+    fetchEvent().then((response) => {
+      if (response && response.data) {
+        setEvents(response.data.data);
       }
     });
   }, []);
@@ -87,7 +106,7 @@ export default function Home() {
               {activities.map((activity) => {
                 return (
                   <div className="w-full" key={activity._id}>
-                    <LongCard activity={activity} type="activity" />
+                    <LongCard item={activity} type="activity" />
                   </div>
                 );
               })}
@@ -97,6 +116,31 @@ export default function Home() {
               href={"/activity"}
             >
               Toutes les activités
+            </Link>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+
+      {events && events.length > 0 ? (
+        <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5">
+          <div>
+            <h2 className="text-xl font-bold mb-2">Nos évenéments</h2>
+            <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
+              {events.map((event) => {
+                return (
+                  <div className="w-full" key={event._id}>
+                    <LongCard item={event} type="event" />
+                  </div>
+                );
+              })}
+            </div>
+            <Link
+              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              href={"/event"}
+            >
+              Tous les événements
             </Link>
           </div>
         </div>

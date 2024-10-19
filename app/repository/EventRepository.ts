@@ -60,7 +60,7 @@ class EventRepository extends AbstractRepository {
   async update(
     id: string | string[],
     name?: string,
-    descrption?: string,
+    description?: string,
     visible?: boolean,
     price?: number,
   ) {
@@ -75,8 +75,8 @@ class EventRepository extends AbstractRepository {
     if (name !== undefined) {
       formData.append("name", name);
     }
-    if (descrption !== undefined) {
-      formData.append("descrption", descrption);
+    if (description !== undefined) {
+      formData.append("description", description);
     }
     if (visible !== undefined) {
       formData.append("visible", visible.toString());

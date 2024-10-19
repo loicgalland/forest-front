@@ -67,7 +67,7 @@ class ActivityRepository extends AbstractRepository {
   async update(
     id: string | string[],
     name?: string,
-    descrption?: string,
+    description?: string,
     visible?: boolean,
     isSpotlight?: boolean,
     price?: number,
@@ -83,8 +83,8 @@ class ActivityRepository extends AbstractRepository {
     if (name !== undefined) {
       formData.append("name", name);
     }
-    if (descrption !== undefined) {
-      formData.append("descrption", descrption);
+    if (description !== undefined) {
+      formData.append("description", description);
     }
     if (visible !== undefined) {
       formData.append("visible", visible.toString());

@@ -89,7 +89,7 @@ const EditEvent = () => {
           <i className="fa-solid fa-arrow-left"></i>
         </button>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
-        Modification de l'activité : {name}
+        Modification de l'événement : {name}
       </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
@@ -137,7 +137,7 @@ const EditEvent = () => {
             name="image"
             onChange={handleImageChange}
           />
-          <div className="grid grid-cols-4 gap-4 mt-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
             {fetchedImages && fetchedImages.length
               ? fetchedImages.map((image, index) => {
                   return (
