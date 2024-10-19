@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DecodedToken } from "@/app/interface/Token.interface";
 import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
@@ -47,9 +47,9 @@ export default function Activity() {
           activities.map((activity) => {
             return (
               <LongCard
-                key={activity._id}
                 activity={activity}
                 type="activity"
+                key={activity._id}
               />
             );
           })

@@ -25,6 +25,12 @@ const HostingDetails = () => {
       throw error;
     }
   };
+
+  const deleteHosting = async (id: string) => {
+    await HostingRepository.delete(id);
+    router.push("/hosting");
+  };
+
   useEffect(() => {
     const userToken = jwtDecodeService();
     if (userToken && userToken.role === "admin") setIsAdmin(true);
@@ -48,10 +54,22 @@ const HostingDetails = () => {
           </button>
           {hosting?.name}
         </h2>
-        {isAdmin && (
-          <Link href={"/hosting/edit/" + hosting?._id}>
-            <i className="fa-regular fa-pen-to-square"></i>
-          </Link>
+        {isAdmin && hosting && (
+          <div>
+            <Link
+              href={"/hosting/edit/" + hosting?._id}
+              className="bg-success text-white p-2 rounded-lg"
+            >
+              <i className="fa-regular fa-pen-to-square"></i>
+            </Link>
+            <button
+              type="button"
+              className="bg-danger text-white p-2 rounded-lg ml-4"
+              onClick={() => deleteHosting(hosting._id)}
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+          </div>
         )}
       </div>
 

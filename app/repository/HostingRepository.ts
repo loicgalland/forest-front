@@ -13,6 +13,17 @@ class HostingRepository extends AbstractRepository {
     return await this.client.get("/api/hosting/" + id);
   }
 
+  async delete(id: string) {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    return await this.client.delete("/api/hosting/" + id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
   async updateHosting(
     id: string | string[],
     name?: string,

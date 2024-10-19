@@ -13,6 +13,17 @@ class ActivityRepository extends AbstractRepository {
     return await this.client.get("/api/activity/" + id);
   }
 
+  async delete(id: string) {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    return await this.client.delete("/api/activity/" + id, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
   async post({
     name,
     description,

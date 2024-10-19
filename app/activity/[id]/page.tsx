@@ -25,6 +25,12 @@ const ActivityDetail = () => {
       throw error;
     }
   };
+
+  const deleteActivity = async (id: string) => {
+    await ActivityRepository.delete(id);
+    router.push("/activity");
+  };
+
   useEffect(() => {
     const userToken = jwtDecodeService();
     if (userToken && userToken.role === "admin") setIsAdmin(true);
@@ -48,10 +54,22 @@ const ActivityDetail = () => {
           </button>
           {activity?.name}
         </h2>
-        {isAdmin && (
-          <Link href={"/activity/edit/" + activity?._id}>
-            <i className="fa-regular fa-pen-to-square"></i>
-          </Link>
+        {isAdmin && activity && (
+          <div>
+            <Link
+              href={"/activity/edit/" + activity?._id}
+              className="bg-success text-white p-2 rounded-lg"
+            >
+              <i className="fa-regular fa-pen-to-square"></i>
+            </Link>
+            <button
+              type="button"
+              className="bg-danger text-white p-2 rounded-lg ml-4"
+              onClick={() => deleteActivity(activity._id)}
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+          </div>
         )}
       </div>
 

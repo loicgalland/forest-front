@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import HostingRepository from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
@@ -12,9 +12,14 @@ export default function Hosting() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [userRole, setUserRole] = useState<DecodedToken | null>();
 
-  useEffect(() => {
-    setUserRole(jwtDecodeService());
-  }, []);
+  const deleteHosting = async (id: string) => {
+    await HostingRepository.delete(id);
+    fetchData().then((response) => {
+      if (response && response.data) {
+        setHostings(response.data.data);
+      }
+    });
+  };
 
   const fetchData = async (): Promise<{
     data: { data: HostingInterface[]; success: boolean };
@@ -27,9 +32,9 @@ export default function Hosting() {
   };
 
   useEffect(() => {
+    setUserRole(jwtDecodeService());
     fetchData().then((response) => {
       if (response && response.data) {
-        console.log(response.data);
         setHostings(response.data.data);
       }
     });
@@ -49,10 +54,12 @@ export default function Hosting() {
       </div>
       <div className="flex gap-3 flex-wrap">
         {hostings && hostings.length > 0
-          ? hostings.map((item) => {
-              return <Card key={item._id} hosting={item} type="hosting" />;
+          ? hostings.map((hosting) => {
+              return (
+                <Card hosting={hosting} type="hosting" key={hosting._id} />
+              );
             })
-          : ""}
+          : "Aucun hébergements n'est disponible pour le moment"}
       </div>
     </div>
   );

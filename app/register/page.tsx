@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-xl font-bold mb-2">Créer un compte </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

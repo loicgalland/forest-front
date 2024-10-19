@@ -78,8 +78,9 @@ export default function Home() {
           ""
         )}
       </div>
-      <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
-        {activities && activities.length > 0 ? (
+
+      {activities && activities.length > 0 ? (
+        <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
           <div>
             <h2 className="text-xl font-bold mb-2">Découvrez nos activités</h2>
             <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
@@ -98,10 +99,10 @@ export default function Home() {
               Toutes les activités
             </Link>
           </div>
-        ) : (
-          ""
-        )}
-      </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
