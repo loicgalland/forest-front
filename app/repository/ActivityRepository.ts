@@ -9,7 +9,7 @@ class ActivityRepository extends AbstractRepository {
     return await this.client.get("/api/activity/spotlight");
   }
 
-  async getActivity(id: string | string[]) {
+  async getOne(id: string | string[]) {
     return await this.client.get("/api/activity/" + id);
   }
 
@@ -46,6 +46,47 @@ class ActivityRepository extends AbstractRepository {
     });
 
     return await this.client.post("/api/activity", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
+  async update(
+    id: string | string[],
+    name?: string,
+    descrption?: string,
+    visible?: boolean,
+    isSpotlight?: boolean,
+    price?: number,
+  ) {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Utilisateur non authentifié");
+    }
+    const formData = new FormData();
+
+    if (name !== undefined) {
+      formData.append("name", name);
+    }
+    if (descrption !== undefined) {
+      formData.append("descrption", descrption);
+    }
+    if (visible !== undefined) {
+      formData.append("visible", visible.toString());
+    }
+    if (isSpotlight !== undefined) {
+      formData.append("isSpotlight", isSpotlight.toString());
+    }
+    if (price !== undefined) {
+      formData.append("price", price.toString());
+    }
+
+    const url = "/api/activity/" + id;
+    return await this.client.patch(url, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

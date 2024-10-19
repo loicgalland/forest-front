@@ -16,10 +16,10 @@ const ActivityDetail = () => {
   const router = useRouter();
 
   const fetchData = async (): Promise<{
-    data: { data: HostingInterface; success: boolean };
+    data: { data: ActivityInterface; success: boolean };
   }> => {
     try {
-      return await ActivityRepository.getActivity(id);
+      return await ActivityRepository.getOne(id);
     } catch (error) {
       console.error("Error fetching data:", error);
       throw error;
@@ -49,7 +49,7 @@ const ActivityDetail = () => {
           {activity?.name}
         </h2>
         {isAdmin && (
-          <Link href={"/hosting/edit/" + activity?._id}>
+          <Link href={"/activity/edit/" + activity?._id}>
             <i className="fa-regular fa-pen-to-square"></i>
           </Link>
         )}
