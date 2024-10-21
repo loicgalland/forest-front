@@ -114,6 +114,13 @@ const EditHosting = () => {
     }
   };
 
+  const deleteImage = (id: string) => {
+    setImageToDelete((prevItems) => [...prevItems, id]);
+    setFetchedImages((prevImages) =>
+      prevImages.filter((image) => image._id !== id),
+    );
+  };
+
   const handleBedModalSubmit = async (name: string, value: number | string) => {
     if (typeof value === "number") {
       try {
@@ -149,13 +156,6 @@ const EditHosting = () => {
         console.error("Erreur lors de l'ajout de l'équipement", error);
       }
     }
-  };
-
-  const deleteImage = (id: string) => {
-    setImageToDelete((prevItems) => [...prevItems, id]);
-    setFetchedImages((prevImages) =>
-      prevImages.filter((image) => image._id !== id),
-    );
   };
 
   const fetchData = async (): Promise<{

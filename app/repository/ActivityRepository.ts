@@ -75,6 +75,8 @@ class ActivityRepository extends AbstractRepository {
     visible?: boolean,
     isSpotlight?: boolean,
     price?: number,
+    images?: File[],
+    imageToDelete?: string[],
   ) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -98,6 +100,14 @@ class ActivityRepository extends AbstractRepository {
     }
     if (price !== undefined) {
       formData.append("price", price.toString());
+    }
+    if (images) {
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+    }
+    if (imageToDelete) {
+      formData.append("imageToDelete", JSON.stringify(imageToDelete));
     }
 
     const url = "/api/activity/" + id;
