@@ -33,8 +33,8 @@ const ActivityDetail = () => {
     );
     if (confirmation) {
       await ActivityRepository.delete(id);
+      router.push("/activity");
     }
-    router.push("/activity");
   };
 
   useEffect(() => {
