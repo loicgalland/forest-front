@@ -16,6 +16,7 @@ const EditEvent = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
 
   const [images, setImages] = useState<File[]>([]);
+  const [imageToDelete, setImageToDelete] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -36,16 +37,24 @@ const EditEvent = () => {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await EventRepository.update(
-      id,
-      name,
-      description,
-      isVisible,
-      price,
-      selectedDate,
-    );
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("visible", String(isVisible));
+    formData.append("price", String(price));
+    formData.append("date", selectedDate?.toISOString() || "");
 
-    if (response.data.success) router.push("/event");
+    if (images.length > 0) {
+      images.forEach((file) => {
+        formData.append("images", file);
+      });
+    }
+
+    formData.append("imageToDelete", JSON.stringify(imageToDelete));
+
+    const response = await EventRepository.update(id, formData);
+
+    if (response.data.success) router.push("/event/" + id);
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +62,30 @@ const EditEvent = () => {
 
     if (files) {
       const filesArray = Array.from(files);
+      const newFetchedImages = filesArray.map((file) => {
+        const extension = file.name.split(".").pop();
+        return {
+          _id: Date.now().toString(),
+          path: URL.createObjectURL(file),
+          originalName: file.name,
+          extension: extension,
+        };
+      });
+
       setImages((prevImages) => [...prevImages, ...filesArray]);
+
+      setFetchedImages((prevFetchedImages) => [
+        ...prevFetchedImages,
+        ...newFetchedImages,
+      ]);
     }
+  };
+
+  const deleteImage = (id: string) => {
+    setImageToDelete((prevItems) => [...prevItems, id]);
+    setFetchedImages((prevImages) =>
+      prevImages.filter((image) => image._id !== id),
+    );
   };
 
   const fetchData = async (): Promise<{
@@ -80,10 +111,15 @@ const EditEvent = () => {
         setIsVisible(response.data.data.visible);
         setSelectedDate(response.data.data.date);
 
-        const fetchedImagesArray: FileInterface[] = [];
-        response.data.data.images?.forEach((image) => {
-          fetchedImagesArray.push(image);
-        });
+        const fetchedImagesArray: FileInterface[] =
+          response.data.data.images?.map((image) => ({
+            _id: image._id,
+            path: DB_URL_IMAGE + image.path,
+            originalName: image.originalName,
+            extension: image.path.split(".").pop(),
+          })) || [];
+
+        setFetchedImages(fetchedImagesArray);
 
         setFetchedImages(fetchedImagesArray);
       }
@@ -159,12 +195,12 @@ const EditEvent = () => {
                       <button
                         type="button"
                         className="bg-danger text-white p-2 rounded-lg absolute top-[10px] right-[10px]"
-                        onClick={() => console.log("Image supprimée")}
+                        onClick={() => deleteImage(image._id)}
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
                       <img
-                        src={DB_URL_IMAGE + image.path}
+                        src={image.path}
                         alt="image"
                         className="object-cover w-full h-[200px] rounded-xl"
                       />
@@ -175,7 +211,7 @@ const EditEvent = () => {
           </div>
         </div>
         <input
-          value="Ajouter"
+          value="Modifier"
           type="submit"
           className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2"
         />

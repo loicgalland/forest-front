@@ -69,36 +69,12 @@ class EventRepository extends AbstractRepository {
     });
   }
 
-  async update(
-    id: string | string[],
-    name?: string,
-    description?: string,
-    visible?: boolean,
-    price?: number,
-    date?: Date | null,
-  ) {
+  async update(id: string | string[], formData: FormData) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
 
     if (!token) {
       throw new Error("Utilisateur non authentifié");
-    }
-    const formData = new FormData();
-
-    if (name !== undefined) {
-      formData.append("name", name);
-    }
-    if (description !== undefined) {
-      formData.append("description", description);
-    }
-    if (visible !== undefined) {
-      formData.append("visible", visible.toString());
-    }
-    if (price !== undefined) {
-      formData.append("price", price.toString());
-    }
-    if (date !== null && date !== undefined) {
-      formData.append("date", date.toISOString());
     }
 
     const url = "/api/event/" + id;
