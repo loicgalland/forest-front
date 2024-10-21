@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export function Header() {
-  const [isMobile, setIsMobile] = useState(true);
-  const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(true);
+  const [isMenuActive, setIsMenuActive] = useState<boolean>(false);
+  const [userMenu, setUserMenu] = useState<boolean>(false);
 
   const router = useRouter();
 
   const pathname = usePathname();
   const links = [
-    { name: "Accueil", href: "/home" },
     { name: "Hébergements", href: "/hosting" },
     { name: "Activités", href: "/activity" },
     { name: "Événements", href: "/event" },
@@ -22,24 +22,15 @@ export function Header() {
     setIsMenuActive(!isMenuActive);
   };
 
-  const displaySearchInput = () => {
-    return (
-      !pathname.startsWith("/signin") &&
-      !pathname.startsWith("/contact") &&
-      !pathname.startsWith("/login") &&
-      !pathname.startsWith("/register") &&
-      !pathname.startsWith("/hosting/add") &&
-      !pathname.startsWith("/hosting/edit") &&
-      !pathname.startsWith("/activity/add") &&
-      !pathname.startsWith("/activity/edit") &&
-      !pathname.startsWith("/event/add") &&
-      !pathname.startsWith("/event/edit")
-    );
+  const toggleUserMenu = () => {
+    setUserMenu(!userMenu);
   };
+
   const signOut = () => {
     window.sessionStorage.removeItem("token");
     window.localStorage.removeItem("token");
     router.push("/home");
+    setUserMenu(false);
     handleMenu();
   };
 
@@ -87,7 +78,7 @@ export function Header() {
                 return (
                   <li
                     key={index}
-                    className={isMobile ? "mb-2" : "ml-3"}
+                    className={isMobile ? "mt-2" : "ml-6"}
                     onClick={handleMenu}
                   >
                     <Link
@@ -99,40 +90,66 @@ export function Header() {
                   </li>
                 );
               })}
-              {window.sessionStorage.getItem("token") ||
-              window.localStorage.getItem("token") ? (
-                <li
-                  className={"cursor-pointer " + (isMobile ? "mb-2" : "ml-3")}
-                  onClick={signOut}
+              <li
+                className={
+                  "cursor-pointer relative " + (isMobile ? "mt-2" : "ml-6")
+                }
+              >
+                {!isMobile ? (
+                  <div
+                    className="w-[30px] h-[30px] rounded-full shadow flex justify-center items-center relative z-20"
+                    onClick={toggleUserMenu}
+                  >
+                    <i className="fa-solid fa-user"></i>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                <ul
+                  className={
+                    isMobile
+                      ? "static bg-secondary border-t-[1px] border-t-text pt-2"
+                      : userMenu
+                        ? "absolute top-[35px] left-[-10px] bg-secondary rounded-b-md px-4 z-10 pt-2"
+                        : "hidden"
+                  }
                 >
-                  Déconnexion
-                </li>
-              ) : (
-                <li className={isMobile ? "mb-2" : "ml-3"} onClick={handleMenu}>
-                  <Link href="/login">Connexion</Link>
-                </li>
-              )}
+                  <li className="mb-2">
+                    <Link
+                      href="/login"
+                      onClick={() => {
+                        setUserMenu(false);
+                        handleMenu();
+                      }}
+                    >
+                      Connexion
+                    </Link>
+                  </li>
+                  <li className="mb-2">
+                    <Link
+                      href="/register"
+                      onClick={() => {
+                        setUserMenu(false);
+                        handleMenu();
+                      }}
+                    >
+                      Inscription
+                    </Link>
+                  </li>
+                  {window.sessionStorage.getItem("token") ||
+                  window.localStorage.getItem("token") ? (
+                    <li className="cursor-pointer mb-2 pt-1" onClick={signOut}>
+                      Déconnexion
+                    </li>
+                  ) : (
+                    ""
+                  )}
+                </ul>
+              </li>
             </ul>
           </nav>
         </div>
-        {displaySearchInput() ? (
-          <div className="md:px-20 lg:px-60 xl:px-96 py-2 px-4">
-            <form className="flex justify-center w-full relative">
-              <input
-                type="text"
-                className="w-full rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
-              />
-              <button
-                type="button"
-                className="absolute top-[50%] right-2 translate-y-[-50%] text-primary"
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </form>
-          </div>
-        ) : (
-          ""
-        )}
       </header>
     </>
   );

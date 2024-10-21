@@ -40,7 +40,7 @@ export default function Login() {
         } else {
           sessionStorage.setItem("token", token);
         }
-        router.back();
+        router.push("/home");
       }
     } catch (error) {
       if (error instanceof Error) {
