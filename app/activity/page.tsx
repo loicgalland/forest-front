@@ -16,7 +16,11 @@ export default function Activity() {
     data: { data: ActivityInterface[]; success: boolean };
   }> => {
     try {
-      return await ActivityRepository.getAll();
+      const role = await jwtDecodeService();
+      if (role && role.role === "admin") {
+        return await ActivityRepository.getAll();
+      }
+      return await ActivityRepository.getAllVisible();
     } catch (error) {
       throw error;
     }

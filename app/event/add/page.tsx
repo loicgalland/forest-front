@@ -6,8 +6,8 @@ import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputCompo
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import { useRouter } from "next/navigation";
-import ActivityRepository from "@/app/repository/ActivityRepository";
 import EventRepository from "@/app/repository/EventRepository";
+import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 
 export default function EventAdd() {
   const [name, setName] = useState<string>("");
@@ -15,8 +15,13 @@ export default function EventAdd() {
   const [price, setPrice] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [images, setImages] = useState<File[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const router = useRouter();
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,6 +31,7 @@ export default function EventAdd() {
       price,
       visible: isVisible,
       images,
+      date: selectedDate,
     });
     if (response.data.success) router.push("/event");
   };
@@ -65,6 +71,13 @@ export default function EventAdd() {
             id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="w-full mb-2">
+          <DatePickerComponent
+            onDateChange={handleDateChange}
+            label="Date"
+            olderDate={null}
           />
         </div>
         <div className="w-full mb-2">

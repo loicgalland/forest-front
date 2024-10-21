@@ -7,11 +7,10 @@ import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputCompo
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import ActivityRepository from "@/app/repository/ActivityRepository";
-import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
 import EventRepository from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
+import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 
 const EditEvent = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
@@ -21,9 +20,14 @@ const EditEvent = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const { id } = useParams();
   const router = useRouter();
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
 
   const cancel = () => {
     router.back();
@@ -38,6 +42,7 @@ const EditEvent = () => {
       description,
       isVisible,
       price,
+      selectedDate,
     );
 
     if (response.data.success) router.push("/event");
@@ -73,11 +78,13 @@ const EditEvent = () => {
         setDescription(response.data.data.description);
         setPrice(response.data.data.price);
         setIsVisible(response.data.data.visible);
+        setSelectedDate(response.data.data.date);
 
         const fetchedImagesArray: FileInterface[] = [];
         response.data.data.images?.forEach((image) => {
           fetchedImagesArray.push(image);
         });
+
         setFetchedImages(fetchedImagesArray);
       }
     });
@@ -100,6 +107,13 @@ const EditEvent = () => {
             id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="w-full mb-2">
+          <DatePickerComponent
+            onDateChange={handleDateChange}
+            label="Date"
+            olderDate={selectedDate}
           />
         </div>
         <div className="w-full mb-2">

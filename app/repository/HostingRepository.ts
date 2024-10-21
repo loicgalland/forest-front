@@ -5,6 +5,10 @@ class HostingRepository extends AbstractRepository {
     return await this.client.get("/api/hosting");
   }
 
+  async getAllVisible() {
+    return await this.client.get("/api/hosting/visible");
+  }
+
   async getSpotlight() {
     return await this.client.get("/api/hosting/spotlight");
   }

@@ -12,20 +12,15 @@ export default function Hosting() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [userRole, setUserRole] = useState<DecodedToken | null>();
 
-  const deleteHosting = async (id: string) => {
-    await HostingRepository.delete(id);
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setHostings(response.data.data);
-      }
-    });
-  };
-
   const fetchData = async (): Promise<{
     data: { data: HostingInterface[]; success: boolean };
   }> => {
     try {
-      return await HostingRepository.getAll();
+      const role = await jwtDecodeService();
+      if (role && role.role === "admin") {
+        return await HostingRepository.getAll();
+      }
+      return await HostingRepository.getAllVisible();
     } catch (error) {
       throw error;
     }

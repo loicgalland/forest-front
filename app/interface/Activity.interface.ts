@@ -9,4 +9,5 @@ export interface ActivityInterface {
   visible: boolean;
   capacity: number;
   price: number;
+  date?: Date | null;
 }

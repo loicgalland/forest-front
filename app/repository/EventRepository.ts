@@ -5,6 +5,10 @@ class EventRepository extends AbstractRepository {
     return await this.client.get("/api/event");
   }
 
+  async getAllVisible() {
+    return await this.client.get("/api/event/visible");
+  }
+
   async getOne(id: string | string[]) {
     return await this.client.get("/api/event/" + id);
   }
@@ -26,12 +30,14 @@ class EventRepository extends AbstractRepository {
     price,
     visible,
     images,
+    date,
   }: {
     name: string;
     description: string;
     price: number;
     visible: boolean;
     images: File[];
+    date: Date | null;
   }) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -48,6 +54,9 @@ class EventRepository extends AbstractRepository {
     images.forEach((image) => {
       formData.append("images", image);
     });
+    if (date !== null) {
+      formData.append("date", date.toISOString());
+    }
 
     return await this.client.post("/api/event", formData, {
       headers: {
@@ -63,6 +72,7 @@ class EventRepository extends AbstractRepository {
     description?: string,
     visible?: boolean,
     price?: number,
+    date?: Date | null,
   ) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -83,6 +93,9 @@ class EventRepository extends AbstractRepository {
     }
     if (price !== undefined) {
       formData.append("price", price.toString());
+    }
+    if (date !== null && date !== undefined) {
+      formData.append("date", date.toISOString());
     }
 
     const url = "/api/event/" + id;

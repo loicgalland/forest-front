@@ -7,6 +7,7 @@ import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
+import DateManager from "@/app/services/dateFormatter";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -30,6 +31,10 @@ const EventDetail = () => {
     router.push("/event");
   };
 
+  const formatDate = (date: Date): string => {
+    return DateManager.dateFormatter(date);
+  };
+
   useEffect(() => {
     const userToken = jwtDecodeService();
     if (userToken && userToken.role === "admin") setIsAdmin(true);
@@ -44,8 +49,8 @@ const EventDetail = () => {
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <BottomBar
         type="event"
-        price={event?.price ? event.price : "Pix non définit"}
-      ></BottomBar>
+        price={event?.price ? event.price : "Prix non définit"}
+      />
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-3">
           <button onClick={router.back} className="mr-2">
@@ -71,7 +76,6 @@ const EventDetail = () => {
           </div>
         )}
       </div>
-
       <div className="flex flex-col md:flex-row">
         <div className="mb-3 w-full md:w-[33%] grid gap-4">
           {Array.isArray(event?.images) && (
@@ -97,6 +101,7 @@ const EventDetail = () => {
           )}
         </div>
         <div className="w-full md:w-[65%] md:ml-3">
+          <div>{event?.date ? formatDate(event.date) : ""}</div>
           <div>{event?.description}</div>
           <div className="hidden md:flex md:w-full items-center justify-between">
             <p className="text-xl font-bold">{event?.price}€</p>

@@ -16,7 +16,11 @@ export default function Event() {
     data: { data: EventInterface[]; success: boolean };
   }> => {
     try {
-      return await EventRepository.getAll();
+      const role = await jwtDecodeService();
+      if (role && role.role === "admin") {
+        return await EventRepository.getAll();
+      }
+      return await EventRepository.getAllVisible();
     } catch (error) {
       throw error;
     }

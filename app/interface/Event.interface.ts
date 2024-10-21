@@ -8,4 +8,5 @@ export interface EventInterface {
   visible: boolean;
   capacity: number;
   price: number;
+  date: Date | null;
 }
