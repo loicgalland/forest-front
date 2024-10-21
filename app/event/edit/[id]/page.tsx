@@ -42,7 +42,7 @@ const EditEvent = () => {
     formData.append("description", description);
     formData.append("visible", String(isVisible));
     formData.append("price", String(price));
-    formData.append("date", selectedDate?.toISOString() || "");
+    formData.append("date", selectedDate?.toString() || "");
 
     if (images.length > 0) {
       images.forEach((file) => {
