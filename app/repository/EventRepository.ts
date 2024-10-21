@@ -31,6 +31,7 @@ class EventRepository extends AbstractRepository {
     visible,
     images,
     date,
+    capacity,
   }: {
     name: string;
     description: string;
@@ -38,6 +39,7 @@ class EventRepository extends AbstractRepository {
     visible: boolean;
     images: File[];
     date: Date | null;
+    capacity: number;
   }) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -57,6 +59,7 @@ class EventRepository extends AbstractRepository {
     if (date !== null) {
       formData.append("date", date.toISOString());
     }
+    formData.append("capacity", capacity.toString());
 
     return await this.client.post("/api/event", formData, {
       headers: {

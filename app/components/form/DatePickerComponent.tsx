@@ -24,7 +24,7 @@ export const DatePickerComponent: React.FC<props> = ({
     <div>
       <span className="block">{label}</span>
       <DatePicker
-        selected={olderDate}
+        selected={olderDate ? olderDate : selectedDate}
         onChange={handleDateChange}
         dateFormat="dd/MM/yyyy"
         isClearable

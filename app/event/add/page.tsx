@@ -16,6 +16,7 @@ export default function EventAdd() {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [images, setImages] = useState<File[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [capacity, setCapacity] = useState<number>(0);
 
   const router = useRouter();
 
@@ -32,6 +33,7 @@ export default function EventAdd() {
       visible: isVisible,
       images,
       date: selectedDate,
+      capacity,
     });
     if (response.data.success) router.push("/event");
   };
@@ -71,6 +73,16 @@ export default function EventAdd() {
             id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="w-full mb-2">
+          <InputComponent
+            type="number"
+            name="capacity"
+            label="Capacité"
+            id="eventCapacity"
+            value={capacity}
+            onChange={(e) => setCapacity(Number(e.target.value))}
           />
         </div>
         <div className="w-full mb-2">

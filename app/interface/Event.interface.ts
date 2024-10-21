@@ -9,4 +9,5 @@ export interface EventInterface {
   capacity: number;
   price: number;
   date: Date | null;
+  placeAvailable: number;
 }
