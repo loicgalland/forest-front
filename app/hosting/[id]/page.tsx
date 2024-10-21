@@ -8,11 +8,13 @@ import { IconComponent } from "@/app/components/IconComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
+import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 
 const HostingDetails = () => {
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const fetchData = async (): Promise<{
@@ -27,8 +29,13 @@ const HostingDetails = () => {
   };
 
   const deleteHosting = async (id: string) => {
-    await HostingRepository.delete(id);
-    router.push("/hosting");
+    const confirmation = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    );
+    if (confirmation) {
+      await HostingRepository.delete(id);
+      router.push("/hosting");
+    }
   };
 
   useEffect(() => {
@@ -44,6 +51,16 @@ const HostingDetails = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {hosting && hosting._id ? (
+        <ConfirmationModal
+          id={hosting._id}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={deleteHosting}
+        />
+      ) : (
+        ""
+      )}
       <BottomBar
         type="hosting"
         price={hosting?.price ? hosting.price : "Pix non définit"}

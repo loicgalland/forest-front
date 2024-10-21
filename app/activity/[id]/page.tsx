@@ -7,11 +7,13 @@ import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
+import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 
 const ActivityDetail = () => {
   const { id } = useParams();
   const [activity, setActivity] = useState<ActivityInterface>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const fetchData = async (): Promise<{
@@ -26,7 +28,12 @@ const ActivityDetail = () => {
   };
 
   const deleteActivity = async (id: string) => {
-    await ActivityRepository.delete(id);
+    const confirmation = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    );
+    if (confirmation) {
+      await ActivityRepository.delete(id);
+    }
     router.push("/activity");
   };
 
@@ -43,6 +50,16 @@ const ActivityDetail = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {activity && activity._id ? (
+        <ConfirmationModal
+          id={activity._id}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={deleteActivity}
+        />
+      ) : (
+        ""
+      )}
       <BottomBar
         type="activity"
         price={activity?.price ? activity.price : "Pix non définit"}

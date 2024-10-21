@@ -8,11 +8,13 @@ import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
 import DateManager from "@/app/services/dateFormatter";
+import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState<EventInterface>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const fetchData = async (): Promise<{
@@ -27,8 +29,13 @@ const EventDetail = () => {
   };
 
   const deleteEvent = async (id: string) => {
-    await EventRepository.delete(id);
-    router.push("/event");
+    const confirmation = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    );
+    if (confirmation) {
+      await EventRepository.delete(id);
+      router.push("/event");
+    }
   };
 
   const formatDate = (date: Date): string => {
@@ -47,6 +54,16 @@ const EventDetail = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {event && event._id ? (
+        <ConfirmationModal
+          id={event._id}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={deleteEvent}
+        />
+      ) : (
+        ""
+      )}
       <BottomBar
         type="event"
         price={event?.price ? event.price : "Prix non définit"}
