@@ -22,6 +22,7 @@ const EditEvent = () => {
   const [price, setPrice] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [capacity, setCapacity] = useState<number>(0);
 
   const { id } = useParams();
   const router = useRouter();
@@ -37,22 +38,17 @@ const EditEvent = () => {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("visible", String(isVisible));
-    formData.append("price", String(price));
-    formData.append("date", selectedDate?.toString() || "");
-
-    if (images.length > 0) {
-      images.forEach((file) => {
-        formData.append("images", file);
-      });
-    }
-
-    formData.append("imageToDelete", JSON.stringify(imageToDelete));
-
-    const response = await EventRepository.update(id, formData);
+    const response = await EventRepository.update(
+      id,
+      name,
+      description,
+      isVisible,
+      price,
+      selectedDate,
+      images,
+      capacity,
+      imageToDelete,
+    );
 
     if (response.data.success) router.push("/event/" + id);
   };
@@ -110,6 +106,7 @@ const EditEvent = () => {
         setPrice(response.data.data.price);
         setIsVisible(response.data.data.visible);
         setSelectedDate(response.data.data.date);
+        setCapacity(response.data.data.capacity);
 
         const fetchedImagesArray: FileInterface[] =
           response.data.data.images?.map((image) => ({
@@ -118,8 +115,6 @@ const EditEvent = () => {
             originalName: image.originalName,
             extension: image.path.split(".").pop(),
           })) || [];
-
-        setFetchedImages(fetchedImagesArray);
 
         setFetchedImages(fetchedImagesArray);
       }
@@ -143,6 +138,16 @@ const EditEvent = () => {
             id="eventName"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="w-full mb-2">
+          <InputComponent
+            type="number"
+            name="capacity"
+            label="Capacité"
+            id="eventCapacity"
+            value={capacity}
+            onChange={(e) => setCapacity(Number(e.target.value))}
           />
         </div>
         <div className="w-full mb-2">

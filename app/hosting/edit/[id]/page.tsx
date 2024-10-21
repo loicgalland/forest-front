@@ -28,6 +28,7 @@ const EditHosting = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
 
   const [images, setImages] = useState<File[]>([]);
+  const [imageToDelete, setImageToDelete] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -56,6 +57,8 @@ const EditHosting = () => {
       price,
       beds,
       equipments,
+      images,
+      imageToDelete,
     );
 
     if (response.data.success) router.push("/hosting");
@@ -92,7 +95,22 @@ const EditHosting = () => {
 
     if (files) {
       const filesArray = Array.from(files);
+      const newFetchedImages = filesArray.map((file) => {
+        const extension = file.name.split(".").pop();
+        return {
+          _id: Date.now().toString(),
+          path: URL.createObjectURL(file),
+          originalName: file.name,
+          extension: extension,
+        };
+      });
+
       setImages((prevImages) => [...prevImages, ...filesArray]);
+
+      setFetchedImages((prevFetchedImages) => [
+        ...prevFetchedImages,
+        ...newFetchedImages,
+      ]);
     }
   };
 
@@ -131,6 +149,13 @@ const EditHosting = () => {
         console.error("Erreur lors de l'ajout de l'équipement", error);
       }
     }
+  };
+
+  const deleteImage = (id: string) => {
+    setImageToDelete((prevItems) => [...prevItems, id]);
+    setFetchedImages((prevImages) =>
+      prevImages.filter((image) => image._id !== id),
+    );
   };
 
   const fetchData = async (): Promise<{
@@ -177,10 +202,14 @@ const EditHosting = () => {
         setIsVisible(response.data.data.visible);
         setIsSpotlight(response.data.data.isSpotlight);
 
-        const fetchedImagesArray: FileInterface[] = [];
-        response.data.data.images?.forEach((image) => {
-          fetchedImagesArray.push(image);
-        });
+        const fetchedImagesArray: FileInterface[] =
+          response.data.data.images?.map((image) => ({
+            _id: image._id,
+            path: DB_URL_IMAGE + image.path,
+            originalName: image.originalName,
+            extension: image.path.split(".").pop(),
+          })) || [];
+
         setFetchedImages(fetchedImagesArray);
 
         const bedsList: BedsHostingList[] = [];
@@ -337,12 +366,12 @@ const EditHosting = () => {
                       <button
                         type="button"
                         className="bg-danger text-white p-2 rounded-lg absolute top-[10px] right-[10px]"
-                        onClick={() => console.log("Images supprimée")}
+                        onClick={() => deleteImage(image._id)}
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
                       <img
-                        src={DB_URL_IMAGE + image.path}
+                        src={image.path}
                         alt="image"
                         className="object-cover w-full h-[200px] rounded-xl"
                       />

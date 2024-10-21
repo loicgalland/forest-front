@@ -31,12 +31,14 @@ class HostingRepository extends AbstractRepository {
   async updateHosting(
     id: string | string[],
     name?: string,
-    descrption?: string,
+    description?: string,
     visible?: boolean,
     isSpotlight?: boolean,
     price?: number,
     beds?: { bedId: string; quantity: number }[],
     equipments?: string[],
+    images?: File[],
+    imageToDelete?: string[],
   ) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -49,8 +51,8 @@ class HostingRepository extends AbstractRepository {
     if (name !== undefined) {
       formData.append("name", name);
     }
-    if (descrption !== undefined) {
-      formData.append("descrption", descrption);
+    if (description !== undefined) {
+      formData.append("description", description);
     }
     if (visible !== undefined) {
       formData.append("visible", visible.toString());
@@ -71,6 +73,14 @@ class HostingRepository extends AbstractRepository {
       equipments.forEach((equipmentId: string) => {
         formData.append("equipments[]", equipmentId);
       });
+    }
+    if (images) {
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+    }
+    if (imageToDelete) {
+      formData.append("imageToDelete", JSON.stringify(imageToDelete));
     }
 
     const url = "/api/hosting/" + id;
