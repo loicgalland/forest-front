@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
+import Image from "next/image";
 
 const ActivityDetail = () => {
   const { id } = useParams();
@@ -95,19 +96,23 @@ const ActivityDetail = () => {
           {Array.isArray(activity?.images) && (
             <>
               {activity.images.length > 0 && (
-                <img
-                  className="h-auto max-w-full rounded-lg"
+                <Image
+                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl"
                   src={DB_URL_IMAGE + activity.images[0].path}
-                  alt="card-image"
+                  alt={activity.images[0].originalName}
+                  width={500}
+                  height={500}
                 />
               )}
               <div className="grid grid-cols-4 gap-4">
                 {activity.images.slice(1).map((image, index) => (
-                  <img
+                  <Image
                     key={index}
-                    className="object-cover w-full h-[100px] rounded-xl"
+                    className="object-cover w-full h-[100px] rounded-lg"
                     src={DB_URL_IMAGE + image.path}
-                    alt="card-image"
+                    alt={image.originalName}
+                    width={500}
+                    height={100}
                   />
                 ))}
               </div>

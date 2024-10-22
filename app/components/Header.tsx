@@ -72,7 +72,7 @@ export function Header() {
                   : "hidden"
             }
           >
-            <ul className={!isMobile ? "flex" : ""}>
+            <ul className={!isMobile ? "flex items-center" : ""}>
               {links.map((link, index) => {
                 const isActive = pathname.startsWith(link.href);
                 return (

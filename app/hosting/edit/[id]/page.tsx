@@ -16,6 +16,7 @@ import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
+import Image from "next/image";
 
 interface BedsHostingList {
   bedId: string;
@@ -370,10 +371,12 @@ const EditHosting = () => {
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
-                      <img
+                      <Image
+                        className="object-cover w-full h-[200px] rounded-lg"
                         src={image.path}
-                        alt="image"
-                        className="object-cover w-full h-[200px] rounded-xl"
+                        alt={image.originalName}
+                        width={200}
+                        height={200}
                       />
                     </div>
                   );

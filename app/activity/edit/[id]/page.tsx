@@ -10,6 +10,7 @@ import { DB_URL_IMAGE } from "@/app/config/database";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
+import Image from "next/image";
 
 const EditActivity = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
@@ -187,10 +188,12 @@ const EditActivity = () => {
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
-                      <img
+                      <Image
+                        className="object-cover w-full h-[200px] rounded-lg"
                         src={image.path}
-                        alt="image"
-                        className="object-cover w-full h-[200px] rounded-xl"
+                        alt={image.originalName}
+                        width={200}
+                        height={200}
                       />
                     </div>
                   );

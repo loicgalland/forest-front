@@ -9,6 +9,7 @@ import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
 import DateManager from "@/app/services/dateFormatter";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
+import Image from "next/image";
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -98,19 +99,23 @@ const EventDetail = () => {
           {Array.isArray(event?.images) && (
             <>
               {event.images.length > 0 && (
-                <img
-                  className="h-auto max-w-full rounded-lg"
+                <Image
+                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl"
                   src={DB_URL_IMAGE + event.images[0].path}
-                  alt="card-image"
+                  alt={event.images[0].originalName}
+                  width={500}
+                  height={500}
                 />
               )}
               <div className="grid grid-cols-4 gap-4">
                 {event.images.slice(1).map((image, index) => (
-                  <img
+                  <Image
                     key={index}
-                    className="object-cover w-full h-[100px] rounded-xl"
+                    className="object-cover w-full h-[100px] rounded-lg"
                     src={DB_URL_IMAGE + image.path}
-                    alt="card-image"
+                    alt={image.originalName}
+                    width={500}
+                    height={100}
                   />
                 ))}
               </div>

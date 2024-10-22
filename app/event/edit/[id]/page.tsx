@@ -11,6 +11,7 @@ import { FileInterface } from "@/app/interface/File.interface";
 import EventRepository from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
+import Image from "next/image";
 
 const EditEvent = () => {
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
@@ -204,10 +205,12 @@ const EditEvent = () => {
                       >
                         <i className="fa-solid fa-trash"></i>
                       </button>
-                      <img
+                      <Image
+                        className="object-cover w-full h-[200px] rounded-lg"
                         src={image.path}
-                        alt="image"
-                        className="object-cover w-full h-[200px] rounded-xl"
+                        alt={image.originalName}
+                        width={200}
+                        height={200}
                       />
                     </div>
                   );

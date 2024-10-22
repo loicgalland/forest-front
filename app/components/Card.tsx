@@ -2,6 +2,7 @@ import Link from "next/link";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import React from "react";
 import { DB_URL_IMAGE } from "@/app/config/database";
+import Image from "next/image";
 
 interface CardProps {
   hosting: HostingInterface;
@@ -19,14 +20,20 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
         ""
       )}
       <div className="relative overflow-hidden text-text bg-white bg-clip-border h-52">
-        <img
+        <Image
+          className="object-cover w-full h-full"
           src={
             props.hosting.images && props.hosting.images.length
               ? DB_URL_IMAGE + props.hosting.images[0].path
               : "https://picsum.photos/200/300?grayscale"
           }
-          alt="card-image"
-          className="object-cover w-full h-full"
+          alt={
+            props.hosting.images && props.hosting.images[0].originalName
+              ? props.hosting.images[0].originalName
+              : "placeholder-image"
+          }
+          width={300}
+          height={300}
         />
       </div>
       <div className="p-6 h-[50%] flex flex-col justify-between">

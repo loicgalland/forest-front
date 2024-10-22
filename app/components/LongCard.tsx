@@ -4,6 +4,7 @@ import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { EventInterface } from "@/app/interface/Event.interface";
 import DateManager from "@/app/services/dateFormatter";
+import Image from "next/image";
 
 interface LongCardData {
   item: ActivityInterface | EventInterface;
@@ -36,14 +37,20 @@ export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
           En savoir plus
         </Link>
       </div>
-      <img
+      <Image
+        className="h-full w-full object-cover object-center"
         src={
           props.item.images && props.item.images.length
             ? DB_URL_IMAGE + props.item.images[0].path
             : "https://picsum.photos/200/300?grayscale"
         }
-        alt=""
-        className="h-full w-full object-cover object-center"
+        alt={
+          props.item.images && props.item.images[0].originalName
+            ? props.item.images[0].originalName
+            : "placeholder-image"
+        }
+        width={650}
+        height={250}
       />
     </div>
   );
