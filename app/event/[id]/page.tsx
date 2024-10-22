@@ -3,7 +3,6 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";

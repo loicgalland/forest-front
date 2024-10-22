@@ -48,6 +48,7 @@ export default function ActivityAdd() {
 
   const getUserRole = async () => {
     const response = await AuthRepository.getUserRole();
+    if (response.status === 401) router.push("/login");
     setUserRole(response.data.role);
   };
 
