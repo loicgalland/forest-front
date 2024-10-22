@@ -10,19 +10,20 @@ import EventRepository from "@/app/repository/EventRepository";
 import DateManager from "@/app/services/dateFormatter";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState<EventInterface>();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { userRole, setUserRole } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  const fetchData = async (): Promise<{
-    data: { data: EventInterface; success: boolean };
-  }> => {
+  const fetchData = async () => {
     try {
-      return await EventRepository.getOne(id);
+      const response = await EventRepository.getOne(id);
+      setEvent(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       throw error;
@@ -43,15 +44,18 @@ const EventDetail = () => {
     return DateManager.dateFormatter(date);
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (userToken && userToken.role === "admin") setIsAdmin(true);
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setEvent(response.data.data);
-      }
-    });
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [userRole]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
@@ -74,14 +78,16 @@ const EventDetail = () => {
           <button
             aria-label="go back  to previous page"
             type="button"
-            onClick={router.back}
+            onClick={() => {
+              router.push("/event");
+            }}
             className="mr-2"
           >
             <i className="fa-solid fa-arrow-left"></i>
           </button>
           {event?.name}
         </h2>
-        {isAdmin && event && (
+        {userRole === "admin" && event && (
           <div>
             <Link
               href={"/event/edit/" + event?._id}

@@ -1,19 +1,14 @@
 "use client";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import authRepository from "@/app/repository/AuthRepository";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { InputComponent } from "@/app/components/form/InputComponent";
 
 export default function Login() {
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const router = useRouter();
-
-  const handleRememberMeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(e.target.checked);
-  };
 
   const login = async (
     mail: string,
@@ -34,12 +29,7 @@ export default function Login() {
     try {
       const response = await login(email, password);
       if (response.data.success) {
-        const token = response.data.data;
-        if (rememberMe) {
-          localStorage.setItem("token", token);
-        } else {
-          sessionStorage.setItem("token", token);
-        }
+        localStorage.setItem("userConnected", "true");
         router.push("/home");
       }
     } catch (error) {
@@ -67,17 +57,6 @@ export default function Login() {
           name="password"
           type="password"
         />
-
-        <div className="flex items-center mb-5">
-          <label htmlFor="inputRemember" className="mr-2">
-            Se souvenir de moi ?{" "}
-          </label>
-          <input
-            type="checkbox"
-            id="inputRemember"
-            onChange={handleRememberMeChange}
-          />
-        </div>
         <input
           type="submit"
           value="Se connecter"

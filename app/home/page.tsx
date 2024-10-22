@@ -11,11 +11,14 @@ import { LongCard } from "@/app/components/LongCard";
 import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { useAuth } from "@/app/services/AuthContext";
 
 export default function Home() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [activities, setActivities] = useState<ActivityInterface[]>();
   const [events, setEvents] = useState<EventInterface[]>();
+  const { userRole, setUserRole } = useAuth();
 
   const fetchHosting = async (): Promise<{
     data: { data: HostingInterface[]; success: boolean };
@@ -49,6 +52,15 @@ export default function Home() {
       throw error;
     }
   };
+
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
+  useEffect(() => {
+    getUserRole();
+  }, []);
 
   useEffect(() => {
     fetchHosting().then((response) => {
@@ -97,7 +109,6 @@ export default function Home() {
           ""
         )}
       </div>
-
       {activities && activities.length > 0 ? (
         <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
           <div>
@@ -122,7 +133,6 @@ export default function Home() {
       ) : (
         ""
       )}
-
       {events && events.length > 0 ? (
         <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5">
           <div>

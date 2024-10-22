@@ -4,11 +4,13 @@ import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import { useRouter } from "next/navigation";
 import ActivityRepository from "@/app/repository/ActivityRepository";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { useAuth } from "@/app/services/AuthContext";
 
 export default function ActivityAdd() {
+  const { userRole, setUserRole } = useAuth();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -44,9 +46,13 @@ export default function ActivityAdd() {
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (!userToken) router.push("/login");
+    if (!userRole) getUserRole();
   }, []);
 
   return (

@@ -43,12 +43,6 @@ class ActivityRepository extends AbstractRepository {
     isSpotlight: boolean;
     images: File[];
   }) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
     const formData = new FormData();
 
     formData.append("name", name);
@@ -62,9 +56,9 @@ class ActivityRepository extends AbstractRepository {
 
     return await this.client.post("/api/activity", formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 
@@ -78,12 +72,6 @@ class ActivityRepository extends AbstractRepository {
     images?: File[],
     imageToDelete?: string[],
   ) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
     const formData = new FormData();
 
     if (name !== undefined) {
@@ -113,9 +101,9 @@ class ActivityRepository extends AbstractRepository {
     const url = "/api/activity/" + id;
     return await this.client.patch(url, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 }

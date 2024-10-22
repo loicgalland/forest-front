@@ -27,8 +27,7 @@ export function Header() {
   };
 
   const signOut = () => {
-    window.sessionStorage.removeItem("token");
-    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("userConnected");
     router.push("/home");
     setUserMenu(false);
     handleMenu();
@@ -137,8 +136,7 @@ export function Header() {
                       Inscription
                     </Link>
                   </li>
-                  {window.sessionStorage.getItem("token") ||
-                  window.localStorage.getItem("token") ? (
+                  {window.localStorage.getItem("userConnected") ? (
                     <li className="cursor-pointer mb-2 pt-1" onClick={signOut}>
                       Déconnexion
                     </li>

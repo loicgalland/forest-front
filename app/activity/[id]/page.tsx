@@ -3,18 +3,19 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 const ActivityDetail = () => {
   const { id } = useParams();
   const [activity, setActivity] = useState<ActivityInterface>();
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userRole, setUserRole } = useAuth();
   const router = useRouter();
 
   const fetchData = async (): Promise<{
@@ -37,10 +38,16 @@ const ActivityDetail = () => {
       router.push("/activity");
     }
   };
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
 
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (userToken && userToken.role === "admin") setIsAdmin(true);
+    if (!userRole) getUserRole();
+  }, []);
+
+  useEffect(() => {
     fetchData().then((response) => {
       if (response && response.data) {
         setActivity(response.data.data);
@@ -70,14 +77,16 @@ const ActivityDetail = () => {
           <button
             aria-label="go back  to previous page"
             type="button"
-            onClick={router.back}
+            onClick={() => {
+              router.push("/activity");
+            }}
             className="mr-2"
           >
             <i className="fa-solid fa-arrow-left"></i>
           </button>
           {activity?.name}
         </h2>
-        {isAdmin && activity && (
+        {userRole === "admin" && activity && (
           <div>
             <Link
               href={"/activity/edit/" + activity?._id}

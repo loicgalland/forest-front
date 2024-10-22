@@ -40,12 +40,6 @@ class HostingRepository extends AbstractRepository {
     images?: File[],
     imageToDelete?: string[],
   ) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
     const formData = new FormData();
 
     if (name !== undefined) {
@@ -86,9 +80,9 @@ class HostingRepository extends AbstractRepository {
     const url = "/api/hosting/" + id;
     return await this.client.patch(url, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 
@@ -111,13 +105,6 @@ class HostingRepository extends AbstractRepository {
     beds: { bedId: string; quantity: number }[];
     images: File[];
   }) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
-
     const formData = new FormData();
 
     formData.append("name", name);
@@ -134,9 +121,9 @@ class HostingRepository extends AbstractRepository {
 
     return await this.client.post("/api/hosting", formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 }

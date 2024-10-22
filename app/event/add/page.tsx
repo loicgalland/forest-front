@@ -4,12 +4,14 @@ import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import { useRouter } from "next/navigation";
 import EventRepository from "@/app/repository/EventRepository";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 export default function EventAdd() {
+  const { userRole, setUserRole } = useAuth();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -51,10 +53,18 @@ export default function EventAdd() {
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (!userToken) router.push("/login");
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    if (!userRole) router.push("/login");
+  }, [userRole]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

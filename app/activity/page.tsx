@@ -1,44 +1,49 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DecodedToken } from "@/app/interface/Token.interface";
 import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import { LongCard } from "@/app/components/LongCard";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { useAuth } from "@/app/services/AuthContext";
 
 export default function Activity() {
   const [activities, setActivities] = useState<ActivityInterface[]>([]);
-  const [userRole, setUserRole] = useState<DecodedToken | null>();
+  const { userRole, setUserRole } = useAuth();
 
-  const fetchData = async (): Promise<{
-    data: { data: ActivityInterface[]; success: boolean };
-  }> => {
+  const fetchData = async () => {
     try {
-      const role = await jwtDecodeService();
-      if (role && role.role === "admin") {
-        return await ActivityRepository.getAll();
+      if (userRole === "admin") {
+        const response = await ActivityRepository.getAll();
+        setActivities(response.data.data);
+      } else {
+        const response = await ActivityRepository.getAllVisible();
+        setActivities(response.data.data);
       }
-      return await ActivityRepository.getAllVisible();
     } catch (error) {
       throw error;
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    setUserRole(jwtDecodeService());
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setActivities(response.data.data);
-      }
-    });
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    if (userRole) fetchData();
+  }, [userRole]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Nos activités</h2>
-        {userRole && userRole.role === "admin" ? (
+        {userRole === "admin" ? (
           <Link
             href="/activity/add"
             className="bg-success text-white p-2 rounded-lg"

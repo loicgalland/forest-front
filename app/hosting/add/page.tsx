@@ -10,10 +10,12 @@ import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputCompo
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import hostingRepository from "@/app/repository/HostingRepository";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 export default function HostingAdd() {
+  const { userRole, setUserRole } = useAuth();
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
 
@@ -139,20 +141,28 @@ export default function HostingAdd() {
     }
   };
 
-  useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (!userToken) router.push("/login");
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
 
-    fetchBedsList().then((response) => {
-      if (response && response.data) {
-        setBedList(response.data.data);
-      }
-    });
-    fetchEquipmentsList().then((response) => {
-      if (response && response.data) {
-        setEquipmentList(response.data.data);
-      }
-    });
+  useEffect(() => {
+    if (!userRole) getUserRole();
+  }, []);
+
+  useEffect(() => {
+    if (userRole) {
+      fetchBedsList().then((response) => {
+        if (response && response.data) {
+          setBedList(response.data.data);
+        }
+      });
+      fetchEquipmentsList().then((response) => {
+        if (response && response.data) {
+          setEquipmentList(response.data.data);
+        }
+      });
+    }
   }, []);
 
   return (

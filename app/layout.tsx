@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "./components/Header";
+import { AuthProvider } from "./services/AuthContext";
 
 export const metadata: Metadata = {
   title: "Forest",
@@ -25,8 +26,10 @@ export default function RootLayout({
         />
       </head>
       <body className="text-text bg-white box-border">
-        <Header />
-        <div>{children}</div>
+        <AuthProvider>
+          <Header />
+          <div>{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );

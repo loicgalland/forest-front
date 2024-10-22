@@ -1,44 +1,50 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { DecodedToken } from "@/app/interface/Token.interface";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import { LongCard } from "@/app/components/LongCard";
 import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 export default function Event() {
   const [events, setEvents] = useState<EventInterface[]>([]);
-  const [userRole, setUserRole] = useState<DecodedToken | null>();
+  const { userRole, setUserRole } = useAuth();
 
-  const fetchData = async (): Promise<{
-    data: { data: EventInterface[]; success: boolean };
-  }> => {
+  const fetchData = async () => {
     try {
-      const role = await jwtDecodeService();
-      if (role && role.role === "admin") {
-        return await EventRepository.getAll();
+      if (userRole === "admin") {
+        const response = await EventRepository.getAll();
+        setEvents(response.data.data);
+      } else {
+        const response = await EventRepository.getAllVisible();
+        setEvents(response.data.data);
       }
-      return await EventRepository.getAllVisible();
     } catch (error) {
       throw error;
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    setUserRole(jwtDecodeService());
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setEvents(response.data.data);
-      }
-    });
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    if (userRole) {
+      fetchData();
+    }
+  }, [userRole]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Nos événements</h2>
-        {userRole && userRole.role === "admin" ? (
+        {userRole === "admin" ? (
           <Link
             href="/event/add"
             className="bg-success text-white p-2 rounded-lg"

@@ -41,12 +41,6 @@ class EventRepository extends AbstractRepository {
     date: Date | null;
     capacity: number;
   }) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
     const formData = new FormData();
 
     formData.append("name", name);
@@ -63,9 +57,9 @@ class EventRepository extends AbstractRepository {
 
     return await this.client.post("/api/event", formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 
@@ -80,12 +74,6 @@ class EventRepository extends AbstractRepository {
     capacity?: number,
     imageToDelete?: string[],
   ) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
     const formData = new FormData();
     if (name !== undefined) {
       formData.append("name", name);
@@ -117,9 +105,9 @@ class EventRepository extends AbstractRepository {
     const url = "/api/event/" + id;
     return await this.client.patch(url, formData, {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
   }
 }

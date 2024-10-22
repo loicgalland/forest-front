@@ -1,7 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import HostingRepository from "@/app/repository/HostingRepository";
 import hostingRepository from "@/app/repository/HostingRepository";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
@@ -17,6 +16,8 @@ import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
 import Image from "next/image";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { useAuth } from "@/app/services/AuthContext";
 
 interface BedsHostingList {
   bedId: string;
@@ -24,6 +25,7 @@ interface BedsHostingList {
 }
 
 const EditHosting = () => {
+  const { userRole, setUserRole } = useAuth();
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
@@ -191,57 +193,65 @@ const EditHosting = () => {
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (!userToken) router.push("/login");
-
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setName(response.data.data.name);
-        setDescription(response.data.data.description);
-        setPrice(response.data.data.price);
-        setIsVisible(response.data.data.visible);
-        setIsSpotlight(response.data.data.isSpotlight);
-
-        const fetchedImagesArray: FileInterface[] =
-          response.data.data.images?.map((image) => ({
-            _id: image._id,
-            path: DB_URL_IMAGE + image.path,
-            originalName: image.originalName,
-            extension: image.path.split(".").pop(),
-          })) || [];
-
-        setFetchedImages(fetchedImagesArray);
-
-        const bedsList: BedsHostingList[] = [];
-        response.data.data.beds.forEach((bedItem) => {
-          const hostingBed: { bedId: string; quantity: number } = {
-            bedId: bedItem.bed._id,
-            quantity: bedItem.quantity,
-          };
-          bedsList.push(hostingBed);
-          setBeds(bedsList);
-        });
-        const equipmentsList: string[] = [];
-        response.data.data.equipments.forEach((equipmentItem) => {
-          const hostingEquipment: string = equipmentItem._id;
-          equipmentsList.push(hostingEquipment);
-          setEquipments(equipmentsList);
-        });
-      }
-
-      fetchBedsList().then((response) => {
-        if (response && response.data) {
-          setBedList(response.data.data);
-        }
-      });
-      fetchEquipmentsList().then((response) => {
-        if (response && response.data) {
-          setEquipmentList(response.data.data);
-        }
-      });
-    });
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    if (userRole) {
+      fetchData().then((response) => {
+        if (response && response.data) {
+          setName(response.data.data.name);
+          setDescription(response.data.data.description);
+          setPrice(response.data.data.price);
+          setIsVisible(response.data.data.visible);
+          setIsSpotlight(response.data.data.isSpotlight);
+
+          const fetchedImagesArray: FileInterface[] =
+            response.data.data.images?.map((image) => ({
+              _id: image._id,
+              path: DB_URL_IMAGE + image.path,
+              originalName: image.originalName,
+              extension: image.path.split(".").pop(),
+            })) || [];
+
+          setFetchedImages(fetchedImagesArray);
+
+          const bedsList: BedsHostingList[] = [];
+          response.data.data.beds.forEach((bedItem) => {
+            const hostingBed: { bedId: string; quantity: number } = {
+              bedId: bedItem.bed._id,
+              quantity: bedItem.quantity,
+            };
+            bedsList.push(hostingBed);
+            setBeds(bedsList);
+          });
+          const equipmentsList: string[] = [];
+          response.data.data.equipments.forEach((equipmentItem) => {
+            const hostingEquipment: string = equipmentItem._id;
+            equipmentsList.push(hostingEquipment);
+            setEquipments(equipmentsList);
+          });
+        }
+
+        fetchBedsList().then((response) => {
+          if (response && response.data) {
+            setBedList(response.data.data);
+          }
+        });
+        fetchEquipmentsList().then((response) => {
+          if (response && response.data) {
+            setEquipmentList(response.data.data);
+          }
+        });
+      });
+    }
+  }, [userRole]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">

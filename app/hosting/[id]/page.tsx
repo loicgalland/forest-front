@@ -6,23 +6,25 @@ import React, { useEffect, useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { IconComponent } from "@/app/components/IconComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import { jwtDecodeService } from "@/app/services/jwtDecodeService";
 import Link from "next/link";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { useAuth } from "@/app/services/AuthContext";
 
 const HostingDetails = () => {
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userRole, setUserRole } = useAuth();
   const router = useRouter();
 
-  const fetchData = async (): Promise<{
-    data: { data: HostingInterface; success: boolean };
-  }> => {
+  const fetchData = async () => {
     try {
-      return await HostingRepository.getHosting(id);
+      const response = await HostingRepository.getHosting(id);
+      if (response && response.data) {
+        setHosting(response.data.data);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       throw error;
@@ -39,16 +41,18 @@ const HostingDetails = () => {
     }
   };
 
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
   useEffect(() => {
-    const userToken = jwtDecodeService();
-    if (userToken && userToken.role === "admin") setIsAdmin(true);
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setHosting(response.data.data);
-        console.log(response.data);
-      }
-    });
+    if (!userRole) getUserRole();
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [userRole]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
@@ -71,14 +75,16 @@ const HostingDetails = () => {
           <button
             aria-label="go back  to previous page"
             type="button"
-            onClick={router.back}
+            onClick={() => {
+              router.push("/hosting");
+            }}
             className="mr-2"
           >
             <i className="fa-solid fa-arrow-left"></i>
           </button>
           {hosting?.name}
         </h2>
-        {isAdmin && hosting && (
+        {userRole === "admin" && hosting && (
           <div>
             <Link
               href={"/hosting/edit/" + hosting?._id}
