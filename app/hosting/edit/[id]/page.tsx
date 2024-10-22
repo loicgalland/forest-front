@@ -245,7 +245,12 @@ const EditHosting = () => {
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">
-        <button onClick={router.back} className="mr-2">
+        <button
+          aria-label="go back  to previous page"
+          type="button"
+          onClick={router.back}
+          className="mr-2"
+        >
           <i className="fa-solid fa-arrow-left"></i>
         </button>
         Modification du logement : {name}
@@ -385,12 +390,14 @@ const EditHosting = () => {
           </div>
         </div>
         <input
-          value="Ajouter"
+          value="Modifier"
           type="submit"
+          aria-label="submit"
           className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2"
         />
         <button
           type="button"
+          aria-label="cancel"
           className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-danger text-white"
           onClick={cancel}
         >

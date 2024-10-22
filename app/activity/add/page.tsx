@@ -52,7 +52,11 @@ export default function ActivityAdd() {
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">
-        <button onClick={router.back} className="mr-2">
+        <button
+          onClick={router.back}
+          className="mr-2"
+          aria-label="go back  to previous page"
+        >
           <i className="fa-solid fa-arrow-left"></i>
         </button>
         Ajouter une activité
@@ -97,7 +101,6 @@ export default function ActivityAdd() {
             name="price"
             label="Prix"
             id="activityPrice"
-            // value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
           />
         </div>
@@ -112,10 +115,12 @@ export default function ActivityAdd() {
         <input
           value="Ajouter"
           type="submit"
+          aria-label="submit"
           className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2"
         />
         <button
           type="button"
+          aria-label="cancel"
           className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-danger text-white"
           onClick={cancel}
         >

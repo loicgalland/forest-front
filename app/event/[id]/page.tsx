@@ -71,7 +71,12 @@ const EventDetail = () => {
       />
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-3">
-          <button onClick={router.back} className="mr-2">
+          <button
+            aria-label="go back  to previous page"
+            type="button"
+            onClick={router.back}
+            className="mr-2"
+          >
             <i className="fa-solid fa-arrow-left"></i>
           </button>
           {event?.name}
@@ -86,6 +91,7 @@ const EventDetail = () => {
             </Link>
             <button
               type="button"
+              aria-label="delete"
               className="bg-danger text-white p-2 rounded-lg ml-4"
               onClick={() => deleteEvent(event._id)}
             >
