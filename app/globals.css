@@ -29,3 +29,7 @@ body {
 .react-datepicker-wrapper{
   width: 100%;
 }
+
+.react-datepicker__day--disabled{
+  text-decoration: line-through;
+}

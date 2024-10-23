@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import HostingRepository from "@/app/repository/HostingRepository";
 import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
@@ -9,6 +9,8 @@ import Image from "next/image";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import { InputComponent } from "@/app/components/form/InputComponent";
+import BookingRepository from "@/app/repository/BookingRepository";
+import { BookingInterface } from "@/app/interface/Booking.interface";
 
 const BookHosting = () => {
   const { id } = useParams();
@@ -16,9 +18,36 @@ const BookHosting = () => {
   const [startDate, setStartDate] = useState<Date | null>();
   const [endDate, setEndDate] = useState<Date | null>();
   const [totalPrice, setTotalPrice] = useState<number | null>(null);
-  const [numberOfPerson, setNumberOfPerson] = useState<number>();
+  const [numberOfPerson, setNumberOfPerson] = useState<number>(1);
+  const [fees, setFees] = useState<number>(15);
+  const [bookings, setBookings] = useState<BookingInterface[]>([]);
+  const [dateBooked, setDateBooked] = useState<Date[]>([]);
+
+  const [errors, setErrors] = useState<string | null>(null);
   const router = useRouter();
   const { userRole, setUserRole } = useAuth();
+  const [userId, setUserId] = useState<string>("");
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let duration;
+    if (startDate && endDate && totalPrice) {
+      const hostingId = id;
+      duration = getDuration(startDate, endDate);
+      const response = await BookingRepository.post({
+        startDate,
+        endDate,
+        duration,
+        userId,
+        numberOfPerson,
+        hostingId,
+        totalPrice,
+      });
+      if (response && response.data) {
+        router.push("/");
+      }
+    }
+  };
 
   const fetchHosting = async () => {
     try {
@@ -32,6 +61,21 @@ const BookHosting = () => {
     }
   };
 
+  const fetchBooking = async (id: string | string[]) => {
+    const response = await BookingRepository.getAllBookingsForHosting(id);
+    if (response && response.data) {
+      setBookings(response.data.data);
+    }
+  };
+
+  function getDuration(startDate: Date, endDate: Date) {
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
+
+    const difference = Math.abs(endTime - startTime);
+    return Math.round(difference / (1000 * 60 * 60 * 24));
+  }
+
   const handleStartDateChange = (date: Date | null) => {
     setStartDate(date);
   };
@@ -43,7 +87,25 @@ const BookHosting = () => {
   const getUserRole = async () => {
     const response = await AuthRepository.getUserRole();
     setUserRole(response.data.role);
+    setUserId(response.data.userId);
   };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      if (startDate > endDate) {
+        setErrors(
+          "Veuillez choisir une date d'arrivée antérieure à la date de départ",
+        );
+      } else {
+        setErrors(null);
+        const duration = getDuration(startDate, endDate);
+        const price = hosting ? hosting.price : 0;
+        setTotalPrice(duration * price + fees);
+      }
+    } else {
+      setTotalPrice(null);
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (!userRole) getUserRole();
@@ -52,8 +114,31 @@ const BookHosting = () => {
   useEffect(() => {
     if (userRole) {
       fetchHosting();
+      fetchBooking(id);
     }
   }, [userRole]);
+
+  useEffect(() => {
+    const dates: Date[] = [];
+    if (bookings && bookings.length) {
+      bookings.forEach((booking) => {
+        const startDate = new Date(booking.startDate);
+        const endDate = new Date(booking.endDate);
+
+        for (
+          let date = startDate;
+          date <= endDate;
+          date.setDate(date.getDate() + 1)
+        ) {
+          dates.push(new Date(date));
+        }
+      });
+    }
+
+    console.log("Dates déjà réservées", dates);
+
+    setDateBooked(dates);
+  }, [bookings]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
@@ -99,32 +184,55 @@ const BookHosting = () => {
           )}
         </div>
         <div className="mb-3 w-full md:w-[67%] grid gap-4">
-          <form>
+          <form onSubmit={submit}>
             <div className="flex justify-between gap-4">
               <DatePickerComponent
                 label={"Date d'arrivée"}
                 olderDate={null}
                 onDateChange={handleStartDateChange}
+                blockedDates={dateBooked}
               ></DatePickerComponent>
               <DatePickerComponent
                 label={"Date de départ"}
                 olderDate={null}
                 onDateChange={handleEndDateChange}
+                blockedDates={dateBooked}
               ></DatePickerComponent>
             </div>
-            <InputComponent
-              type="number"
-              name="numberOfPerson"
-              label="Nombre de personnes"
-              id="numberOfPerson"
-              value={numberOfPerson}
-              onChange={(e) => setNumberOfPerson(Number(e.target.value))}
-            />
+            {errors ? <p className="text-danger">{errors}</p> : ""}
+            <div>
+              <InputComponent
+                type="number"
+                name="numberOfPerson"
+                id="numberOfPerson"
+                label="Nombre de personnes"
+                value={numberOfPerson}
+                onChange={(e) => {
+                  setNumberOfPerson(Number(e.target.value));
+                }}
+              />
+            </div>
             <div>
               <p>Prix par nuit: {hosting?.price}€</p>
-              <p>Frais de nettoyage: 15€</p>
+              <p>Frais de nettoyage: {fees}€</p>
               <p>Total: {totalPrice ? totalPrice : "--"}€</p>
             </div>
+            <input
+              type="submit"
+              value="Réserver"
+              aria-label="submit"
+              className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2 cursor-pointer"
+            />
+            <button
+              type="button"
+              aria-label="cancel"
+              className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-danger text-white"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Annuler
+            </button>
           </form>
         </div>
       </div>

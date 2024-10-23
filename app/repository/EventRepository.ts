@@ -14,13 +14,8 @@ class EventRepository extends AbstractRepository {
   }
 
   async delete(id: string) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
     return await this.client.delete("/api/event/" + id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
   }
 
