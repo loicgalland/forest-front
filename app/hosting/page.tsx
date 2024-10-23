@@ -13,7 +13,7 @@ export default function Hosting() {
   const { userRole, setUserRole } = useAuth();
   const fetchData = async () => {
     try {
-      if (userRole === "admin") {
+      if (userRole && userRole === "admin") {
         const response = await HostingRepository.getAll();
         if (response && response.data) {
           setHostings(response.data.data);
@@ -39,10 +39,8 @@ export default function Hosting() {
   }, []);
 
   useEffect(() => {
-    if (userRole) {
-      fetchData();
-    }
-  }, [userRole]);
+    fetchData();
+  }, []);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

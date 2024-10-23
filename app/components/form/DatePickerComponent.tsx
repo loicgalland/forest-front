@@ -14,6 +14,17 @@ export const DatePickerComponent: React.FC<props> = ({
   onDateChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [blockedDates, setBlockedDates] = useState<Date[]>([]);
+
+  const isDateBlocked = (date: Date) => {
+    return blockedDates.some((blockedDate) => {
+      return (
+        date.getFullYear() === blockedDate.getFullYear() &&
+        date.getMonth() === blockedDate.getMonth() &&
+        date.getDate() === blockedDate.getDate()
+      );
+    });
+  };
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -21,15 +32,22 @@ export const DatePickerComponent: React.FC<props> = ({
   };
 
   return (
-    <div>
+    <div className="w-full">
       <span className="block">{label}</span>
-      <DatePicker
-        selected={olderDate ? olderDate : selectedDate}
-        onChange={handleDateChange}
-        dateFormat="dd/MM/yyyy"
-        isClearable
-        placeholderText="Choisissez une date"
-      />
+      <div className="relative w-full">
+        <DatePicker
+          selected={olderDate ? olderDate : selectedDate}
+          onChange={handleDateChange}
+          dateFormat="dd/MM/yyyy"
+          filterDate={(date) => !isDateBlocked(date)}
+          isClearable
+          placeholderText="Choisissez une date"
+          className="w-full rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
+        />
+        <span className="absolute top-[50%] right-2 transform translate-y-[-50%] text-text">
+          <i className="fa-regular fa-calendar"></i>
+        </span>
+      </div>
     </div>
   );
 };

@@ -44,6 +44,7 @@ const HostingDetails = () => {
   const getUserRole = async () => {
     const response = await AuthRepository.getUserRole();
     setUserRole(response.data.role);
+    console.log(response.data);
   };
 
   useEffect(() => {
@@ -136,9 +137,12 @@ const HostingDetails = () => {
           <div>{hosting?.description}</div>
           <div className="hidden md:flex md:w-full items-center justify-between">
             <p className="text-xl font-bold">{hosting?.price}€ par nuit</p>
-            <button className="p-2 rounded-lg bg-primary w-fit text-white">
+            <Link
+              href={"/hosting/booking/" + hosting?._id}
+              className="p-2 rounded-lg bg-primary w-fit text-white"
+            >
               Réserver
-            </button>
+            </Link>
           </div>
           <div>Ce logement est prévu pour {hosting?.capacity} personnes</div>
           <ul className="border-t-[1px] border-dotted border-text w-full md:w-[50%] mt-3 pt-2">

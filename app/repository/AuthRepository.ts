@@ -74,6 +74,20 @@ class AuthRepository extends AbstractRepository {
     }
   }
 
+  async logout() {
+    try {
+      return await this.client.post(
+        "/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+    } catch (error) {
+      throw new Error(`Unexpected Error: ${error}`);
+    }
+  }
+
   async getUserRole() {
     try {
       return await this.client.get("/api/auth/user-role", {

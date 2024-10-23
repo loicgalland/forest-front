@@ -2,11 +2,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/app/services/AuthContext";
+import AuthRepository from "@/app/repository/AuthRepository";
+import { AxiosResponse } from "axios";
 
 export function Header() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
   const [isMenuActive, setIsMenuActive] = useState<boolean>(false);
   const [userMenu, setUserMenu] = useState<boolean>(false);
+  const { userRole, setUserRole } = useAuth();
 
   const router = useRouter();
 
@@ -26,11 +30,20 @@ export function Header() {
     setUserMenu(!userMenu);
   };
 
-  const signOut = () => {
-    window.localStorage.removeItem("userConnected");
-    router.push("/home");
-    setUserMenu(false);
-    handleMenu();
+  const getUserRole = async () => {
+    const response = await AuthRepository.getUserRole();
+    setUserRole(response.data.role);
+  };
+
+  const signOut = async () => {
+    const response = await AuthRepository.logout();
+    if (response.status === 200) {
+      window.localStorage.removeItem("userConnected");
+      router.push("/home");
+      getUserRole();
+      setUserMenu(false);
+      handleMenu();
+    }
   };
 
   useEffect(() => {
