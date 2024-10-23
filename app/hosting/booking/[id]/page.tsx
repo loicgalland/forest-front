@@ -134,9 +134,6 @@ const BookHosting = () => {
         }
       });
     }
-
-    console.log("Dates déjà réservées", dates);
-
     setDateBooked(dates);
   }, [bookings]);
 

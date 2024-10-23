@@ -88,7 +88,6 @@ const EventDetail = () => {
         </h2>
         {userRole === "admin" && event && (
           <div>
-            {userRole}
             <Link
               href={"/event/edit/" + event?._id}
               className="bg-success text-white p-2 rounded-lg"
