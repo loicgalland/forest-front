@@ -1,9 +1,9 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import HostingRepository from "@/app/repository/HostingRepository";
 import hostingRepository from "@/app/repository/HostingRepository";
-import { HostingInterface } from "@/app/interface/Hosting.interface";
+import { AddHostingInterface } from "@/app/interface/Hosting.interface";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
@@ -16,8 +16,7 @@ import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
 import Image from "next/image";
-import AuthRepository from "@/app/repository/AuthRepository";
-import { useAuth } from "@/app/services/AuthContext";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 interface BedsHostingList {
   bedId: string;
@@ -25,18 +24,20 @@ interface BedsHostingList {
 }
 
 const EditHosting = () => {
-  const { userRole, setUserRole } = useAuth();
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
-
   const [images, setImages] = useState<File[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string[]>([]);
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
+
+  const [hosting, setHosting] = useState<AddHostingInterface>({
+    name: "",
+    description: "",
+    isSpotlight: false,
+    visible: true,
+    capacity: 0,
+    price: 0,
+  });
   const [beds, setBeds] = useState<{ bedId: string; quantity: number }[]>([]);
   const [equipments, setEquipments] = useState<string[]>([]);
 
@@ -50,14 +51,9 @@ const EditHosting = () => {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    //Add new images or image to Delete
     const response = await hostingRepository.updateHosting(
       id,
-      name,
-      description,
-      isVisible,
-      isSpotlight,
-      price,
+      hosting,
       beds,
       equipments,
       images,
@@ -126,17 +122,9 @@ const EditHosting = () => {
 
   const handleBedModalSubmit = async (name: string, value: number | string) => {
     if (typeof value === "number") {
-      try {
-        const response = await BedRepository.post(name, value);
-        if (response.data.success) {
-          fetchBedsList().then((response) => {
-            if (response && response.data) {
-              setBedList(response.data.data);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout du lit", error);
+      const response = await BedRepository.post(name, value);
+      if (response.data.success) {
+        fetchBedsList();
       }
     }
   };
@@ -146,113 +134,67 @@ const EditHosting = () => {
     type: number | string,
   ) => {
     if (typeof type === "string") {
-      try {
-        const response = await EquipmentRepository.post(name, type);
-        if (response.data.success) {
-          fetchEquipmentsList().then((response) => {
-            if (response && response.data) {
-              setEquipmentList(response.data.data);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de l'équipement", error);
+      const response = await EquipmentRepository.post(name, type);
+      if (response.data.success) {
+        fetchEquipmentsList();
       }
     }
   };
 
-  const fetchData = async (): Promise<{
-    data: { data: HostingInterface; success: boolean };
-  }> => {
-    try {
-      return await HostingRepository.getHosting(id);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchData = async () => {
+    const response = await HostingRepository.getHosting(id);
+    if (response.data.data) {
+      setHosting(response.data.data);
+      const fetchedImagesArray: FileInterface[] =
+        response.data.data.images?.map((image: FileInterface) => ({
+          _id: image._id,
+          path: DB_URL_IMAGE + image.path,
+          originalName: image.originalName,
+          extension: image.path.split(".").pop(),
+        })) || [];
+
+      setFetchedImages(fetchedImagesArray);
+
+      const bedsList: BedsHostingList[] = [];
+      response.data.data.beds.forEach(
+        (bedItem: { bed: { _id: string }; quantity: number }) => {
+          const hostingBed: { bedId: string; quantity: number } = {
+            bedId: bedItem.bed._id,
+            quantity: bedItem.quantity,
+          };
+          bedsList.push(hostingBed);
+          setBeds(bedsList);
+        },
+      );
+
+      const equipmentsList: string[] = [];
+      response.data.data.equipments.forEach(
+        (equipmentItem: { _id: string }) => {
+          const hostingEquipment: string = equipmentItem._id;
+          equipmentsList.push(hostingEquipment);
+          setEquipments(equipmentsList);
+        },
+      );
     }
   };
 
-  const fetchBedsList = async (): Promise<{
-    data: { data: BedInterface[]; success: boolean };
-  }> => {
-    try {
-      return await BedRepository.getAll();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchBedsList = async () => {
+    const response = await BedRepository.getAll();
+    if (response.data.data) {
+      setBedList(response.data.data);
     }
   };
 
-  const fetchEquipmentsList = async (): Promise<{
-    data: { data: EquipmentInterface[]; success: boolean };
-  }> => {
-    try {
-      return await EquipmentRepository.getAll();
-    } catch (error) {
-      throw error;
+  const fetchEquipmentsList = async () => {
+    const response = await EquipmentRepository.getAll();
+    if (response.data.data) {
+      setEquipmentList(response.data.data);
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    if (response.status === 401) router.push("/login");
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (userRole) {
-      fetchData().then((response) => {
-        if (response && response.data) {
-          setName(response.data.data.name);
-          setDescription(response.data.data.description);
-          setPrice(response.data.data.price);
-          setIsVisible(response.data.data.visible);
-          setIsSpotlight(response.data.data.isSpotlight);
-
-          const fetchedImagesArray: FileInterface[] =
-            response.data.data.images?.map((image) => ({
-              _id: image._id,
-              path: DB_URL_IMAGE + image.path,
-              originalName: image.originalName,
-              extension: image.path.split(".").pop(),
-            })) || [];
-
-          setFetchedImages(fetchedImagesArray);
-
-          const bedsList: BedsHostingList[] = [];
-          response.data.data.beds.forEach((bedItem) => {
-            const hostingBed: { bedId: string; quantity: number } = {
-              bedId: bedItem.bed._id,
-              quantity: bedItem.quantity,
-            };
-            bedsList.push(hostingBed);
-            setBeds(bedsList);
-          });
-          const equipmentsList: string[] = [];
-          response.data.data.equipments.forEach((equipmentItem) => {
-            const hostingEquipment: string = equipmentItem._id;
-            equipmentsList.push(hostingEquipment);
-            setEquipments(equipmentsList);
-          });
-        }
-
-        fetchBedsList().then((response) => {
-          if (response && response.data) {
-            setBedList(response.data.data);
-          }
-        });
-        fetchEquipmentsList().then((response) => {
-          if (response && response.data) {
-            setEquipmentList(response.data.data);
-          }
-        });
-      });
-    }
-  }, [userRole]);
+  useFetchDataWithUserRole(fetchData);
+  useFetchDataWithUserRole(fetchBedsList);
+  useFetchDataWithUserRole(fetchEquipmentsList);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">
@@ -264,7 +206,7 @@ const EditHosting = () => {
         >
           <i className="fa-solid fa-arrow-left"></i>
         </button>
-        Modification du logement : {name}
+        Modification du logement : {hosting.name}
       </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
@@ -273,8 +215,13 @@ const EditHosting = () => {
             name="name"
             label="Nom de l'hébergement"
             id="hostingName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={hosting.name}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                name: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -282,8 +229,13 @@ const EditHosting = () => {
             id="hostingDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={hosting.description}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -291,16 +243,26 @@ const EditHosting = () => {
             id="visible"
             name="visible"
             label="Visible"
-            value={isVisible}
-            onChange={(e) => setIsVisible(e.target.checked)}
+            value={hosting.visible}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                visible: e.target.checked,
+              }))
+            }
           />
 
           <CheckBoxInputComponent
             id="spotlight"
             name="spotlight"
             label="Mettre en avant"
-            value={isSpotlight}
-            onChange={(e) => setIsSpotlight(e.target.checked)}
+            value={hosting.isSpotlight}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                isSpotlight: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -309,8 +271,13 @@ const EditHosting = () => {
             name="price"
             label="Prix par nuit"
             id="hostingPrice"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            value={hosting.price}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full md:w-[50%] mb-4">

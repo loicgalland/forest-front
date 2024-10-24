@@ -14,3 +14,12 @@ export interface HostingInterface {
   equipments: EquipmentInterface[];
   beds: { bed: BedInterface; quantity: number }[];
 }
+
+export interface AddHostingInterface {
+  name: string;
+  description: string;
+  isSpotlight: boolean;
+  visible: boolean;
+  capacity: number;
+  price: number;
+}

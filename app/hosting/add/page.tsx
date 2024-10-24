@@ -1,6 +1,6 @@
 "use client";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { BedInterface } from "@/app/interface/Bed.interface";
 import BedRepository from "@/app/repository/BedRepository";
 import { EquipmentInterface } from "@/app/interface/Equipment.interface";
@@ -11,21 +11,22 @@ import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputCompo
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import hostingRepository from "@/app/repository/HostingRepository";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import { AddHostingInterface } from "@/app/interface/Hosting.interface";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 export default function HostingAdd() {
-  const { userRole, setUserRole } = useAuth();
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
 
-  //TODO Créer un useState Form qui contient un objet
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
+  const [hosting, setHosting] = useState<AddHostingInterface>({
+    name: "",
+    description: "",
+    isSpotlight: false,
+    visible: true,
+    capacity: 0,
+    price: 0,
+  });
   const [equipments, setEquipments] = useState<string[]>([]);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
   const [beds, setBeds] = useState<{ bedId: string; quantity: number }[]>([]);
   const [images, setImages] = useState<File[]>([]);
 
@@ -34,11 +35,7 @@ export default function HostingAdd() {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = await hostingRepository.postHosting({
-      name,
-      description,
-      price,
-      visible: isVisible,
-      isSpotlight,
+      hosting,
       equipments: equipments,
       beds,
       images,
@@ -85,39 +82,25 @@ export default function HostingAdd() {
     }
   };
 
-  const fetchBedsList = async (): Promise<{
-    data: { data: BedInterface[]; success: boolean };
-  }> => {
-    try {
-      return await BedRepository.getAll();
-    } catch (error) {
-      throw error;
+  const fetchBedsList = async () => {
+    const response = await BedRepository.getAll();
+    if (response.data.data) {
+      setBedList(response.data.data);
     }
   };
 
-  const fetchEquipmentsList = async (): Promise<{
-    data: { data: EquipmentInterface[]; success: boolean };
-  }> => {
-    try {
-      return await EquipmentRepository.getAll();
-    } catch (error) {
-      throw error;
+  const fetchEquipmentsList = async () => {
+    const response = await EquipmentRepository.getAll();
+    if (response.data.data) {
+      setEquipmentList(response.data.data);
     }
   };
 
   const handleBedModalSubmit = async (name: string, value: number | string) => {
     if (typeof value === "number") {
-      try {
-        const response = await BedRepository.post(name, value);
-        if (response.data.success) {
-          fetchBedsList().then((response) => {
-            if (response && response.data) {
-              setBedList(response.data.data);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout du lit", error);
+      const response = await BedRepository.post(name, value);
+      if (response.data.success) {
+        fetchBedsList();
       }
     }
   };
@@ -127,44 +110,15 @@ export default function HostingAdd() {
     type: number | string,
   ) => {
     if (typeof type === "string") {
-      try {
-        const response = await EquipmentRepository.post(name, type);
-        if (response.data.success) {
-          fetchEquipmentsList().then((response) => {
-            if (response && response.data) {
-              setEquipmentList(response.data.data);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de l'équipement", error);
+      const response = await EquipmentRepository.post(name, type);
+      if (response.data.success) {
+        fetchEquipmentsList();
       }
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (userRole) {
-      fetchBedsList().then((response) => {
-        if (response && response.data) {
-          setBedList(response.data.data);
-        }
-      });
-      fetchEquipmentsList().then((response) => {
-        if (response && response.data) {
-          setEquipmentList(response.data.data);
-        }
-      });
-    }
-  }, []);
+  useFetchDataWithUserRole(fetchEquipmentsList);
+  useFetchDataWithUserRole(fetchBedsList);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
@@ -186,8 +140,13 @@ export default function HostingAdd() {
             name="name"
             label="Nom de l'hébergement"
             id="hostingName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={hosting.name}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                name: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -195,8 +154,13 @@ export default function HostingAdd() {
             id="hostingDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={hosting.description}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -204,13 +168,23 @@ export default function HostingAdd() {
             id="visible"
             name="visible"
             label="Visible"
-            onChange={(e) => setIsVisible(e.target.checked)}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                visible: e.target.checked,
+              }))
+            }
           />
           <CheckBoxInputComponent
             id="spotlight"
             name="spotlight"
             label="Mettre en avant"
-            onChange={(e) => setIsSpotlight(e.target.checked)}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                isSpotlight: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -220,7 +194,12 @@ export default function HostingAdd() {
             label="Prix par nuit"
             id="hostingPrice"
             // value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            onChange={(e) =>
+              setHosting((prevHosting) => ({
+                ...prevHosting,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full md:w-[50%] mb-4">

@@ -1,4 +1,5 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
+import { AddHostingInterface } from "@/app/interface/Hosting.interface";
 
 interface Params {
   fullAccess?: boolean;
@@ -24,11 +25,7 @@ class HostingRepository extends AbstractRepository {
 
   async updateHosting(
     id: string | string[],
-    name?: string,
-    description?: string,
-    visible?: boolean,
-    isSpotlight?: boolean,
-    price?: number,
+    hosting: AddHostingInterface,
     beds?: { bedId: string; quantity: number }[],
     equipments?: string[],
     images?: File[],
@@ -36,20 +33,20 @@ class HostingRepository extends AbstractRepository {
   ) {
     const formData = new FormData();
 
-    if (name !== undefined) {
-      formData.append("name", name);
+    if (hosting.name !== undefined) {
+      formData.append("name", hosting.name);
     }
-    if (description !== undefined) {
-      formData.append("description", description);
+    if (hosting.description !== undefined) {
+      formData.append("description", hosting.description);
     }
-    if (visible !== undefined) {
-      formData.append("visible", visible.toString());
+    if (hosting.visible !== undefined) {
+      formData.append("visible", hosting.visible.toString());
     }
-    if (isSpotlight !== undefined) {
-      formData.append("isSpotlight", isSpotlight.toString());
+    if (hosting.isSpotlight !== undefined) {
+      formData.append("isSpotlight", hosting.isSpotlight.toString());
     }
-    if (price !== undefined) {
-      formData.append("price", price.toString());
+    if (hosting.price !== undefined) {
+      formData.append("price", hosting.price.toString());
     }
     if (beds && beds.length) {
       beds.forEach((bed, index) => {
@@ -81,31 +78,23 @@ class HostingRepository extends AbstractRepository {
   }
 
   async postHosting({
-    name,
-    description,
-    price,
-    visible,
-    isSpotlight,
+    hosting,
     equipments,
     beds,
     images,
   }: {
-    name: string;
-    description: string;
-    price: number;
-    visible: boolean;
-    isSpotlight: boolean;
+    hosting: AddHostingInterface;
     equipments: string[];
     beds: { bedId: string; quantity: number }[];
     images: File[];
   }) {
     const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("price", price.toString());
-    formData.append("visible", visible.toString());
-    formData.append("isSpotlight", isSpotlight.toString());
+    formData.append("name", hosting.name);
+    formData.append("description", hosting.description);
+    formData.append("price", hosting.price.toString());
+    formData.append("visible", hosting.visible.toString());
+    formData.append("isSpotlight", hosting.isSpotlight.toString());
     formData.append("beds", JSON.stringify(beds));
     formData.append("equipments", JSON.stringify(equipments));
 
