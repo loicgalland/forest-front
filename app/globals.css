@@ -32,4 +32,6 @@ body {
 
 .react-datepicker__day--disabled{
   text-decoration: line-through;
+  background-color: #5d2929 ;
+  border-radius: 5px;
 }

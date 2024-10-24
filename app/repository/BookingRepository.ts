@@ -16,7 +16,6 @@ class BookingRepository extends AbstractRepository {
     numberOfPerson,
     hostingId,
     activities,
-    activityDate,
     eventId,
     totalPrice,
   }: {
@@ -26,8 +25,7 @@ class BookingRepository extends AbstractRepository {
     userId: string;
     numberOfPerson: number;
     hostingId?: string | string[];
-    activities?: { activityId: string; date: Date }[];
-    activityDate?: Date | Date[];
+    activities?: string[];
     eventId?: string | string[];
     totalPrice: number;
   }) {
@@ -41,7 +39,6 @@ class BookingRepository extends AbstractRepository {
         numberOfPerson,
         hostingId,
         activities,
-        activityDate,
         eventId,
         totalPrice,
       },

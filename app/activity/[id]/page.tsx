@@ -119,9 +119,6 @@ const ActivityDetail = () => {
           <div>{activity?.description}</div>
           <div className="hidden md:flex md:w-full items-center justify-between">
             <p className="text-xl font-bold">{activity?.price}€</p>
-            <button className="p-2 rounded-lg bg-primary w-fit text-white">
-              Réserver
-            </button>
           </div>
         </div>
       </div>

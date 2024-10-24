@@ -2,7 +2,6 @@
 import { useParams, useRouter } from "next/navigation";
 import React, { FormEvent, useEffect, useState } from "react";
 import HostingRepository from "@/app/repository/HostingRepository";
-import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import Image from "next/image";
@@ -11,27 +10,35 @@ import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import BookingRepository from "@/app/repository/BookingRepository";
 import { BookingInterface } from "@/app/interface/Booking.interface";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import ActivityRepository from "@/app/repository/ActivityRepository";
+import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
+import { ActivityInterface } from "@/app/interface/Activity.interface";
+import AuthRepository from "@/app/repository/AuthRepository";
 
 const BookHosting = () => {
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
+  const [activitiesList, setActivitiesList] = useState<ActivityInterface[]>([]);
+
+  const [activities, setActivities] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date | null>();
   const [endDate, setEndDate] = useState<Date | null>();
-  const [totalPrice, setTotalPrice] = useState<number | null>(null);
+  const [totalPrice, setTotalPrice] = useState<number | 0>(0);
   const [numberOfPerson, setNumberOfPerson] = useState<number>(1);
-  const [fees, setFees] = useState<number>(15);
+  const [fees] = useState<number>(15);
   const [bookings, setBookings] = useState<BookingInterface[]>([]);
   const [dateBooked, setDateBooked] = useState<Date[]>([]);
 
   const [errors, setErrors] = useState<string | null>(null);
   const router = useRouter();
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
   const [userId, setUserId] = useState<string>("");
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let duration;
-    if (startDate && endDate && totalPrice) {
+    if (startDate && endDate && totalPrice && userId) {
       const hostingId = id;
       duration = getDuration(startDate, endDate);
       const response = await BookingRepository.post({
@@ -42,22 +49,30 @@ const BookHosting = () => {
         numberOfPerson,
         hostingId,
         totalPrice,
+        activities,
       });
       if (response && response.data) {
         router.push("/");
+      } else {
+        console.warn("Form submission failed due to missing data.");
       }
     }
   };
 
   const fetchHosting = async () => {
-    try {
-      const response = await HostingRepository.getHosting(id);
-      if (response && response.data) {
-        setHosting(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+    const response = await HostingRepository.getHosting(id);
+    if (response && response.data) {
+      setHosting(response.data.data);
+    }
+  };
+
+  const fetchActivities = async (role: string) => {
+    const response = await ActivityRepository.getAll({
+      fullAccess: role === "admin",
+      spotlight: false,
+    });
+    if (response.data.data) {
+      setActivitiesList(response.data.data);
     }
   };
 
@@ -66,6 +81,25 @@ const BookHosting = () => {
     if (response && response.data) {
       setBookings(response.data.data);
     }
+  };
+
+  const getDateAlreadyBooked = (): Date[] => {
+    const dates: Date[] = [];
+    if (Array.isArray(bookings) && bookings.length > 0) {
+      bookings.forEach((booking) => {
+        const startDate = new Date(booking.startDate);
+        const endDate = new Date(booking.endDate);
+
+        for (
+          let date = startDate;
+          date <= endDate;
+          date.setDate(date.getDate() + 1)
+        ) {
+          dates.push(new Date(date));
+        }
+      });
+    }
+    return dates;
   };
 
   function getDuration(startDate: Date, endDate: Date) {
@@ -84,11 +118,17 @@ const BookHosting = () => {
     setEndDate(date);
   };
 
-  const getUserRole = async () => {
+  const getUser = async () => {
     const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
     setUserId(response.data.userId);
   };
+
+  useFetchDataWithUserRole([fetchHosting, fetchActivities]);
+  useEffect(() => {
+    if (userRole) {
+      fetchBooking(id);
+    }
+  }, [userRole]);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -103,40 +143,22 @@ const BookHosting = () => {
         setTotalPrice(duration * price + fees);
       }
     } else {
-      setTotalPrice(null);
+      setTotalPrice(0);
     }
   }, [startDate, endDate]);
 
   useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (userRole) {
-      fetchHosting();
-      fetchBooking(id);
-    }
-  }, [userRole]);
-
-  useEffect(() => {
-    const dates: Date[] = [];
-    if (bookings && bookings.length) {
-      bookings.forEach((booking) => {
-        const startDate = new Date(booking.startDate);
-        const endDate = new Date(booking.endDate);
-
-        for (
-          let date = startDate;
-          date <= endDate;
-          date.setDate(date.getDate() + 1)
-        ) {
-          dates.push(new Date(date));
-        }
-      });
-    }
-    setDateBooked(dates);
+    const bookedDates = getDateAlreadyBooked();
+    setDateBooked(bookedDates);
   }, [bookings]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      await getUser();
+    };
+
+    fetchUser();
+  }, []);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold mb-3">
@@ -212,8 +234,43 @@ const BookHosting = () => {
             <div>
               <p>Prix par nuit: {hosting?.price}€</p>
               <p>Frais de nettoyage: {fees}€</p>
-              <p>Total: {totalPrice ? totalPrice : "--"}€</p>
             </div>
+            <div>
+              <h3 className="font-bold text-lg">Ajouter une activité</h3>
+              <div>
+                {activitiesList && activitiesList.length
+                  ? activitiesList.map((activity) => (
+                      <CheckBoxInputComponent
+                        id={activity._id}
+                        key={activity._id}
+                        name={activity.name}
+                        label={activity.name}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setActivities((prevActivities) => [
+                              ...prevActivities,
+                              activity._id,
+                            ]);
+                            setTotalPrice(
+                              (prevPrice) => prevPrice + activity.price,
+                            );
+                          } else {
+                            setActivities((prevActivities) =>
+                              prevActivities.filter(
+                                (id) => id !== activity._id,
+                              ),
+                            );
+                            setTotalPrice(
+                              (prevPrice) => prevPrice - activity.price,
+                            );
+                          }
+                        }}
+                      />
+                    ))
+                  : ""}
+              </div>
+            </div>
+            <p>Total: {totalPrice ? totalPrice : "--"}€</p>
             <input
               type="submit"
               value="Réserver"
