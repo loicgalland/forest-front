@@ -2,21 +2,21 @@
 import { useParams, useRouter } from "next/navigation";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import HostingRepository from "@/app/repository/HostingRepository";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { IconComponent } from "@/app/components/IconComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import Link from "next/link";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
-import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
+import UseFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 const HostingDetails = () => {
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
   const router = useRouter();
 
   const fetchData = async () => {
@@ -41,19 +41,7 @@ const HostingDetails = () => {
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
-    console.log(response.data);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [userRole]);
+  UseFetchDataWithUserRole([fetchData]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

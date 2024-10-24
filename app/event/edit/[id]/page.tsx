@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
@@ -11,11 +11,9 @@ import EventRepository from "@/app/repository/EventRepository";
 import { AddEventInterface } from "@/app/interface/Event.interface";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import Image from "next/image";
-import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 const EditEvent = () => {
-  const { userRole, setUserRole } = useAuth();
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string[]>([]);
@@ -100,21 +98,7 @@ const EditEvent = () => {
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    if (response.status === 401) router.push("/login");
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (userRole) {
-      fetchData();
-    }
-  }, [userRole]);
+  useFetchDataWithUserRole([fetchData]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">

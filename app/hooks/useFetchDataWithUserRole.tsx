@@ -3,7 +3,7 @@ import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
 
 const useFetchDataWithUserRole = (
-  fetchData: (role: string) => Promise<void>,
+  fetchDataArray: ((role: string) => Promise<void>)[],
 ) => {
   const { userRole, setUserRole } = useAuth();
 
@@ -11,14 +11,15 @@ const useFetchDataWithUserRole = (
     const getUserRoleAndFetchData = async () => {
       const response = await AuthRepository.getUserRole();
       const role = response.data.role;
-      setUserRole(response.data.role);
-      await fetchData(role);
+      setUserRole(role);
+
+      await Promise.all(fetchDataArray.map((fetchData) => fetchData(role)));
     };
 
     if (!userRole) {
       getUserRoleAndFetchData();
     } else {
-      fetchData(userRole);
+      Promise.all(fetchDataArray.map((fetchData) => fetchData(userRole)));
     }
   }, [userRole]);
 };

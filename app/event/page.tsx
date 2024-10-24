@@ -22,7 +22,7 @@ export default function Event() {
     }
   };
 
-  useFetchDataWithUserRole(fetchData);
+  useFetchDataWithUserRole([fetchData]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">

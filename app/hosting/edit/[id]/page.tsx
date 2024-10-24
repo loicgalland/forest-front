@@ -145,6 +145,7 @@ const EditHosting = () => {
     const response = await HostingRepository.getHosting(id);
     if (response.data.data) {
       setHosting(response.data.data);
+
       const fetchedImagesArray: FileInterface[] =
         response.data.data.images?.map((image: FileInterface) => ({
           _id: image._id,
@@ -192,9 +193,8 @@ const EditHosting = () => {
     }
   };
 
-  useFetchDataWithUserRole(fetchData);
-  useFetchDataWithUserRole(fetchBedsList);
-  useFetchDataWithUserRole(fetchEquipmentsList);
+  useFetchDataWithUserRole([fetchData, fetchBedsList, fetchEquipmentsList]);
+
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">

@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
@@ -10,11 +10,9 @@ import ActivityRepository from "@/app/repository/ActivityRepository";
 import { AddActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
 import Image from "next/image";
-import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 const EditActivity = () => {
-  const { userRole, setUserRole } = useAuth();
   const [activity, setActivity] = useState<AddActivityInterface>({
     name: "",
     description: "",
@@ -93,20 +91,7 @@ const EditActivity = () => {
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (userRole) {
-      fetchData();
-    }
-  }, [userRole]);
+  useFetchDataWithUserRole([fetchData]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">
