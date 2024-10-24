@@ -18,38 +18,34 @@ export default function Home() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [activities, setActivities] = useState<ActivityInterface[]>();
   const [events, setEvents] = useState<EventInterface[]>();
-  const { userRole, setUserRole } = useAuth();
+  const { setUserRole } = useAuth();
 
-  const fetchHosting = async (): Promise<{
-    data: { data: HostingInterface[]; success: boolean };
-  }> => {
-    try {
-      return await HostingRepository.getSpotlight();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchHosting = async () => {
+    const response = await HostingRepository.getAll({
+      fullAccess: false,
+      spotlight: false,
+    });
+    if (response.data.data) {
+      setHostings(response.data.data);
     }
   };
 
-  const fetchActivities = async (): Promise<{
-    data: { data: ActivityInterface[]; success: boolean };
-  }> => {
-    try {
-      return await ActivityRepository.getSpotlight();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchActivities = async () => {
+    const response = await ActivityRepository.getAll({
+      fullAccess: false,
+      spotlight: true,
+    });
+    if (response.data.data) {
+      setActivities(response.data.data);
     }
   };
 
-  const fetchEvent = async (): Promise<{
-    data: { data: EventInterface[]; success: boolean };
-  }> => {
-    try {
-      return await EventRepository.getAll();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchEvent = async () => {
+    const response = await EventRepository.getAll({
+      fullAccess: false,
+    });
+    if (response.data.data) {
+      setEvents(response.data.data);
     }
   };
 
@@ -60,26 +56,10 @@ export default function Home() {
 
   useEffect(() => {
     getUserRole();
+    fetchHosting();
+    fetchActivities();
+    fetchEvent();
   }, []);
-
-  useEffect(() => {
-    fetchHosting().then((response) => {
-      if (response && response.data) {
-        setHostings(response.data.data);
-      }
-    });
-    fetchActivities().then((response) => {
-      if (response && response.data) {
-        setActivities(response.data.data);
-      }
-    });
-    fetchEvent().then((response) => {
-      if (response && response.data) {
-        setEvents(response.data.data);
-      }
-    });
-  }, []);
-
   return (
     <div>
       <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

@@ -1,24 +1,15 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
+interface Params {
+  fullAccess?: boolean;
+  spotlight?: boolean;
+}
+
 class HostingRepository extends AbstractRepository {
-  async getAllByRole(role: string) {
-    if (role === "admin") {
-      return await this.getAll();
-    }
-    return await this.getAllVisible();
-  }
-
-  //TODO Ajouter des params sur les routes
-  async getAll() {
-    return await this.client.get("/api/hosting");
-  }
-
-  async getAllVisible() {
-    return await this.client.get("/api/hosting/visible");
-  }
-
-  async getSpotlight() {
-    return await this.client.get("/api/hosting/spotlight");
+  async getAll(params: Params) {
+    return await this.client.get("/api/hosting", {
+      params: params,
+    });
   }
 
   async getHosting(id: string | string[]) {

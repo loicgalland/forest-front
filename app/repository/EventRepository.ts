@@ -1,12 +1,13 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
-class EventRepository extends AbstractRepository {
-  async getAll() {
-    return await this.client.get("/api/event");
-  }
+interface Params {
+  fullAccess?: boolean;
+  spotlight?: boolean;
+}
 
-  async getAllVisible() {
-    return await this.client.get("/api/event/visible");
+class EventRepository extends AbstractRepository {
+  async getAll(params: Params) {
+    return await this.client.get("/api/event", { params: params });
   }
 
   async getOne(id: string | string[]) {

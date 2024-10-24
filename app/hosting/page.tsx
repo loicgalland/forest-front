@@ -12,28 +12,28 @@ export default function Hosting() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const { userRole, setUserRole } = useAuth();
 
-  const fetchData = async () => {
-    const response =
-      userRole && userRole === "admin"
-        ? await HostingRepository.getAll()
-        : await HostingRepository.getAllVisible();
-    if (response && response.data) {
-      setHostings(response.data.data);
-    }
+  const fetchData = async (role: string) => {
+    const response = await HostingRepository.getAll({
+      fullAccess: role === "admin",
+      spotlight: false,
+    });
+    setHostings(response.data.data);
   };
 
-  const getUserRole = async () => {
+  const getUserRoleAndFetchData = async () => {
     const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
+    const role = response.data.role;
+    setUserRole(role);
+    await fetchData(role);
   };
 
   useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+    if (!userRole) {
+      getUserRoleAndFetchData();
+    } else {
+      fetchData(userRole);
+    }
+  }, [userRole]);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

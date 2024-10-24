@@ -12,32 +12,28 @@ export default function Activity() {
   const [activities, setActivities] = useState<ActivityInterface[]>([]);
   const { userRole, setUserRole } = useAuth();
 
-  const fetchData = async () => {
-    try {
-      if (userRole && userRole === "admin") {
-        const response = await ActivityRepository.getAll();
-        setActivities(response.data.data);
-      } else {
-        const response = await ActivityRepository.getAllVisible();
-        setActivities(response.data.data);
-      }
-    } catch (error) {
-      throw error;
-    }
+  const fetchData = async (role: string) => {
+    const response = await ActivityRepository.getAll({
+      fullAccess: role === "admin",
+      spotlight: false,
+    });
+    setActivities(response.data.data);
   };
 
-  const getUserRole = async () => {
+  const getUserRoleAndFetchData = async () => {
     const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
+    const role = response.data.role;
+    setUserRole(role);
+    await fetchData(role);
   };
 
   useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+    if (!userRole) {
+      getUserRoleAndFetchData();
+    } else {
+      fetchData(userRole);
+    }
+  }, [userRole]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">

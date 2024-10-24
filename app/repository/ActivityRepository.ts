@@ -1,16 +1,13 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
+interface Params {
+  fullAccess?: boolean;
+  spotlight?: boolean;
+}
+
 class ActivityRepository extends AbstractRepository {
-  async getAll() {
-    return await this.client.get("/api/activity");
-  }
-
-  async getAllVisible() {
-    return await this.client.get("/api/activity/visible");
-  }
-
-  async getSpotlight() {
-    return await this.client.get("/api/activity/spotlight");
+  async getAll(params: Params) {
+    return await this.client.get("/api/activity", { params: params });
   }
 
   async getOne(id: string | string[]) {
