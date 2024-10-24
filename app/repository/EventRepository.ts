@@ -1,4 +1,5 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
+import { AddEventInterface } from "@/app/interface/Event.interface";
 
 interface Params {
   fullAccess?: boolean;
@@ -20,36 +21,20 @@ class EventRepository extends AbstractRepository {
     });
   }
 
-  async post({
-    name,
-    description,
-    price,
-    visible,
-    images,
-    date,
-    capacity,
-  }: {
-    name: string;
-    description: string;
-    price: number;
-    visible: boolean;
-    images: File[];
-    date: Date | null;
-    capacity: number;
-  }) {
+  async post(event: AddEventInterface, images: File[]) {
     const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("price", price.toString());
-    formData.append("visible", visible.toString());
+    formData.append("name", event.name);
+    formData.append("description", event.description);
+    formData.append("price", event.price.toString());
+    formData.append("visible", event.visible.toString());
     images.forEach((image) => {
       formData.append("images", image);
     });
-    if (date !== null) {
-      formData.append("date", date.toISOString());
+    if (event.date !== null) {
+      formData.append("date", event.date.toISOString());
     }
-    formData.append("capacity", capacity.toString());
+    formData.append("capacity", event.capacity.toString());
 
     return await this.client.post("/api/event", formData, {
       headers: {
@@ -61,38 +46,33 @@ class EventRepository extends AbstractRepository {
 
   async update(
     id: string | string[],
-    name?: string,
-    description?: string,
-    visible?: boolean,
-    price?: number,
-    date?: Date | null,
+    event: AddEventInterface,
     images?: File[],
-    capacity?: number,
     imageToDelete?: string[],
   ) {
     const formData = new FormData();
-    if (name !== undefined) {
-      formData.append("name", name);
+    if (event.name !== undefined) {
+      formData.append("name", event.name);
     }
-    if (description !== undefined) {
-      formData.append("description", description);
+    if (event.description !== undefined) {
+      formData.append("description", event.description);
     }
-    if (visible !== undefined) {
-      formData.append("visible", visible.toString());
+    if (event.visible !== undefined) {
+      formData.append("visible", event.visible.toString());
     }
-    if (price !== undefined) {
-      formData.append("price", price.toString());
+    if (event.price !== undefined) {
+      formData.append("price", event.price.toString());
     }
-    if (date !== undefined) {
-      formData.append("date", date?.toString() || "");
+    if (event.date !== undefined) {
+      formData.append("date", event.date?.toString() || "");
     }
     if (images) {
       images.forEach((image) => {
         formData.append("images", image);
       });
     }
-    if (capacity !== undefined) {
-      formData.append("capacity", capacity.toString());
+    if (event.capacity !== undefined) {
+      formData.append("capacity", event.capacity.toString());
     }
     if (imageToDelete) {
       formData.append("imageToDelete", JSON.stringify(imageToDelete));

@@ -11,3 +11,12 @@ export interface EventInterface {
   date: Date | null;
   placeAvailable: number;
 }
+
+export interface AddEventInterface {
+  name: string;
+  description: string;
+  visible: boolean;
+  capacity: number;
+  price: number;
+  date: Date | null;
+}

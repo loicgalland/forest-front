@@ -15,7 +15,6 @@ export interface ActivityInterface {
 export interface AddActivityInterface {
   name: string;
   description: string;
-  images?: FileInterface[];
   isSpotlight: boolean;
   visible: boolean;
   capacity: number;

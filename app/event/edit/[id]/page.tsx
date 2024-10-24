@@ -8,7 +8,7 @@ import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
 import EventRepository from "@/app/repository/EventRepository";
-import { EventInterface } from "@/app/interface/Event.interface";
+import { AddEventInterface } from "@/app/interface/Event.interface";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
@@ -17,21 +17,23 @@ import AuthRepository from "@/app/repository/AuthRepository";
 const EditEvent = () => {
   const { userRole, setUserRole } = useAuth();
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
-
   const [images, setImages] = useState<File[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string[]>([]);
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [capacity, setCapacity] = useState<number>(0);
+
+  const [event, setEvent] = useState<AddEventInterface>({
+    name: "",
+    description: "",
+    visible: true,
+    capacity: 0,
+    price: 0,
+    date: null,
+  });
 
   const { id } = useParams();
   const router = useRouter();
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+    setEvent((prevEvent) => ({ ...prevEvent, date: date }));
   };
 
   const cancel = () => {
@@ -43,13 +45,8 @@ const EditEvent = () => {
 
     const response = await EventRepository.update(
       id,
-      name,
-      description,
-      isVisible,
-      price,
-      selectedDate,
+      event,
       images,
-      capacity,
       imageToDelete,
     );
 
@@ -87,14 +84,19 @@ const EditEvent = () => {
     );
   };
 
-  const fetchData = async (): Promise<{
-    data: { data: EventInterface; success: boolean };
-  }> => {
-    try {
-      return await EventRepository.getOne(id);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchData = async () => {
+    const response = await EventRepository.getOne(id);
+    if (response.data.data) {
+      setEvent(response.data.data);
+      const fetchedImagesArray: FileInterface[] =
+        response.data.data.images?.map((image: FileInterface) => ({
+          _id: image._id,
+          path: DB_URL_IMAGE + image.path,
+          originalName: image.originalName,
+          extension: image.path.split(".").pop(),
+        })) || [];
+
+      setFetchedImages(fetchedImagesArray);
     }
   };
 
@@ -110,26 +112,7 @@ const EditEvent = () => {
 
   useEffect(() => {
     if (userRole) {
-      fetchData().then((response) => {
-        if (response && response.data) {
-          setName(response.data.data.name);
-          setDescription(response.data.data.description);
-          setPrice(response.data.data.price);
-          setIsVisible(response.data.data.visible);
-          setSelectedDate(response.data.data.date);
-          setCapacity(response.data.data.capacity);
-
-          const fetchedImagesArray: FileInterface[] =
-            response.data.data.images?.map((image) => ({
-              _id: image._id,
-              path: DB_URL_IMAGE + image.path,
-              originalName: image.originalName,
-              extension: image.path.split(".").pop(),
-            })) || [];
-
-          setFetchedImages(fetchedImagesArray);
-        }
-      });
+      fetchData();
     }
   }, [userRole]);
   return (
@@ -144,7 +127,7 @@ const EditEvent = () => {
           <i className="fa-solid fa-arrow-left"></i>
         </button>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
-        Modification de l'événement : {name}
+        Modification de l'événement : {event.name}
       </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
@@ -153,8 +136,10 @@ const EditEvent = () => {
             name="name"
             label="Nom de l'événement'"
             id="eventName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={event.name}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({ ...prevEvent, name: e.target.value }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -163,15 +148,20 @@ const EditEvent = () => {
             name="capacity"
             label="Capacité"
             id="eventCapacity"
-            value={capacity}
-            onChange={(e) => setCapacity(Number(e.target.value))}
+            value={event.capacity}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                capacity: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
           <DatePickerComponent
             onDateChange={handleDateChange}
             label="Date"
-            olderDate={selectedDate}
+            olderDate={event.date}
           />
         </div>
         <div className="w-full mb-2">
@@ -179,8 +169,13 @@ const EditEvent = () => {
             id="eventDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={event.description}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -188,8 +183,13 @@ const EditEvent = () => {
             id="visible"
             name="visible"
             label="Visible"
-            value={isVisible}
-            onChange={(e) => setIsVisible(e.target.checked)}
+            value={event.visible}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                visible: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -198,8 +198,13 @@ const EditEvent = () => {
             name="price"
             label="Prix"
             id="eventPrice"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            value={event.price}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full">

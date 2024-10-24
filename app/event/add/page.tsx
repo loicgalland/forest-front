@@ -8,29 +8,24 @@ import { useRouter } from "next/navigation";
 import EventRepository from "@/app/repository/EventRepository";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import useGetUserRole from "@/app/hooks/useGetUserRole";
+import { AddEventInterface } from "@/app/interface/Event.interface";
 
 export default function EventAdd() {
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [event, setEvent] = useState<AddEventInterface>({
+    name: "",
+    description: "",
+    visible: true,
+    capacity: 0,
+    price: 0,
+    date: null,
+  });
   const [images, setImages] = useState<File[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [capacity, setCapacity] = useState<number>(0);
 
   const router = useRouter();
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await EventRepository.post({
-      name,
-      description,
-      price,
-      visible: isVisible,
-      images,
-      date: selectedDate,
-      capacity,
-    });
+    const response = await EventRepository.post(event, images);
     if (response.data.success) router.push("/event");
   };
 
@@ -48,7 +43,7 @@ export default function EventAdd() {
   };
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+    setEvent((prevEvent) => ({ ...prevEvent, date: date }));
   };
 
   useGetUserRole();
@@ -72,8 +67,10 @@ export default function EventAdd() {
             name="name"
             label="Nom de l'événement"
             id="eventName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={event.name}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({ ...prevEvent, name: e.target.value }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -82,8 +79,13 @@ export default function EventAdd() {
             name="capacity"
             label="Capacité"
             id="eventCapacity"
-            value={capacity}
-            onChange={(e) => setCapacity(Number(e.target.value))}
+            value={event.capacity}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                capacity: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -98,8 +100,13 @@ export default function EventAdd() {
             id="eventDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={event.description}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -107,7 +114,12 @@ export default function EventAdd() {
             id="visible"
             name="visible"
             label="Visible"
-            onChange={(e) => setIsVisible(e.target.checked)}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                visible: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -117,7 +129,12 @@ export default function EventAdd() {
             label="Prix"
             id="eventPrice"
             // value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            onChange={(e) =>
+              setEvent((prevEvent) => ({
+                ...prevEvent,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full">
