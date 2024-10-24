@@ -1,6 +1,14 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
 class HostingRepository extends AbstractRepository {
+  async getAllByRole(role: string) {
+    if (role === "admin") {
+      return await this.getAll();
+    }
+    return await this.getAllVisible();
+  }
+
+  //TODO Ajouter des params sur les routes
   async getAll() {
     return await this.client.get("/api/hosting");
   }

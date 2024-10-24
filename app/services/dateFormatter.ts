@@ -1,4 +1,5 @@
 class DateManager {
+  // Voir momentJs
   dateFormatter = (date: Date): string => {
     if (date) {
       const parsedDate = new Date(date);

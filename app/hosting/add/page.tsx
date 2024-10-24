@@ -19,6 +19,7 @@ export default function HostingAdd() {
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
 
+  //TODO Créer un useState Form qui contient un objet
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);

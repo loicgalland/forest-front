@@ -11,21 +11,14 @@ import { useAuth } from "@/app/services/AuthContext";
 export default function Hosting() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const { userRole, setUserRole } = useAuth();
+
   const fetchData = async () => {
-    try {
-      if (userRole && userRole === "admin") {
-        const response = await HostingRepository.getAll();
-        if (response && response.data) {
-          setHostings(response.data.data);
-        }
-      } else {
-        const response = await HostingRepository.getAllVisible();
-        if (response && response.data) {
-          setHostings(response.data.data);
-        }
-      }
-    } catch (error) {
-      throw error;
+    const response =
+      userRole && userRole === "admin"
+        ? await HostingRepository.getAll()
+        : await HostingRepository.getAllVisible();
+    if (response && response.data) {
+      setHostings(response.data.data);
     }
   };
 

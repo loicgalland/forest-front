@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/app/services/AuthContext";
 import AuthRepository from "@/app/repository/AuthRepository";
-import { AxiosResponse } from "axios";
 
 export function Header() {
   const [isMobile, setIsMobile] = useState<boolean>(true);

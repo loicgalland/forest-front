@@ -17,9 +17,7 @@ class EquipmentRepository extends AbstractRepository {
       "/api/equipment",
       { name, type },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       },
     );
   }
