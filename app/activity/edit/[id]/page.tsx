@@ -7,7 +7,7 @@ import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputCompo
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import ActivityRepository from "@/app/repository/ActivityRepository";
-import { ActivityInterface } from "@/app/interface/Activity.interface";
+import { AddActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
@@ -15,15 +15,17 @@ import AuthRepository from "@/app/repository/AuthRepository";
 
 const EditActivity = () => {
   const { userRole, setUserRole } = useAuth();
+  const [activity, setActivity] = useState<AddActivityInterface>({
+    name: "",
+    description: "",
+    isSpotlight: false,
+    visible: true,
+    capacity: 0,
+    price: 0,
+  });
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
-
   const [images, setImages] = useState<File[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string[]>([]);
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
 
   const { id } = useParams();
   const router = useRouter();
@@ -37,11 +39,7 @@ const EditActivity = () => {
 
     const response = await ActivityRepository.update(
       id,
-      name,
-      description,
-      isVisible,
-      isSpotlight,
-      price,
+      activity,
       images,
       imageToDelete,
     );
@@ -80,14 +78,18 @@ const EditActivity = () => {
     );
   };
 
-  const fetchData = async (): Promise<{
-    data: { data: ActivityInterface; success: boolean };
-  }> => {
-    try {
-      return await ActivityRepository.getOne(id);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchData = async () => {
+    const response = await ActivityRepository.getOne(id);
+    if (response.data.data) {
+      setActivity(response.data.data);
+      const fetchedImagesArray: FileInterface[] =
+        response.data.data.images?.map((image: FileInterface) => ({
+          _id: image._id,
+          path: DB_URL_IMAGE + image.path,
+          originalName: image.originalName,
+          extension: image.path.split(".").pop(),
+        })) || [];
+      setFetchedImages(fetchedImagesArray);
     }
   };
 
@@ -102,25 +104,7 @@ const EditActivity = () => {
 
   useEffect(() => {
     if (userRole) {
-      fetchData().then((response) => {
-        if (response && response.data) {
-          setName(response.data.data.name);
-          setDescription(response.data.data.description);
-          setPrice(response.data.data.price);
-          setIsVisible(response.data.data.visible);
-          setIsSpotlight(response.data.data.isSpotlight);
-
-          const fetchedImagesArray: FileInterface[] =
-            response.data.data.images?.map((image) => ({
-              _id: image._id,
-              path: DB_URL_IMAGE + image.path,
-              originalName: image.originalName,
-              extension: image.path.split(".").pop(),
-            })) || [];
-
-          setFetchedImages(fetchedImagesArray);
-        }
-      });
+      fetchData();
     }
   }, [userRole]);
   return (
@@ -135,7 +119,7 @@ const EditActivity = () => {
           <i className="fa-solid fa-arrow-left"></i>
         </button>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
-        Modification de l'activité : {name}
+        Modification de l'activité : {activity.name}
       </h2>
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
@@ -144,8 +128,13 @@ const EditActivity = () => {
             name="name"
             label="Nom de l'activité"
             id="activityName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={activity.name}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                name: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -153,8 +142,13 @@ const EditActivity = () => {
             id="activityDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={activity.description}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -162,16 +156,26 @@ const EditActivity = () => {
             id="visible"
             name="visible"
             label="Visible"
-            value={isVisible}
-            onChange={(e) => setIsVisible(e.target.checked)}
+            value={activity.visible}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                visible: e.target.checked,
+              }))
+            }
           />
 
           <CheckBoxInputComponent
             id="spotlight"
             name="spotlight"
             label="Mettre en avant"
-            value={isSpotlight}
-            onChange={(e) => setIsSpotlight(e.target.checked)}
+            value={activity.isSpotlight}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                isSpotlight: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -180,8 +184,13 @@ const EditActivity = () => {
             name="price"
             label="Prix"
             id="activityPrice"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            value={activity.price}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full">

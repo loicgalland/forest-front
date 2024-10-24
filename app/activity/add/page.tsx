@@ -7,27 +7,24 @@ import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { useRouter } from "next/navigation";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import useGetUserRole from "@/app/hooks/useGetUserRole";
+import { AddActivityInterface } from "@/app/interface/Activity.interface";
 
 export default function ActivityAdd() {
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isSpotlight, setIsSpotlight] = useState<boolean>(false);
+  const [activity, setActivity] = useState<AddActivityInterface>({
+    name: "",
+    description: "",
+    isSpotlight: false,
+    visible: true,
+    capacity: 0,
+    price: 0,
+  });
   const [images, setImages] = useState<File[]>([]);
 
   const router = useRouter();
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await ActivityRepository.post({
-      name,
-      description,
-      price,
-      visible: isVisible,
-      isSpotlight,
-      images,
-    });
+    const response = await ActivityRepository.post(activity, images);
     if (response.data.success) router.push("/activity");
   };
 
@@ -65,8 +62,13 @@ export default function ActivityAdd() {
             name="name"
             label="Nom de l'activité"
             id="activityName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={activity.name}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                name: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -74,8 +76,13 @@ export default function ActivityAdd() {
             id="activityDescription"
             name="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={activity.description}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                description: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex gap-3 w-full mb-2">
@@ -83,13 +90,23 @@ export default function ActivityAdd() {
             id="visible"
             name="visible"
             label="Visible"
-            onChange={(e) => setIsVisible(e.target.checked)}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                visible: e.target.checked,
+              }))
+            }
           />
           <CheckBoxInputComponent
             id="spotlight"
             name="spotlight"
             label="Mettre en avant"
-            onChange={(e) => setIsSpotlight(e.target.checked)}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                isSpotlight: e.target.checked,
+              }))
+            }
           />
         </div>
         <div className="w-full mb-2">
@@ -98,7 +115,12 @@ export default function ActivityAdd() {
             name="price"
             label="Prix"
             id="activityPrice"
-            onChange={(e) => setPrice(Number(e.target.value))}
+            onChange={(e) =>
+              setActivity((prevActivity) => ({
+                ...prevActivity,
+                price: Number(e.target.value),
+              }))
+            }
           />
         </div>
         <div className="w-full">

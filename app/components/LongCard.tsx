@@ -45,7 +45,9 @@ export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
             : "https://picsum.photos/200/300?grayscale"
         }
         alt={
-          props.item.images && props.item.images[0].originalName
+          props.item.images &&
+          props.item.images.length &&
+          props.item.images[0].originalName
             ? props.item.images[0].originalName
             : "placeholder-image"
         }

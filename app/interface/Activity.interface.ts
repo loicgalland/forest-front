@@ -11,3 +11,14 @@ export interface ActivityInterface {
   price: number;
   date?: Date | null;
 }
+
+export interface AddActivityInterface {
+  name: string;
+  description: string;
+  images?: FileInterface[];
+  isSpotlight: boolean;
+  visible: boolean;
+  capacity: number;
+  price: number;
+  date?: Date | null;
+}
