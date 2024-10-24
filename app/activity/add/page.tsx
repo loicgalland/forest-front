@@ -1,16 +1,14 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { useRouter } from "next/navigation";
 import ActivityRepository from "@/app/repository/ActivityRepository";
-import AuthRepository from "@/app/repository/AuthRepository";
-import { useAuth } from "@/app/services/AuthContext";
+import useGetUserRole from "@/app/hooks/useGetUserRole";
 
 export default function ActivityAdd() {
-  const { userRole, setUserRole } = useAuth();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -46,15 +44,7 @@ export default function ActivityAdd() {
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    if (response.status === 401) router.push("/login");
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
+  useGetUserRole();
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

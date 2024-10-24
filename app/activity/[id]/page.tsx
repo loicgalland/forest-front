@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import Link from "next/link";
@@ -9,23 +9,19 @@ import ActivityRepository from "@/app/repository/ActivityRepository";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 const ActivityDetail = () => {
   const { id } = useParams();
   const [activity, setActivity] = useState<ActivityInterface>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
   const router = useRouter();
 
-  const fetchData = async (): Promise<{
-    data: { data: ActivityInterface; success: boolean };
-  }> => {
-    try {
-      return await ActivityRepository.getOne(id);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+  const fetchData = async () => {
+    const response = await ActivityRepository.getOne(id);
+    if (response.data.data) {
+      setActivity(response.data.data);
     }
   };
 
@@ -38,24 +34,8 @@ const ActivityDetail = () => {
       router.push("/activity");
     }
   };
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    if (response.status === 401) router.push("/login");
-    setUserRole(response.data.role);
-  };
 
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetchData().then((response) => {
-      if (response && response.data) {
-        setActivity(response.data.data);
-        console.log(response.data);
-      }
-    });
-  }, []);
+  useFetchDataWithUserRole(fetchData);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

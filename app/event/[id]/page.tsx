@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import Link from "next/link";
@@ -10,22 +10,19 @@ import DateManager from "@/app/services/dateFormatter";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState<EventInterface>();
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const fetchData = async () => {
-    try {
-      const response = await EventRepository.getOne(id);
+    const response = await EventRepository.getOne(id);
+    if (response.data.data) {
       setEvent(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
     }
   };
 
@@ -43,18 +40,7 @@ const EventDetail = () => {
     return DateManager.dateFormatter(date);
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    setUserRole(response.data.role);
-  };
-
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useFetchDataWithUserRole(fetchData);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">

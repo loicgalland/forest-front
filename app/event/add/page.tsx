@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
@@ -7,11 +7,9 @@ import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { useRouter } from "next/navigation";
 import EventRepository from "@/app/repository/EventRepository";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
-import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import useGetUserRole from "@/app/hooks/useGetUserRole";
 
 export default function EventAdd() {
-  const { userRole, setUserRole } = useAuth();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -21,10 +19,6 @@ export default function EventAdd() {
   const [capacity, setCapacity] = useState<number>(0);
 
   const router = useRouter();
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,20 +47,11 @@ export default function EventAdd() {
     }
   };
 
-  const getUserRole = async () => {
-    const response = await AuthRepository.getUserRole();
-    if (response.status === 401) router.push("/login");
-    setUserRole(response.data.role);
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
   };
 
-  useEffect(() => {
-    if (!userRole) getUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (!userRole) router.push("/login");
-  }, [userRole]);
-
+  useGetUserRole();
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <h2 className="text-2xl font-bold">

@@ -6,7 +6,7 @@ interface props {
   label: string;
   olderDate: Date | null;
   onDateChange: (date: Date | null) => void;
-  blockedDates: Date[];
+  blockedDates?: Date[];
 }
 
 export const DatePickerComponent: React.FC<props> = ({
@@ -18,13 +18,15 @@ export const DatePickerComponent: React.FC<props> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const isDateBlocked = (date: Date) => {
-    return blockedDates.some((blockedDate) => {
-      return (
-        date.getFullYear() === blockedDate.getFullYear() &&
-        date.getMonth() === blockedDate.getMonth() &&
-        date.getDate() === blockedDate.getDate()
-      );
-    });
+    if (blockedDates) {
+      return blockedDates.some((blockedDate) => {
+        return (
+          date.getFullYear() === blockedDate.getFullYear() &&
+          date.getMonth() === blockedDate.getMonth() &&
+          date.getDate() === blockedDate.getDate()
+        );
+      });
+    }
   };
 
   const handleDateChange = (date: Date | null) => {

@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import ActivityRepository from "@/app/repository/ActivityRepository";
 import { LongCard } from "@/app/components/LongCard";
-import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 export default function Activity() {
   const [activities, setActivities] = useState<ActivityInterface[]>([]);
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
 
   const fetchData = async (role: string) => {
     const response = await ActivityRepository.getAll({
@@ -20,20 +20,8 @@ export default function Activity() {
     setActivities(response.data.data);
   };
 
-  const getUserRoleAndFetchData = async () => {
-    const response = await AuthRepository.getUserRole();
-    const role = response.data.role;
-    setUserRole(role);
-    await fetchData(role);
-  };
+  useFetchDataWithUserRole(fetchData);
 
-  useEffect(() => {
-    if (!userRole) {
-      getUserRoleAndFetchData();
-    } else {
-      fetchData(userRole);
-    }
-  }, [userRole]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
       <div className="flex justify-between mb-4">

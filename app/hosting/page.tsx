@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import HostingRepository from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import Link from "next/link";
-import AuthRepository from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
+import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 
 export default function Hosting() {
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
-  const { userRole, setUserRole } = useAuth();
+  const { userRole } = useAuth();
 
   const fetchData = async (role: string) => {
     const response = await HostingRepository.getAll({
@@ -20,20 +20,7 @@ export default function Hosting() {
     setHostings(response.data.data);
   };
 
-  const getUserRoleAndFetchData = async () => {
-    const response = await AuthRepository.getUserRole();
-    const role = response.data.role;
-    setUserRole(role);
-    await fetchData(role);
-  };
-
-  useEffect(() => {
-    if (!userRole) {
-      getUserRoleAndFetchData();
-    } else {
-      fetchData(userRole);
-    }
-  }, [userRole]);
+  useFetchDataWithUserRole(fetchData);
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
