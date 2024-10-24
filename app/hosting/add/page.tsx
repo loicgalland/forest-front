@@ -36,7 +36,7 @@ export default function HostingAdd() {
     e.preventDefault();
     const response = await hostingRepository.postHosting({
       hosting,
-      equipments: equipments,
+      equipments,
       beds,
       images,
     });
