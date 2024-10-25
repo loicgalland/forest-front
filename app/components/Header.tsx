@@ -30,7 +30,7 @@ export function Header() {
   };
 
   const toggleUserMenu = () => {
-    setUserMenu(!userMenu);
+    setUserMenu(true);
   };
 
   const getUserRole = async () => {
@@ -199,7 +199,7 @@ export function Header() {
                           Connexion
                         </Link>
                       </li>
-                      <li className="mb-2 text-center bg-success text-secondary w-full rounded-[10px]">
+                      <li className="mb-2 text-center bg-success text-secondary w-full rounded-[10px] px-4">
                         <Link
                           href="/register"
                           onClick={() => {
