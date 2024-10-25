@@ -4,6 +4,8 @@ import { AddEventInterface } from "@/app/interface/Event.interface";
 interface Params {
   fullAccess?: boolean;
   spotlight?: boolean;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 class EventRepository extends AbstractRepository {

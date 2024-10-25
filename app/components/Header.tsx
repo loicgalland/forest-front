@@ -59,7 +59,7 @@ export function Header() {
   return (
     <>
       <header>
-        <div className="md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-lightGreen py-2 px-4 h-[50px]">
+        <div className="md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-beige py-2 px-4 h-[50px]">
           <h1 className="text-xl font-bold">
             <Link href="/home">Forest</Link>
           </h1>

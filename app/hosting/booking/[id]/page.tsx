@@ -15,13 +15,18 @@ import ActivityRepository from "@/app/repository/ActivityRepository";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import AuthRepository from "@/app/repository/AuthRepository";
+import { EventInterface } from "@/app/interface/Event.interface";
+import EventRepository from "@/app/repository/EventRepository";
 
 const BookHosting = () => {
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
   const [activitiesList, setActivitiesList] = useState<ActivityInterface[]>([]);
+  const [eventList, setEventList] = useState<EventInterface[]>([]);
 
+  const [activitiesPrice, setActivitiesPrice] = useState<number>(0);
   const [activities, setActivities] = useState<string[]>([]);
+  const [events, setEvents] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date | null>();
   const [endDate, setEndDate] = useState<Date | null>();
   const [totalPrice, setTotalPrice] = useState<number | 0>(0);
@@ -50,6 +55,7 @@ const BookHosting = () => {
         hostingId,
         totalPrice,
         activities,
+        events,
       });
       if (response && response.data) {
         router.push("/");
@@ -71,15 +77,25 @@ const BookHosting = () => {
       fullAccess: role === "admin",
       spotlight: false,
     });
-    if (response.data.data) {
+    if (response && response.data.data) {
       setActivitiesList(response.data.data);
+    }
+  };
+
+  const fetchEvents = async (startDate: Date, endDate: Date) => {
+    const response = await EventRepository.getAll({
+      startDate: startDate,
+      endDate: endDate,
+    });
+    if (response && response.data.data) {
+      setEventList(response.data.data);
     }
   };
 
   const fetchBooking = async (id: string | string[]) => {
     const response = await BookingRepository.getAllBookingsForHosting(id);
     if (response && response.data) {
-      setBookings(response.data.data);
+      setBookings(response && response.data.data);
     }
   };
 
@@ -120,7 +136,9 @@ const BookHosting = () => {
 
   const getUser = async () => {
     const response = await AuthRepository.getUserRole();
-    setUserId(response.data.userId);
+    if (response && response.data) {
+      setUserId(response.data.userId);
+    }
   };
 
   useFetchDataWithUserRole([fetchHosting, fetchActivities]);
@@ -140,7 +158,8 @@ const BookHosting = () => {
         setErrors(null);
         const duration = getDuration(startDate, endDate);
         const price = hosting ? hosting.price : 0;
-        setTotalPrice(duration * price + fees);
+        setTotalPrice(duration * price + fees + activitiesPrice);
+        fetchEvents(startDate, endDate);
       }
     } else {
       setTotalPrice(0);
@@ -251,8 +270,11 @@ const BookHosting = () => {
                               ...prevActivities,
                               activity._id,
                             ]);
-                            setTotalPrice(
+                            setActivitiesPrice(
                               (prevPrice) => prevPrice + activity.price,
+                            );
+                            setTotalPrice(
+                              (prevPrice) => prevPrice + activitiesPrice,
                             );
                           } else {
                             setActivities((prevActivities) =>
@@ -270,6 +292,34 @@ const BookHosting = () => {
                   : ""}
               </div>
             </div>
+            {Array.isArray(eventList) && eventList && eventList.length > 0 ? (
+              <div>
+                <h3 className="font-bold text-lg">
+                  Venez profiter de nos événements
+                </h3>
+                {eventList.map((event) => (
+                  <CheckBoxInputComponent
+                    id={event._id}
+                    key={event._id}
+                    name={event.name}
+                    label={event.name}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setEvents((prevEvent) => [...prevEvent, event._id]);
+                        setTotalPrice((prevPrice) => prevPrice + event.price);
+                      } else {
+                        setEvents((prevEvent) =>
+                          prevEvent.filter((id) => id !== event._id),
+                        );
+                        setTotalPrice((prevPrice) => prevPrice - event.price);
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              ""
+            )}
             <p>Total: {totalPrice ? totalPrice : "--"}€</p>
             <input
               type="submit"

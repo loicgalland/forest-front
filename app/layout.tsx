@@ -25,7 +25,7 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className="text-text bg-white box-border">
+      <body className="text-text bg-secondary box-border">
         <AuthProvider>
           <Header />
           <div>{children}</div>

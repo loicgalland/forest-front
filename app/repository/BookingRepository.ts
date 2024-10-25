@@ -16,7 +16,7 @@ class BookingRepository extends AbstractRepository {
     numberOfPerson,
     hostingId,
     activities,
-    eventId,
+    events,
     totalPrice,
   }: {
     startDate: Date;
@@ -26,7 +26,7 @@ class BookingRepository extends AbstractRepository {
     numberOfPerson: number;
     hostingId?: string | string[];
     activities?: string[];
-    eventId?: string | string[];
+    events?: string[];
     totalPrice: number;
   }) {
     return await this.client.post(
@@ -39,7 +39,7 @@ class BookingRepository extends AbstractRepository {
         numberOfPerson,
         hostingId,
         activities,
-        eventId,
+        events,
         totalPrice,
       },
       {
