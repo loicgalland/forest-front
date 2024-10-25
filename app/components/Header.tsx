@@ -6,6 +6,8 @@ import { useAuth } from "@/app/services/AuthContext";
 import AuthRepository from "@/app/repository/AuthRepository";
 import UserIcon from "@/app/assets/images/svg/userIcon.svg";
 import UserIconWhite from "@/app/assets/images/svg/userIconWhite.svg";
+import BurgerMenu from "@/app/assets/images/svg/burgerMenu.svg";
+import CloseMenu from "@/app/assets/images/svg/menuClose.svg";
 
 export function Header() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
@@ -27,6 +29,11 @@ export function Header() {
 
   const handleMenu = () => {
     setIsMenuActive(!isMenuActive);
+    if (!isMenuActive) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
   };
 
   const toggleUserMenu = () => {
@@ -77,9 +84,9 @@ export function Header() {
   return (
     <>
       <header>
-        <div className=" md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-beige py-2 px-4 h-[80px] font-bold text-xl font-happy">
+        <div className=" md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-beige h-[80px] font-bold text-xl font-happy">
           <div className="w-full relative flex justify-between items-center">
-            <h1 className="text-[30px] font-bold uppercase">
+            <h1 className="text-[30px] font-bold uppercase py-2 px-4">
               <Link
                 href="/home"
                 onClick={() => {
@@ -90,12 +97,8 @@ export function Header() {
               </Link>
             </h1>
             {isMobile ? (
-              <button onClick={handleMenu} className="flex z-30">
-                <i
-                  className={
-                    isMenuActive ? "fa-solid fa-xmark" : "fa-solid fa-bars"
-                  }
-                ></i>
+              <button onClick={handleMenu} className="flex z-30 py-2 px-4">
+                {isMenuActive ? <CloseMenu /> : <BurgerMenu />}
               </button>
             ) : (
               ""
@@ -105,11 +108,17 @@ export function Header() {
                 !isMobile
                   ? "flex"
                   : isMenuActive
-                    ? "absolute top-0 left-0 flex flex-col z-20 w-full h-full py-2 px-4 bg-secondary"
+                    ? "absolute top-[-20px] left-0 flex flex-col z-20 w-full h-[100vh] py-2 px-4 bg-beige justify-center"
                     : "hidden"
               }
             >
-              <ul className={!isMobile ? "flex items-center" : ""}>
+              <ul
+                className={
+                  !isMobile
+                    ? "flex items-center"
+                    : " flex flex-col items-center"
+                }
+              >
                 {links.map((link, index) => {
                   const isActive = pathname.startsWith(link.href);
                   return (
@@ -155,7 +164,7 @@ export function Header() {
                       ref={userMenuRef}
                       className={
                         isMobile
-                          ? "static bg-secondary border-t-[1px] border-t-text pt-2"
+                          ? "static pt-2 mt-[70px]"
                           : userMenu
                             ? "absolute bottom-0 transform translate-y-full right-0 bg-beige rounded-b-md px-6" +
                               " text-[15px]" +
@@ -164,11 +173,11 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="cursor-pointer mb-2 pt-1  text-center">
+                      <li className="cursor-pointer mt-6 pt-1  text-center">
                         <Link href={"/profile/" + userId}>Mon profil</Link>
                       </li>
                       <li
-                        className="cursor-pointer mb-2 pt-1  text-center"
+                        className="cursor-pointer mt-6 pt-1  text-center"
                         onClick={signOut}
                       >
                         Déconnexion
@@ -179,7 +188,7 @@ export function Header() {
                       ref={userMenuRef}
                       className={
                         isMobile
-                          ? "static bg-secondary border-t-[1px] border-t-text pt-2"
+                          ? "static mt-[70px]"
                           : userMenu
                             ? "absolute bottom-0 transform translate-y-full right-0 bg-beige rounded-b-md px-6" +
                               " text-[14px]" +
@@ -188,7 +197,7 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="mb-2 text-center">
+                      <li className="mt-6 text-center">
                         <Link
                           href="/login"
                           onClick={() => {
@@ -199,7 +208,7 @@ export function Header() {
                           Connexion
                         </Link>
                       </li>
-                      <li className="mb-2 text-center bg-success text-secondary w-full rounded-[10px] px-4">
+                      <li className="mt-6 text-center bg-success text-secondary w-full rounded-[10px] px-4">
                         <Link
                           href="/register"
                           onClick={() => {
