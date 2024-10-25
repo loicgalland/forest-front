@@ -19,9 +19,9 @@ class BookingRepository extends AbstractRepository {
     events,
     totalPrice,
   }: {
-    startDate: Date;
-    endDate: Date;
-    duration: number;
+    startDate?: Date;
+    endDate?: Date;
+    duration?: number;
     userId: string;
     numberOfPerson: number;
     hostingId?: string | string[];

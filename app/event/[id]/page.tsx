@@ -127,9 +127,12 @@ const EventDetail = () => {
           </p>
           <div className="hidden md:flex md:w-full items-center justify-between">
             <p className="text-xl font-bold">{event?.price}€</p>
-            <button className="p-2 rounded-lg bg-primary w-fit text-white">
+            <Link
+              href={"/event/booking/" + event?._id}
+              className="p-2 rounded-lg bg-primary w-fit text-white"
+            >
               Réserver
-            </button>
+            </Link>
           </div>
         </div>
       </div>
