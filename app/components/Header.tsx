@@ -173,11 +173,11 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="cursor-pointer mt-6 pt-1  text-center">
+                      <li className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center">
                         <Link href={"/profile/" + userId}>Mon profil</Link>
                       </li>
                       <li
-                        className="cursor-pointer mt-6 pt-1  text-center"
+                        className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center"
                         onClick={signOut}
                       >
                         Déconnexion
@@ -197,7 +197,7 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="mt-6 text-center">
+                      <li className="mt-6 md:mt-0 md:mb-2 text-center">
                         <Link
                           href="/login"
                           onClick={() => {
@@ -208,7 +208,7 @@ export function Header() {
                           Connexion
                         </Link>
                       </li>
-                      <li className="mt-6 text-center bg-success text-secondary w-full rounded-[10px] px-4">
+                      <li className="mt-6 md:mt-0 md:mb-2 text-center bg-success text-secondary w-full rounded-[10px] px-4">
                         <Link
                           href="/register"
                           onClick={() => {
