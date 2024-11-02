@@ -13,7 +13,7 @@ export function Header() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
   const [isMenuActive, setIsMenuActive] = useState<boolean>(false);
   const [userMenu, setUserMenu] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>("");
+  const { setUserId } = useAuth();
   const { setUserRole } = useAuth();
   const userMenuRef = useRef<HTMLUListElement | null>(null);
 
@@ -52,6 +52,8 @@ export function Header() {
       window.localStorage.removeItem("userConnected");
       router.push("/home");
       getUserRole();
+      setUserRole(null);
+      setUserId(null);
       setUserMenu(false);
       handleMenu();
     }
@@ -86,7 +88,7 @@ export function Header() {
       <header>
         <div className=" md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-beige h-[80px] font-bold text-xl font-happy">
           <div className="w-full relative flex justify-between items-center">
-            <h1 className="text-[30px] font-bold uppercase py-2 px-4">
+            <h1 className="text-[30px] font-bold uppercase py-2">
               <Link
                 href="/home"
                 onClick={() => {
@@ -174,11 +176,21 @@ export function Header() {
                       }
                     >
                       <li className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center">
-                        <Link href={"/profile/" + userId}>Mon profil</Link>
+                        <Link
+                          href={"/profil"}
+                          onClick={() => {
+                            setUserMenu(false);
+                          }}
+                        >
+                          Mon profil
+                        </Link>
                       </li>
                       <li
                         className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center"
-                        onClick={signOut}
+                        onClick={() => {
+                          signOut();
+                          setUserMenu(false);
+                        }}
                       >
                         Déconnexion
                       </li>

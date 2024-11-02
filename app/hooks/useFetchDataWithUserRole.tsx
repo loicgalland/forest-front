@@ -6,12 +6,15 @@ const useFetchDataWithUserRole = (
   fetchDataArray: ((role: string) => Promise<void>)[],
 ) => {
   const { userRole, setUserRole } = useAuth();
+  const { setUserId } = useAuth();
 
   useEffect(() => {
     const getUserRoleAndFetchData = async () => {
       const response = await AuthRepository.getUserRole();
       const role = response.data.role;
+      const id = response.data.id;
       setUserRole(role);
+      setUserId(id);
 
       await Promise.all(fetchDataArray.map((fetchData) => fetchData(role)));
     };

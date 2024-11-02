@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        happy: ["Happy Monkey", "cursive"],
+        fuzzy: ["Balsamiq Sans", "sans-serif"],
       },
     },
     colors: {

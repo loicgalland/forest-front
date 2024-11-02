@@ -4,9 +4,11 @@ import authRepository from "@/app/repository/AuthRepository";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { InputComponent } from "@/app/components/form/InputComponent";
+import { useAuth } from "@/app/services/AuthContext";
 
 export default function Login() {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { setUserId } = useAuth();
 
   const router = useRouter();
 
@@ -14,7 +16,11 @@ export default function Login() {
     mail: string,
     password: string,
   ): Promise<{
-    data: { data: string; success: boolean; error?: string };
+    data: {
+      data: { message: string; userId: string };
+      success: boolean;
+      error?: string;
+    };
   }> => {
     return authRepository.login(mail, password);
   };
@@ -29,7 +35,9 @@ export default function Login() {
     try {
       const response = await login(email, password);
       if (response.data.success) {
+        console.log(response.data);
         localStorage.setItem("userConnected", "true");
+        setUserId(response.data.data.userId);
         router.push("/home");
       }
     } catch (error) {

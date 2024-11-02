@@ -8,6 +8,13 @@ class BookingRepository extends AbstractRepository {
     });
   }
 
+  async getAllUserBookings(id: string | string[]) {
+    const url = "/api/booking/user/" + id;
+    return await this.client.get(url, {
+      withCredentials: true,
+    });
+  }
+
   async post({
     startDate,
     endDate,
