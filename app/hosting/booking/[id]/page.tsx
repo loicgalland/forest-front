@@ -1,22 +1,24 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
-import React, { FormEvent, useEffect, useState } from "react";
-import HostingRepository from "@/app/repository/HostingRepository";
-import { useAuth } from "@/app/services/AuthContext";
-import { HostingInterface } from "@/app/interface/Hosting.interface";
-import Image from "next/image";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
-import { InputComponent } from "@/app/components/form/InputComponent";
-import BookingRepository from "@/app/repository/BookingRepository";
-import { BookingInterface } from "@/app/interface/Booking.interface";
+import Image from "next/image";
+import React, { FormEvent, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
+import { InputComponent } from "@/app/components/form/InputComponent";
+import { BookingInterface } from "@/app/interface/Booking.interface";
+import { HostingInterface } from "@/app/interface/Hosting.interface";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
+import HostingRepository from "@/app/repository/HostingRepository";
+import BookingRepository from "@/app/repository/BookingRepository";
+import ActivityRepository from "@/app/repository/ActivityRepository";
 import AuthRepository from "@/app/repository/AuthRepository";
-import { EventInterface } from "@/app/interface/Event.interface";
 import EventRepository from "@/app/repository/EventRepository";
+import { EventInterface } from "@/app/interface/Event.interface";
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentRepository from "@/app/repository/PaymentRepository";
 
 const BookHosting = () => {
   const { id } = useParams();
@@ -40,6 +42,9 @@ const BookHosting = () => {
   const { userRole } = useAuth();
   const [userId, setUserId] = useState<string>("");
 
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY!);
+  const currency = "eur";
+
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let duration;
@@ -58,7 +63,18 @@ const BookHosting = () => {
         events,
       });
       if (response && response.data) {
-        router.push("/");
+        const stripe = await stripePromise;
+        const stripeResponse = await PaymentRepository.post(
+          totalPrice * 100,
+          currency,
+          response.data.data._id,
+        );
+
+        const session = stripeResponse.data;
+
+        if (stripe) {
+          await stripe.redirectToCheckout({ sessionId: session.id });
+        }
       } else {
         console.warn("Form submission failed due to missing data.");
       }
@@ -143,6 +159,7 @@ const BookHosting = () => {
 
   useFetchDataWithUserRole([fetchHosting, fetchActivities]);
   useEffect(() => {
+    console.log(process.env.STRIPE_API_KEY);
     if (userRole) {
       fetchBooking(id);
     }
