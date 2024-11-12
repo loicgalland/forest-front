@@ -23,6 +23,17 @@ export default function Profil() {
     }
   };
 
+  const checkBookingStatus = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "orange";
+      case "cancelled":
+        return "danger";
+      case "payed":
+        return "success";
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       fetchUserBooking(userId);
@@ -75,10 +86,8 @@ export default function Profil() {
                   <span className="md:hidden block w-[40%]">Status :</span>
                   <div
                     className={
-                      "w-[10px] h-[10px] rounded-full " +
-                      (booking.status === "pending"
-                        ? "bg-danger"
-                        : "bg-success")
+                      "w-[10px] h-[10px] rounded-full bg-" +
+                      checkBookingStatus(booking.status)
                     }
                   ></div>
                 </div>

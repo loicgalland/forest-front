@@ -22,6 +22,7 @@ const config: Config = {
       primary: "#139774",
       success: "#139774",
       danger: "#C74D3A",
+      warning: "#a47000",
       secondary: "#F8F8E5",
       lightGrey: "#c3c6c3",
       grey: "#f1f5f9",

@@ -15,6 +15,17 @@ class BookingRepository extends AbstractRepository {
     });
   }
 
+  async update(id: string, status: string) {
+    const url = "/api/booking/" + id;
+    return await this.client.put(
+      url,
+      { status },
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
   async post({
     startDate,
     endDate,
