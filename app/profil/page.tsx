@@ -51,6 +51,7 @@ export default function Profil() {
             <span className="w-[20%]">Hébergement</span>
             <span className="w-[20%]">Activités</span>
             <span className="w-[20%]">Événements</span>
+            <span className="w-[10]">Personnes</span>
           </div>
           <ul>
             {userBooking.map((booking, index) => (
@@ -91,19 +92,19 @@ export default function Profil() {
                     }
                   ></div>
                 </div>
-                {booking.hostingId ? (
-                  <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
-                    <span className="md:hidden block w-[40%]">
-                      Hébergement :
-                    </span>
+
+                <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                  <span className="md:hidden block w-[40%]">Hébergement :</span>
+                  {booking.hostingId ? (
                     <span>{booking.hostingId.name}</span>
-                  </div>
-                ) : (
-                  ""
-                )}
-                {booking.activities ? (
-                  <div className="md:w-[20%] w-full flex ps-4 py-2 md:ps-0 md:py-0">
-                    <span className="md:hidden block w-[40%]">Activités :</span>
+                  ) : (
+                    "--"
+                  )}
+                </div>
+
+                <div className="md:w-[20%] w-full flex ps-4 py-2 md:ps-0 md:py-0">
+                  <span className="md:hidden block w-[40%]">Activités :</span>
+                  {booking.activities && booking.activities.length ? (
                     <div>
                       {booking.activities.map((activity) => (
                         <span key={activity._id} className="block">
@@ -111,13 +112,14 @@ export default function Profil() {
                         </span>
                       ))}
                     </div>
-                  </div>
-                ) : (
-                  ""
-                )}
-                {booking.events ? (
-                  <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
-                    <span className="md:hidden block w-[40%]">Événement :</span>
+                  ) : (
+                    "--"
+                  )}
+                </div>
+
+                <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                  <span className="md:hidden block w-[40%]">Événement :</span>
+                  {booking.events && booking.events.length ? (
                     <div>
                       {booking.events.map((event) => (
                         <span key={event._id} className="block">
@@ -125,6 +127,14 @@ export default function Profil() {
                         </span>
                       ))}
                     </div>
+                  ) : (
+                    "--"
+                  )}
+                </div>
+                {booking.numberOfPerson ? (
+                  <div className="md:w-[10%] w-full flex md:bg-transparent rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                    <span className="md:hidden block w-[40%]">Personnes :</span>
+                    <div>{booking.numberOfPerson}</div>
                   </div>
                 ) : (
                   ""

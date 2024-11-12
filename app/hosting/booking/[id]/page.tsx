@@ -159,7 +159,6 @@ const BookHosting = () => {
 
   useFetchDataWithUserRole([fetchHosting, fetchActivities]);
   useEffect(() => {
-    console.log(process.env.STRIPE_API_KEY);
     if (userRole) {
       fetchBooking(id);
     }

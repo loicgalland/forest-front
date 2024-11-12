@@ -8,6 +8,8 @@ import AuthRepository from "@/app/repository/AuthRepository";
 import EventRepository from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
 import BookingRepository from "@/app/repository/BookingRepository";
+import PaymentRepository from "@/app/repository/PaymentRepository";
+import { loadStripe } from "@stripe/stripe-js";
 
 const BookEvent = () => {
   const { id } = useParams();
@@ -18,15 +20,30 @@ const BookEvent = () => {
   const router = useRouter();
   const [userId, setUserId] = useState<string>("");
 
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY!);
+  const currency = "eur";
+
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = await BookingRepository.post({
       userId: userId,
       numberOfPerson: numberOfPerson,
       totalPrice: totalPrice,
+      events: event ? [event._id] : [],
     });
     if (response && response.data) {
-      router.push("/");
+      const stripe = await stripePromise;
+      const stripeResponse = await PaymentRepository.post(
+        totalPrice * 100,
+        currency,
+        response.data.data._id,
+      );
+
+      const session = stripeResponse.data;
+
+      if (stripe) {
+        await stripe.redirectToCheckout({ sessionId: session.id });
+      }
     } else {
       console.warn("Form submission failed due to missing data.");
     }
