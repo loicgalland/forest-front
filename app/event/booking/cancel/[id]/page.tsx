@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import BookingRepository from "@/app/repository/BookingRepository";
+import { BookingRepository } from "@/app/repository/BookingRepository";
 import { useEffect } from "react";
 
 export default function PaymentCancel() {

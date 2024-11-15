@@ -1,6 +1,6 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
-class EquipmentRepository extends AbstractRepository {
+class EquipmentRepositoryClass extends AbstractRepository {
   async getAll() {
     return await this.client.get("/api/equipment");
   }
@@ -23,4 +23,4 @@ class EquipmentRepository extends AbstractRepository {
   }
 }
 
-export default new EquipmentRepository();
+export const EquipmentRepository = new EquipmentRepositoryClass();

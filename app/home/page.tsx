@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HostingRepository from "@/app/repository/HostingRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { Hero } from "@/app/components/Hero";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
 import { LongCard } from "@/app/components/LongCard";
 import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
-import EventRepository from "@/app/repository/EventRepository";
-import AuthRepository from "@/app/repository/AuthRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
 
 export default function Home() {

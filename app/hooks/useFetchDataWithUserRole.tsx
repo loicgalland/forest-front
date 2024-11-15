@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import AuthRepository from "@/app/repository/AuthRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
 
 const useFetchDataWithUserRole = (

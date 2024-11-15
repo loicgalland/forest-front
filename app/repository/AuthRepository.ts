@@ -2,7 +2,7 @@ import { AbstractRepository } from "@/app/repository/AbstractRepository";
 import { isValidMail } from "@/app/services/authService";
 import axios from "axios";
 
-class AuthRepository extends AbstractRepository {
+class AuthRepositoryClass extends AbstractRepository {
   async login(mail: string, password: string) {
     const validMail = isValidMail(mail);
     if (!validMail) {
@@ -99,4 +99,4 @@ class AuthRepository extends AbstractRepository {
   }
 }
 
-export default new AuthRepository();
+export const AuthRepository = new AuthRepositoryClass();

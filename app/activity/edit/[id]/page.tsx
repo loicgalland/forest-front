@@ -6,7 +6,7 @@ import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputCompo
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
 import { AddActivityInterface } from "@/app/interface/Activity.interface";
 import { FileInterface } from "@/app/interface/File.interface";
 import Image from "next/image";

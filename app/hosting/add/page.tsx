@@ -2,14 +2,14 @@
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { BedInterface } from "@/app/interface/Bed.interface";
-import BedRepository from "@/app/repository/BedRepository";
+import { BedRepository } from "@/app/repository/BedRepository";
 import { EquipmentInterface } from "@/app/interface/Equipment.interface";
-import EquipmentRepository from "@/app/repository/EquipmentRepository";
+import { EquipmentRepository } from "@/app/repository/EquipmentRepository";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
-import hostingRepository from "@/app/repository/HostingRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
 import { useRouter } from "next/navigation";
 import { AddHostingInterface } from "@/app/interface/Hosting.interface";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
@@ -34,7 +34,7 @@ export default function HostingAdd() {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await hostingRepository.postHosting({
+    const response = await HostingRepository.postHosting({
       hosting,
       equipments,
       beds,

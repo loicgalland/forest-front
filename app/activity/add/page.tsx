@@ -5,7 +5,7 @@ import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputCompo
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { useRouter } from "next/navigation";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
 import useGetUserRole from "@/app/hooks/useGetUserRole";
 import { AddActivityInterface } from "@/app/interface/Activity.interface";
 

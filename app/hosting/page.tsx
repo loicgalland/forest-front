@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import HostingRepository from "@/app/repository/HostingRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import Link from "next/link";

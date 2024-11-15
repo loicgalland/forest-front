@@ -6,7 +6,7 @@ interface Params {
   spotlight?: boolean;
 }
 
-class HostingRepository extends AbstractRepository {
+class HostingRepositoryClass extends AbstractRepository {
   async getAll(params: Params) {
     return await this.client.get("/api/hosting", {
       params: params,
@@ -111,4 +111,4 @@ class HostingRepository extends AbstractRepository {
   }
 }
 
-export default new HostingRepository();
+export const HostingRepository = new HostingRepositoryClass();

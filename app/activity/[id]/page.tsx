@@ -5,7 +5,7 @@ import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";

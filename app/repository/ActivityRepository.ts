@@ -6,7 +6,7 @@ interface Params {
   spotlight?: boolean;
 }
 
-class ActivityRepository extends AbstractRepository {
+class ActivityRepositoryClass extends AbstractRepository {
   async getAll(params: Params) {
     return await this.client.get("/api/activity", { params: params });
   }
@@ -83,4 +83,4 @@ class ActivityRepository extends AbstractRepository {
   }
 }
 
-export default new ActivityRepository();
+export const ActivityRepository = new ActivityRepositoryClass();

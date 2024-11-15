@@ -5,7 +5,7 @@ import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputCompo
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { useRouter } from "next/navigation";
-import EventRepository from "@/app/repository/EventRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import useGetUserRole from "@/app/hooks/useGetUserRole";
 import { AddEventInterface } from "@/app/interface/Event.interface";

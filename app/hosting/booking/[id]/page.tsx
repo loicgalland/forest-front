@@ -11,14 +11,14 @@ import { InputComponent } from "@/app/components/form/InputComponent";
 import { BookingInterface } from "@/app/interface/Booking.interface";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
-import HostingRepository from "@/app/repository/HostingRepository";
-import BookingRepository from "@/app/repository/BookingRepository";
-import ActivityRepository from "@/app/repository/ActivityRepository";
-import AuthRepository from "@/app/repository/AuthRepository";
-import EventRepository from "@/app/repository/EventRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
+import { BookingRepository } from "@/app/repository/BookingRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
 import { loadStripe } from "@stripe/stripe-js";
-import PaymentRepository from "@/app/repository/PaymentRepository";
+import { PaymentRepository } from "@/app/repository/PaymentRepository";
 
 const BookHosting = () => {
   const { id } = useParams();

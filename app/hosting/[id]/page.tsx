@@ -1,7 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { HostingInterface } from "@/app/interface/Hosting.interface";
-import HostingRepository from "@/app/repository/HostingRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
 import React, { useState } from "react";
 import { BottomBar } from "@/app/components/BottomBar";
 import { IconComponent } from "@/app/components/IconComponent";

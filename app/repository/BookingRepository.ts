@@ -1,6 +1,6 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
-class BookingRepository extends AbstractRepository {
+class BookingRepositoryClass extends AbstractRepository {
   async getAllBookingsForHosting(id: string | string[]) {
     const url = "/api/booking/" + id;
     return await this.client.get(url, {
@@ -67,4 +67,4 @@ class BookingRepository extends AbstractRepository {
   }
 }
 
-export default new BookingRepository();
+export const BookingRepository = new BookingRepositoryClass();

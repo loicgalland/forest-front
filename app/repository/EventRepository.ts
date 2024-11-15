@@ -8,7 +8,7 @@ interface Params {
   endDate?: Date;
 }
 
-class EventRepository extends AbstractRepository {
+class EventRepositoryClass extends AbstractRepository {
   async getAll(params: Params) {
     return await this.client.get("/api/event", { params: params });
   }
@@ -90,4 +90,4 @@ class EventRepository extends AbstractRepository {
   }
 }
 
-export default new EventRepository();
+export const EventRepository = new EventRepositoryClass();
