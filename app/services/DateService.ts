@@ -1,4 +1,4 @@
-class DateManager {
+class DateServiceClass {
   // Voir momentJs
   dateFormatter = (date: Date): string => {
     if (date) {
@@ -16,4 +16,4 @@ class DateManager {
   };
 }
 
-export default new DateManager();
+export const DateService = new DateServiceClass();

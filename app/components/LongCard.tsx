@@ -3,7 +3,7 @@ import React from "react";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { EventInterface } from "@/app/interface/Event.interface";
-import DateManager from "@/app/services/dateFormatter";
+import { DateService } from "@/app/services/DateService";
 import Image from "next/image";
 
 interface LongCardData {
@@ -13,7 +13,7 @@ interface LongCardData {
 
 export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
   const formatDate = (date: Date): string => {
-    return DateManager.dateFormatter(date);
+    return DateService.dateFormatter(date);
   };
 
   return (

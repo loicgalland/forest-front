@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, FormEvent, useState } from "react";
-import authRepository from "@/app/repository/AuthRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { InputComponent } from "@/app/components/form/InputComponent";
@@ -32,7 +32,7 @@ export default function Home() {
       setErrorMessage("Password confirmation is required");
     }
 
-    return authRepository.register(email, password, firstName, lastName);
+    return AuthRepository.register(email, password, firstName, lastName);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

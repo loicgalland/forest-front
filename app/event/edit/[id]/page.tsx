@@ -7,7 +7,7 @@ import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputCompo
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
-import EventRepository from "@/app/repository/EventRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
 import { AddEventInterface } from "@/app/interface/Event.interface";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import Image from "next/image";

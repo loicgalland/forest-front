@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { LongCard } from "@/app/components/LongCard";
 import { EventInterface } from "@/app/interface/Event.interface";
-import EventRepository from "@/app/repository/EventRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 

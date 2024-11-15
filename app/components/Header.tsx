@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/app/services/AuthContext";
-import AuthRepository from "@/app/repository/AuthRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
 import UserIcon from "@/app/assets/images/svg/userIcon.svg";
 import UserIconWhite from "@/app/assets/images/svg/userIconWhite.svg";
 import BurgerMenu from "@/app/assets/images/svg/burgerMenu.svg";

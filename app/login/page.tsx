@@ -1,6 +1,6 @@
 "use client";
 import { FormEvent, useState } from "react";
-import authRepository from "@/app/repository/AuthRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { InputComponent } from "@/app/components/form/InputComponent";
@@ -22,7 +22,7 @@ export default function Login() {
       error?: string;
     };
   }> => {
-    return authRepository.login(mail, password);
+    return AuthRepository.login(mail, password);
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {

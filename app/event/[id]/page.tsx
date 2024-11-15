@@ -5,8 +5,8 @@ import { BottomBar } from "@/app/components/BottomBar";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import Link from "next/link";
 import { EventInterface } from "@/app/interface/Event.interface";
-import EventRepository from "@/app/repository/EventRepository";
-import DateManager from "@/app/services/dateFormatter";
+import { EventRepository } from "@/app/repository/EventRepository";
+import { DateService } from "@/app/services/DateService";
 import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
@@ -37,7 +37,7 @@ const EventDetail = () => {
   };
 
   const formatDate = (date: Date): string => {
-    return DateManager.dateFormatter(date);
+    return DateService.dateFormatter(date);
   };
 
   useFetchDataWithUserRole([fetchData]);

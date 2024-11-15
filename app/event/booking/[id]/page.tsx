@@ -4,11 +4,11 @@ import React, { FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { InputComponent } from "@/app/components/form/InputComponent";
-import AuthRepository from "@/app/repository/AuthRepository";
-import EventRepository from "@/app/repository/EventRepository";
+import { AuthRepository } from "@/app/repository/AuthRepository";
+import { EventRepository } from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
-import BookingRepository from "@/app/repository/BookingRepository";
-import PaymentRepository from "@/app/repository/PaymentRepository";
+import { BookingRepository } from "@/app/repository/BookingRepository";
+import { PaymentRepository } from "@/app/repository/PaymentRepository";
 import { loadStripe } from "@stripe/stripe-js";
 
 const BookEvent = () => {

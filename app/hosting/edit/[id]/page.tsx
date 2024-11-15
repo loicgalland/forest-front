@@ -1,16 +1,15 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import HostingRepository from "@/app/repository/HostingRepository";
-import hostingRepository from "@/app/repository/HostingRepository";
+import { HostingRepository } from "@/app/repository/HostingRepository";
 import { AddHostingInterface } from "@/app/interface/Hosting.interface";
 import { InputComponent } from "@/app/components/form/InputComponent";
 import { TextAreaInputComponent } from "@/app/components/form/TextAreaInputComponent";
 import { CheckBoxInputComponent } from "@/app/components/form/CheckBoxInputComponent";
 import { BedInterface } from "@/app/interface/Bed.interface";
-import BedRepository from "@/app/repository/BedRepository";
+import { BedRepository } from "@/app/repository/BedRepository";
 import { EquipmentInterface } from "@/app/interface/Equipment.interface";
-import EquipmentRepository from "@/app/repository/EquipmentRepository";
+import { EquipmentRepository } from "@/app/repository/EquipmentRepository";
 import { FileInputComponent } from "@/app/components/form/FileInputComponent";
 import { DB_URL_IMAGE } from "@/app/config/database";
 import { FileInterface } from "@/app/interface/File.interface";
@@ -51,7 +50,7 @@ const EditHosting = () => {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await hostingRepository.updateHosting(
+    const response = await HostingRepository.updateHosting(
       id,
       hosting,
       beds,

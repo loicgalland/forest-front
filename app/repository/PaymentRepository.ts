@@ -1,6 +1,6 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
-class PaymentRepository extends AbstractRepository {
+class PaymentRepositoryClass extends AbstractRepository {
   async post(amount: number, currency: string, bookingId: string) {
     return await this.client.post(
       "/api/payment/stripe-session",
@@ -12,4 +12,4 @@ class PaymentRepository extends AbstractRepository {
   }
 }
 
-export default new PaymentRepository();
+export const PaymentRepository = new PaymentRepositoryClass();

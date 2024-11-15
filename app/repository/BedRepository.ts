@@ -1,6 +1,6 @@
 import { AbstractRepository } from "@/app/repository/AbstractRepository";
 
-class BedRepository extends AbstractRepository {
+class BedRepositoryClass extends AbstractRepository {
   async getAll() {
     return await this.client.get("/api/bed");
   }
@@ -16,4 +16,4 @@ class BedRepository extends AbstractRepository {
   }
 }
 
-export default new BedRepository();
+export const BedRepository = new BedRepositoryClass();

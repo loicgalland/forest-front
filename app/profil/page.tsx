@@ -1,9 +1,9 @@
 "use client";
 import { useAuth } from "@/app/services/AuthContext";
-import BookingRepository from "@/app/repository/BookingRepository";
+import { BookingRepository } from "@/app/repository/BookingRepository";
 import { useEffect, useState } from "react";
 import { BookingFullInterface } from "@/app/interface/Booking.interface";
-import DateManager from "@/app/services/dateFormatter";
+import { DateService } from "@/app/services/DateService";
 
 export default function Profil() {
   const { userId } = useAuth();
@@ -13,7 +13,7 @@ export default function Profil() {
   );
 
   const formatDate = (date: Date): string => {
-    return DateManager.dateFormatter(date);
+    return DateService.dateFormatter(date);
   };
 
   const fetchUserBooking = async (id: string) => {

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
-import ActivityRepository from "@/app/repository/ActivityRepository";
+import { ActivityRepository } from "@/app/repository/ActivityRepository";
 import { LongCard } from "@/app/components/LongCard";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
