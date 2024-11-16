@@ -4,6 +4,7 @@ import { BookingRepository } from "@/app/repository/BookingRepository";
 import { useEffect, useState } from "react";
 import { BookingFullInterface } from "@/app/interface/Booking.interface";
 import { DateService } from "@/app/services/DateService";
+import { PaymentRepository } from "@/app/repository/PaymentRepository";
 
 export default function Profil() {
   const { userId } = useAuth();
@@ -31,6 +32,13 @@ export default function Profil() {
         return "danger";
       case "payed":
         return "success";
+    }
+  };
+
+  const getCashBack = async (bookingId: string) => {
+    const response = await PaymentRepository.cashBack(bookingId);
+    if (response && response.data && userId) {
+      fetchUserBooking(userId);
     }
   };
 
@@ -139,6 +147,9 @@ export default function Profil() {
                 ) : (
                   ""
                 )}
+                <button onClick={() => getCashBack(booking._id)}>
+                  Remboursement
+                </button>
               </li>
             ))}
           </ul>

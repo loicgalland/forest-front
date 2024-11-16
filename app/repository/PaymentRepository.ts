@@ -10,6 +10,14 @@ class PaymentRepositoryClass extends AbstractRepository {
       },
     );
   }
+
+  async cashBack(bookingId: string) {
+    return await this.client.post(
+      "/api/payment/stripe-cash-back/" + bookingId,
+      null,
+      { withCredentials: true },
+    );
+  }
 }
 
 export const PaymentRepository = new PaymentRepositoryClass();

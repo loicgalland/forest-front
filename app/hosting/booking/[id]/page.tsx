@@ -69,8 +69,7 @@ const BookHosting = () => {
           currency,
           response.data.data._id,
         );
-
-        const session = stripeResponse.data;
+        const session = stripeResponse.data.data;
 
         if (stripe) {
           await stripe.redirectToCheckout({ sessionId: session.id });
