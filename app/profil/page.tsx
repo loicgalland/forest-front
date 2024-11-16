@@ -7,7 +7,7 @@ import { DateService } from "@/app/services/DateService";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
 
 export default function Profil() {
-  const { userId } = useAuth();
+  const { userId, userRole } = useAuth();
 
   const [userBooking, setUserBooking] = useState<BookingFullInterface[] | null>(
     null,
@@ -18,7 +18,14 @@ export default function Profil() {
   };
 
   const fetchUserBooking = async (id: string) => {
-    const response = await BookingRepository.getAllUserBookings(id);
+    let response;
+
+    if (userRole === "admin") {
+      response = await BookingRepository.getAllBooking();
+    } else if (userRole === "user") {
+      response = await BookingRepository.getAllUserBookings(id);
+    }
+
     if (response && response.data.data) {
       setUserBooking(response.data.data);
     }
@@ -27,11 +34,15 @@ export default function Profil() {
   const checkBookingStatus = (status: string) => {
     switch (status) {
       case "pending":
-        return "orange";
+        return "En attentte";
       case "cancelled":
-        return "danger";
+        return "Annulé";
       case "payed":
-        return "success";
+        return "Payé";
+      case "refunded":
+        return "Remboursé";
+      case "confirmed":
+        return "Confirmé";
     }
   };
 
@@ -43,7 +54,7 @@ export default function Profil() {
   };
 
   useEffect(() => {
-    if (userId) {
+    if (userId && userRole) {
       fetchUserBooking(userId);
     }
   }, [userId]);
@@ -57,15 +68,16 @@ export default function Profil() {
             <span className="w-[20%]">Dates</span>
             <span className="w-[10%]">Status</span>
             <span className="w-[20%]">Hébergement</span>
-            <span className="w-[20%]">Activités</span>
-            <span className="w-[20%]">Événements</span>
-            <span className="w-[10]">Personnes</span>
+            <span className="w-[15%]">Activités</span>
+            <span className="w-[15%]">Événements</span>
+            <span className="w-[15%]">Personnes</span>
+            <span className="w[5%]"></span>
           </div>
           <ul>
             {userBooking.map((booking, index) => (
               <li
                 key={booking._id}
-                className={`relative flex mb-8 md:mb-2 mt-4 items-baseline rounded-md ps-0 py-0 md:ps-4 md:py-2 md:odd:bg-beige md:flex-row flex-col ${
+                className={`relative flex mb-8 md:mb-2 mt-4 items-center rounded-md ps-0 py-0 md:ps-4 md:py-2 md:odd:bg-beige md:flex-row flex-col gap-2 ${
                   index !== userBooking.length - 1
                     ? "after:content-[''] md:after:hidden after:block after:h-[2px] after:w-full after:bg-beige" +
                       " after:bottom-[-20px]" +
@@ -93,12 +105,7 @@ export default function Profil() {
                 </div>
                 <div className="md:w-[10%] w-full flex items-center ps-4 py-2 md:ps-0 md:py-0">
                   <span className="md:hidden block w-[40%]">Status :</span>
-                  <div
-                    className={
-                      "w-[10px] h-[10px] rounded-full bg-" +
-                      checkBookingStatus(booking.status)
-                    }
-                  ></div>
+                  <div>{checkBookingStatus(booking.status)}</div>
                 </div>
 
                 <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
@@ -110,7 +117,7 @@ export default function Profil() {
                   )}
                 </div>
 
-                <div className="md:w-[20%] w-full flex ps-4 py-2 md:ps-0 md:py-0">
+                <div className="md:w-[15%] w-full flex ps-4 py-2 md:ps-0 md:py-0">
                   <span className="md:hidden block w-[40%]">Activités :</span>
                   {booking.activities && booking.activities.length ? (
                     <div>
@@ -125,7 +132,7 @@ export default function Profil() {
                   )}
                 </div>
 
-                <div className="md:w-[20%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                <div className="md:w-[15%] w-full flex md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
                   <span className="md:hidden block w-[40%]">Événement :</span>
                   {booking.events && booking.events.length ? (
                     <div>
@@ -140,16 +147,46 @@ export default function Profil() {
                   )}
                 </div>
                 {booking.numberOfPerson ? (
-                  <div className="md:w-[10%] w-full flex md:bg-transparent rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                  <div className="md:w-[15%] w-full flex md:bg-transparent rounded-md ps-4 py-2 md:ps-0 md:py-0">
                     <span className="md:hidden block w-[40%]">Personnes :</span>
                     <div>{booking.numberOfPerson}</div>
                   </div>
                 ) : (
                   ""
                 )}
-                <button onClick={() => getCashBack(booking._id)}>
-                  Remboursement
-                </button>
+                <div className="md:w-[5%] w-full rounded-md ps-4 py-2 md:ps-0 md:py-0 flex md:flex-col items-center gap-2">
+                  {userRole && userRole === "admin" ? (
+                    <div className=" flex md:flex-col items-center gap-2">
+                      {booking.status === "payed" ||
+                      booking.status === "confirmed" ? (
+                        <button
+                          onClick={() => getCashBack(booking._id)}
+                          className="w-[30px] h-[30px] bg-danger text-white rounded-md"
+                        >
+                          <i className="fa-solid fa-ban"></i>
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                      {booking.status !== "cancelled" ? (
+                        <button
+                          onClick={() => confirm(booking._id)}
+                          className="w-[30px] h-[30px] bg-success text-white rounded-md"
+                        >
+                          <i className="fa-solid fa-check"></i>
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  ) : booking.status !== "cancelled" ? (
+                    <button className="w-[30px] h-[30px] bg-danger text-white rounded-md">
+                      <i className="fa-solid fa-ban"></i>
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </li>
             ))}
           </ul>

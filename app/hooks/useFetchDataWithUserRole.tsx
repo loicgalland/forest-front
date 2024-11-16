@@ -24,6 +24,7 @@ const useFetchDataWithUserRole = (
     } else {
       Promise.all(fetchDataArray.map((fetchData) => fetchData(userRole)));
     }
+    console.log(userRole);
   }, [userRole]);
 };
 
