@@ -55,11 +55,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (!userRole) {
-      router.push("/login");
-    }
     if (userId && userRole) {
       fetchUserBooking(userId);
+    } else {
+      router.push("/login");
     }
   }, [userId]);
 
