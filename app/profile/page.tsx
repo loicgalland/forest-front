@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { BookingFullInterface } from "@/app/interface/Booking.interface";
 import { DateService } from "@/app/services/DateService";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
+import { useRouter } from "next/navigation";
 
-export default function Profil() {
+export default function Profile() {
   const { userId, userRole } = useAuth();
-
+  const router = useRouter();
   const [userBooking, setUserBooking] = useState<BookingFullInterface[] | null>(
     null,
   );
@@ -54,6 +55,9 @@ export default function Profil() {
   };
 
   useEffect(() => {
+    if (!userRole) {
+      router.push("/login");
+    }
     if (userId && userRole) {
       fetchUserBooking(userId);
     }

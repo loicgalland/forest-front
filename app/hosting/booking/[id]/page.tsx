@@ -152,6 +152,9 @@ const BookHosting = () => {
   const getUser = async () => {
     const response = await AuthRepository.getUserRole();
     if (response && response.data) {
+      if (!response.data.role) {
+        router.push("/login");
+      }
       setUserId(response.data.userId);
     }
   };

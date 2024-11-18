@@ -14,7 +14,7 @@ export function Header() {
   const [isMenuActive, setIsMenuActive] = useState<boolean>(false);
   const [userMenu, setUserMenu] = useState<boolean>(false);
   const { setUserId } = useAuth();
-  const { setUserRole } = useAuth();
+  const { userRole, setUserRole } = useAuth();
   const userMenuRef = useRef<HTMLUListElement | null>(null);
 
   const router = useRouter();
@@ -146,13 +146,15 @@ export function Header() {
                       onClick={toggleUserMenu}
                       className={
                         "w-[40px] h-[40px] rounded-full border-2 border-primary flex justify-center items-center " +
-                        (window.localStorage.getItem("userConnected")
+                        (window.localStorage.getItem("userConnected") &&
+                        userRole
                           ? " bg-success"
                           : "")
                       }
                     >
                       {" "}
-                      {window.localStorage.getItem("userConnected") ? (
+                      {window.localStorage.getItem("userConnected") &&
+                      userRole ? (
                         <UserIconWhite />
                       ) : (
                         <UserIcon />
@@ -161,7 +163,7 @@ export function Header() {
                   ) : (
                     ""
                   )}
-                  {window.localStorage.getItem("userConnected") ? (
+                  {window.localStorage.getItem("userConnected") && userRole ? (
                     <ul
                       ref={userMenuRef}
                       className={
@@ -177,7 +179,7 @@ export function Header() {
                     >
                       <li className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center">
                         <Link
-                          href={"/profil"}
+                          href={"/profile"}
                           onClick={() => {
                             setUserMenu(false);
                           }}
