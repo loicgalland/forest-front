@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 import { BookingFullInterface } from "@/app/interface/Booking.interface";
 import { DateService } from "@/app/services/DateService";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
-import { useRouter } from "next/navigation";
 
 export default function Profile() {
   const { userId, userRole } = useAuth();
-  const router = useRouter();
   const [userBooking, setUserBooking] = useState<BookingFullInterface[] | null>(
     null,
   );
@@ -44,6 +42,8 @@ export default function Profile() {
         return "Remboursé";
       case "confirmed":
         return "Confirmé";
+      case "refundRequested":
+        return "Attente remboursement";
     }
   };
 
@@ -54,11 +54,23 @@ export default function Profile() {
     }
   };
 
+  const askRefund = async (bookingId: string) => {
+    const response = await BookingRepository.refundRequest(bookingId);
+    if (response && response.data && userId) {
+      fetchUserBooking(userId);
+    }
+  };
+
+  const confirm = async (bookingId: string) => {
+    const response = await BookingRepository.bookingConfirmation(bookingId);
+    if (response && response.data && userId) {
+      fetchUserBooking(userId);
+    }
+  };
+
   useEffect(() => {
     if (userId && userRole) {
       fetchUserBooking(userId);
-    } else {
-      router.push("/login");
     }
   }, [userId]);
 
@@ -68,8 +80,8 @@ export default function Profile() {
       {userBooking && userBooking.length ? (
         <div>
           <div className="font-bold ps-4 py-2 hidden md:flex">
-            <span className="w-[20%]">Dates</span>
-            <span className="w-[10%]">Status</span>
+            <span className="w-[15%]">Dates</span>
+            <span className="w-[15%]">Status</span>
             <span className="w-[20%]">Hébergement</span>
             <span className="w-[15%]">Activités</span>
             <span className="w-[15%]">Événements</span>
@@ -88,25 +100,25 @@ export default function Profile() {
                     : ""
                 }`}
               >
-                <div className="md:w-[20%] w-full md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
+                <div className="md:w-[15%] w-full md:bg-transparent bg-beige rounded-md ps-4 py-2 md:ps-0 md:py-0">
                   <span className="block">
-                    <span className="md:mr-2 md:w-fit w-[40%] inline-block">
-                      Arrivée :
+                    <span className="md:mr-2 md:w-fit w-[40%] inline-block md:block">
+                      Du :
                     </span>
                     <span className="font-bold">
                       {formatDate(booking.startDate)}
                     </span>
                   </span>
                   <span className="block">
-                    <span className="md:mr-2 md:w-fit w-[40%] inline-block">
-                      Départ :
+                    <span className="md:mr-2 md:w-fit w-[40%] inline-block md:block">
+                      Au :
                     </span>
                     <span className="font-bold">
                       {formatDate(booking.endDate)}
                     </span>
                   </span>
                 </div>
-                <div className="md:w-[10%] w-full flex items-center ps-4 py-2 md:ps-0 md:py-0">
+                <div className="md:w-[15%] w-full flex items-center ps-4 py-2 md:ps-0 md:py-0">
                   <span className="md:hidden block w-[40%]">Status :</span>
                   <div>{checkBookingStatus(booking.status)}</div>
                 </div>
@@ -161,7 +173,8 @@ export default function Profile() {
                   {userRole && userRole === "admin" ? (
                     <div className=" flex md:flex-col items-center gap-2">
                       {booking.status === "payed" ||
-                      booking.status === "confirmed" ? (
+                      booking.status === "confirmed" ||
+                      booking.status === "refundRequested" ? (
                         <button
                           onClick={() => getCashBack(booking._id)}
                           className="w-[30px] h-[30px] bg-danger text-white rounded-md"
@@ -171,7 +184,10 @@ export default function Profile() {
                       ) : (
                         ""
                       )}
-                      {booking.status !== "cancelled" ? (
+                      {booking.status !== "cancelled" &&
+                      booking.status !== "refunded" &&
+                      booking.status !== "refundRequested" &&
+                      booking.status !== "confirmed" ? (
                         <button
                           onClick={() => confirm(booking._id)}
                           className="w-[30px] h-[30px] bg-success text-white rounded-md"
@@ -182,8 +198,14 @@ export default function Profile() {
                         ""
                       )}
                     </div>
-                  ) : booking.status !== "cancelled" ? (
-                    <button className="w-[30px] h-[30px] bg-danger text-white rounded-md">
+                  ) : booking.status !== "cancelled" &&
+                    booking.status !== "confirmed" ? (
+                    <button
+                      className="w-[30px] h-[30px] bg-danger text-white rounded-md"
+                      onClick={() => {
+                        askRefund(booking._id);
+                      }}
+                    >
                       <i className="fa-solid fa-ban"></i>
                     </button>
                   ) : (

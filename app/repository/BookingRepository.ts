@@ -30,6 +30,16 @@ class BookingRepositoryClass extends AbstractRepository {
     );
   }
 
+  async refundRequest(id: string) {
+    const url = "/api/booking/refund/" + id;
+    return await this.client.get(url, { withCredentials: true });
+  }
+
+  async bookingConfirmation(id: string) {
+    const url = "/api/booking/confirmation/" + id;
+    return await this.client.get(url, { withCredentials: true });
+  }
+
   async post({
     startDate,
     endDate,
