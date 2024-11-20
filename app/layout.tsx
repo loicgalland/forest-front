@@ -25,10 +25,12 @@ export default function RootLayout({
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className="text-text bg-secondary box-border">
+      <body className="text-text bg-secondary box-border relative overflow-x-hidden">
         <AuthProvider>
-          <Header />
-          <div>{children}</div>
+          <div className="relative overflow-hidden ">
+            <Header />
+            <div>{children}</div>
+          </div>
         </AuthProvider>
       </body>
     </html>
