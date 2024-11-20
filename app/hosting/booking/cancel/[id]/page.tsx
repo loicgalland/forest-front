@@ -23,7 +23,7 @@ export default function PaymentCancel() {
         href="/hosting"
         className="p-2 rounded-lg bg-primary w-fit text-white"
       >
-        Réserver un nouvel hébergement
+        Faire une nouvelle réservation
       </Link>
     </div>
   );
