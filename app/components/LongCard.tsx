@@ -14,7 +14,7 @@ export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
   return (
     <div className="relative rounded-lg overflow-hidden shadow-md h-[250px] w-full flex flex-col mb-2">
       <div className="absolute inset-0 bg-gradient-to-b from-gradientDarkGrey to-transparent flex flex-col justify-between p-4 text-white">
-        <h2 className="text-3xl font-light">{props.item.name}</h2>
+        <h2 className="text-3xl font-light uppercase">{props.item.name}</h2>
         <div className="w-full flex justify-end">
           <Link
             href={"/" + props.type + "/" + props.item._id}

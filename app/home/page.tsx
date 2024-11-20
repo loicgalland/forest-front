@@ -14,6 +14,7 @@ import { EventRepository } from "@/app/repository/EventRepository";
 import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import { Loader } from "@/app/components/Loader";
+import { EventCard } from "@/app/components/EventCard";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -129,11 +130,11 @@ export default function Home() {
         <div className="md:px-20 lg:px-40 xl:px-80 py-4 px-4 mb-5">
           <div>
             <h2 className="text-xl font-bold mb-2">Nos évenéments</h2>
-            <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
+            <div className="gap-3 mb-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {events.map((event) => {
                 return (
                   <div className="w-full" key={event._id}>
-                    {event.name}
+                    <EventCard item={event} type="event" />
                   </div>
                 );
               })}

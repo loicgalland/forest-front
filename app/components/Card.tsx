@@ -11,7 +11,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = (props: CardProps) => {
   return (
-    <div className="relative flex flex-col bg-secondary shadow-md overflow-hidden rounded-xl w-full text-text mb-2 ">
+    <div className="relative flex flex-col bg-secondary shadow-md overflow-hidden rounded-xl w-full text-text mb-2">
       {props.hosting.isSpotlight ? (
         <div className="absolute top-5 right-5 text-secondary z-10 text-2xl">
           <i className="fa-solid fa-fire-flame-curved"></i>
