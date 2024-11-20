@@ -11,8 +11,11 @@ import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
 import UseFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 const HostingDetails = () => {
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,14 +23,11 @@ const HostingDetails = () => {
   const router = useRouter();
 
   const fetchData = async () => {
-    try {
-      const response = await HostingRepository.getHosting(id);
-      if (response && response.data) {
-        setHosting(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
+    setLoading(true);
+    const response = await HostingRepository.getHosting(id);
+    if (response && response.data) {
+      setHosting(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -45,6 +45,7 @@ const HostingDetails = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       {hosting && hosting._id ? (
         <ConfirmationModal
           id={hosting._id}

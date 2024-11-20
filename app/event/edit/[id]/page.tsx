@@ -12,8 +12,11 @@ import { AddEventInterface } from "@/app/interface/Event.interface";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import Image from "next/image";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 const EditEvent = () => {
+  const [loading, setLoading] = useState(false);
+
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string[]>([]);
@@ -40,7 +43,7 @@ const EditEvent = () => {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setLoading(true);
     const response = await EventRepository.update(
       id,
       event,
@@ -83,6 +86,7 @@ const EditEvent = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     const response = await EventRepository.getOne(id);
     if (response.data.data) {
       setEvent(response.data.data);
@@ -95,12 +99,14 @@ const EditEvent = () => {
         })) || [];
 
       setFetchedImages(fetchedImagesArray);
+      setLoading(false);
     }
   };
 
   useFetchDataWithUserRole([fetchData]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold">
         <button
           aria-label="go back  to previous page"

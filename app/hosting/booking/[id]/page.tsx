@@ -19,8 +19,11 @@ import { EventRepository } from "@/app/repository/EventRepository";
 import { EventInterface } from "@/app/interface/Event.interface";
 import { loadStripe } from "@stripe/stripe-js";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
+import { Loader } from "@/app/components/Loader";
 
 const BookHosting = () => {
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const [hosting, setHosting] = useState<HostingInterface>();
   const [activitiesList, setActivitiesList] = useState<ActivityInterface[]>([]);
@@ -46,6 +49,7 @@ const BookHosting = () => {
   const currency = "eur";
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     let duration;
     if (startDate && endDate && totalPrice && userId) {
@@ -81,36 +85,44 @@ const BookHosting = () => {
   };
 
   const fetchHosting = async () => {
+    setLoading(true);
     const response = await HostingRepository.getHosting(id);
     if (response && response.data) {
       setHosting(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchActivities = async (role: string) => {
+    setLoading(true);
     const response = await ActivityRepository.getAll({
       fullAccess: role === "admin",
       spotlight: false,
     });
     if (response && response.data.data) {
       setActivitiesList(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchEvents = async (startDate: Date, endDate: Date) => {
+    setLoading(true);
     const response = await EventRepository.getAll({
       startDate: startDate,
       endDate: endDate,
     });
     if (response && response.data.data) {
       setEventList(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchBooking = async (id: string | string[]) => {
+    setLoading(true);
     const response = await BookingRepository.getAllBookingsForHosting(id);
     if (response && response.data) {
       setBookings(response && response.data.data);
+      setLoading(false);
     }
   };
 
@@ -198,6 +210,7 @@ const BookHosting = () => {
   }, []);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h1 className="text-2xl font-bold mb-3">
         <button
           aria-label="go back  to previous page"

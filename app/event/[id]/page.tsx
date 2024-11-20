@@ -11,8 +11,10 @@ import ConfirmationModal from "@/app/components/ConfirmationAlertComponent";
 import Image from "next/image";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 const EventDetail = () => {
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const [event, setEvent] = useState<EventInterface>();
   const { userRole } = useAuth();
@@ -20,9 +22,11 @@ const EventDetail = () => {
   const router = useRouter();
 
   const fetchData = async () => {
+    setLoading(true);
     const response = await EventRepository.getOne(id);
     if (response.data.data) {
       setEvent(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -44,6 +48,7 @@ const EventDetail = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       {event && event._id ? (
         <ConfirmationModal
           id={event._id}

@@ -16,6 +16,7 @@ import { FileInterface } from "@/app/interface/File.interface";
 import { ModalComponent } from "@/app/components/modal/ModalComponent";
 import Image from "next/image";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 interface BedsHostingList {
   bedId: string;
@@ -23,6 +24,8 @@ interface BedsHostingList {
 }
 
 const EditHosting = () => {
+  const [loading, setLoading] = useState(false);
+
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
   const [fetchedImages, setFetchedImages] = useState<FileInterface[]>([]);
@@ -48,6 +51,7 @@ const EditHosting = () => {
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
 
     const response = await HostingRepository.updateHosting(
@@ -141,6 +145,7 @@ const EditHosting = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     const response = await HostingRepository.getHosting(id);
     if (response.data.data) {
       setHosting(response.data.data);
@@ -175,6 +180,7 @@ const EditHosting = () => {
           setEquipments(equipmentsList);
         },
       );
+      setLoading(false);
     }
   };
 
@@ -196,6 +202,7 @@ const EditHosting = () => {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold">
         <button
           aria-label="go back  to previous page"

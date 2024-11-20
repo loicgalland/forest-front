@@ -7,24 +7,29 @@ import { EventInterface } from "@/app/interface/Event.interface";
 import { EventRepository } from "@/app/repository/EventRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 export default function Event() {
+  const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<EventInterface[]>([]);
   const { userRole } = useAuth();
 
   const fetchData = async (role: string) => {
+    setLoading(true);
     const response = await EventRepository.getAll({
       fullAccess: role === "admin",
       spotlight: false,
     });
     if (response.data.data) {
       setEvents(response.data.data);
+      setLoading(false);
     }
   };
 
   useFetchDataWithUserRole([fetchData]);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold">Nos événements</h2>
         {userRole === "admin" ? (

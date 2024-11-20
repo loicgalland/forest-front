@@ -10,8 +10,11 @@ import { EventInterface } from "@/app/interface/Event.interface";
 import { BookingRepository } from "@/app/repository/BookingRepository";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
 import { loadStripe } from "@stripe/stripe-js";
+import { Loader } from "@/app/components/Loader";
 
 const BookEvent = () => {
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const [numberOfPerson, setNumberOfPerson] = useState<number>(0);
   const [event, setEvent] = useState<EventInterface>();
@@ -24,6 +27,7 @@ const BookEvent = () => {
   const currency = "eur";
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     const response = await BookingRepository.post({
       userId: userId,
@@ -50,9 +54,11 @@ const BookEvent = () => {
   };
 
   const fetchEvent = async (id: string | string[]) => {
+    setLoading(true);
     const response = await EventRepository.getOne(id);
     if (response && response.data.data) {
       setEvent(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -84,6 +90,7 @@ const BookEvent = () => {
   }, []);
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold mb-3">
         <button
           aria-label="go back  to previous page"

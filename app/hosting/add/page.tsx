@@ -13,8 +13,11 @@ import { HostingRepository } from "@/app/repository/HostingRepository";
 import { useRouter } from "next/navigation";
 import { AddHostingInterface } from "@/app/interface/Hosting.interface";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
+import { Loader } from "@/app/components/Loader";
 
 export default function HostingAdd() {
+  const [loading, setLoading] = useState(false);
+
   const [bedList, setBedList] = useState<BedInterface[]>([]);
   const [equipmentList, setEquipmentList] = useState<EquipmentInterface[]>([]);
 
@@ -33,6 +36,7 @@ export default function HostingAdd() {
   const router = useRouter();
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     const response = await HostingRepository.postHosting({
       hosting,
@@ -83,16 +87,20 @@ export default function HostingAdd() {
   };
 
   const fetchBedsList = async () => {
+    setLoading(true);
     const response = await BedRepository.getAll();
     if (response.data.data) {
       setBedList(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchEquipmentsList = async () => {
+    setLoading(true);
     const response = await EquipmentRepository.getAll();
     if (response.data.data) {
       setEquipmentList(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -121,6 +129,7 @@ export default function HostingAdd() {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold">
         <button
           aria-label="go back  to previous page"

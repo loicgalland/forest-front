@@ -35,7 +35,6 @@ export default function Login() {
     try {
       const response = await login(email, password);
       if (response.data.success) {
-        console.log(response.data);
         localStorage.setItem("userConnected", "true");
         setUserId(response.data.data.userId);
         router.push("/home");

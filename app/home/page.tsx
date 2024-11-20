@@ -13,39 +13,47 @@ import { EventInterface } from "@/app/interface/Event.interface";
 import { EventRepository } from "@/app/repository/EventRepository";
 import { AuthRepository } from "@/app/repository/AuthRepository";
 import { useAuth } from "@/app/services/AuthContext";
+import { Loader } from "@/app/components/Loader";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
   const [hostings, setHostings] = useState<HostingInterface[]>([]);
   const [activities, setActivities] = useState<ActivityInterface[]>();
   const [events, setEvents] = useState<EventInterface[]>();
   const { setUserRole } = useAuth();
 
   const fetchHosting = async () => {
+    setLoading(true);
     const response = await HostingRepository.getAll({
       fullAccess: false,
       spotlight: false,
     });
     if (response.data.data) {
       setHostings(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchActivities = async () => {
+    setLoading(true);
     const response = await ActivityRepository.getAll({
       fullAccess: false,
       spotlight: true,
     });
     if (response.data.data) {
       setActivities(response.data.data);
+      setLoading(false);
     }
   };
 
   const fetchEvent = async () => {
+    setLoading(true);
     const response = await EventRepository.getAll({
       fullAccess: false,
     });
     if (response.data.data) {
       setEvents(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -62,6 +70,7 @@ export default function Home() {
   }, []);
   return (
     <div>
+      {loading ? <Loader /> : null}
       <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
         <Hero
           title="Titre du site"
@@ -69,7 +78,7 @@ export default function Home() {
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         />
       </div>
-      <div className=" md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      <div className="relative md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
         {hostings && hostings.length > 0 ? (
           <div>
             <h2 className="text-xl font-bold mb-2">Nos coups de cœur</h2>
@@ -89,8 +98,8 @@ export default function Home() {
           ""
         )}
       </div>
-      {activities && activities.length > 0 ? (
-        <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
+      <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5 bg-secondary">
+        {activities && activities.length > 0 ? (
           <div>
             <h2 className="text-xl font-bold mb-2">Découvrez nos activités</h2>
             <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
@@ -109,10 +118,10 @@ export default function Home() {
               Toutes les activités
             </Link>
           </div>
-        </div>
-      ) : (
-        ""
-      )}
+        ) : (
+          ""
+        )}
+      </div>
       {events && events.length > 0 ? (
         <div className="md:px-20 lg:px-40 xl:px-60 py-4 px-4 mb-5">
           <div>

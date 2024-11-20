@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 import { BookingFullInterface } from "@/app/interface/Booking.interface";
 import { DateService } from "@/app/services/DateService";
 import { PaymentRepository } from "@/app/repository/PaymentRepository";
+import { Loader } from "@/app/components/Loader";
 
 export default function Profile() {
+  const [loading, setLoading] = useState(false);
+
   const { userId, userRole } = useAuth();
   const [userBooking, setUserBooking] = useState<BookingFullInterface[] | null>(
     null,
@@ -17,6 +20,7 @@ export default function Profile() {
   };
 
   const fetchUserBooking = async (id: string) => {
+    setLoading(true);
     let response;
 
     if (userRole === "admin") {
@@ -27,6 +31,7 @@ export default function Profile() {
 
     if (response && response.data.data) {
       setUserBooking(response.data.data);
+      setLoading(false);
     }
   };
 
@@ -48,23 +53,29 @@ export default function Profile() {
   };
 
   const getCashBack = async (bookingId: string) => {
+    setLoading(true);
     const response = await PaymentRepository.cashBack(bookingId);
     if (response && response.data && userId) {
       fetchUserBooking(userId);
+      setLoading(false);
     }
   };
 
   const askRefund = async (bookingId: string) => {
+    setLoading(true);
     const response = await BookingRepository.refundRequest(bookingId);
     if (response && response.data && userId) {
       fetchUserBooking(userId);
+      setLoading(false);
     }
   };
 
   const confirm = async (bookingId: string) => {
+    setLoading(true);
     const response = await BookingRepository.bookingConfirmation(bookingId);
     if (response && response.data && userId) {
       fetchUserBooking(userId);
+      setLoading(false);
     }
   };
 
@@ -76,6 +87,7 @@ export default function Profile() {
 
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold mb-3">Vos réservations</h2>
       {userBooking && userBooking.length ? (
         <div>

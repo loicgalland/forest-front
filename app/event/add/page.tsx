@@ -9,8 +9,11 @@ import { EventRepository } from "@/app/repository/EventRepository";
 import { DatePickerComponent } from "@/app/components/form/DatePickerComponent";
 import useGetUserRole from "@/app/hooks/useGetUserRole";
 import { AddEventInterface } from "@/app/interface/Event.interface";
+import { Loader } from "@/app/components/Loader";
 
 export default function EventAdd() {
+  const [loading, setLoading] = useState(false);
+
   const [event, setEvent] = useState<AddEventInterface>({
     name: "",
     description: "",
@@ -25,6 +28,7 @@ export default function EventAdd() {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const response = await EventRepository.post(event, images);
     if (response.data.success) router.push("/event");
   };
@@ -49,6 +53,7 @@ export default function EventAdd() {
   useGetUserRole();
   return (
     <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+      {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold">
         <button
           aria-label="go back  to previous page"

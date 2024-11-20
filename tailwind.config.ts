@@ -28,6 +28,7 @@ const config: Config = {
       grey: "#f1f5f9",
       text: "#482A2A",
       black: "#000000",
+      loader: "rgb(255 255 255 / 37%)",
       transparent: "rgba(0, 0, 0, 0)",
     },
   },
