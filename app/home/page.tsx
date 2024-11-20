@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HostingRepository } from "@/app/repository/HostingRepository";
 import { Card } from "@/app/components/Card";
 import { Hero } from "@/app/components/Hero";
@@ -26,7 +26,7 @@ export default function Home() {
     setLoading(true);
     const response = await HostingRepository.getAll({
       fullAccess: false,
-      spotlight: false,
+      spotlight: true,
     });
     if (response.data.data) {
       setHostings(response.data.data);
@@ -77,20 +77,22 @@ export default function Home() {
       <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
         <Hero />
       </div>
-      <div className="relative md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
+      <div className="relative md:px-20 lg:px-40 xl:px-80 py-8 px-4 mb-5 bg-beige">
         {hostings && hostings.length > 0 ? (
           <div>
-            <h2 className="text-xl font-bold mb-2">Nos coups de cœur</h2>
-            <div className="flex gap-3 flex-wrap mb-3">
+            <h2 className="md:text-5xl text-3xl font-ligth mb-4">
+              Nos coups de cœur
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
               {hostings.map((item) => {
                 return <Card key={item._id} hosting={item} type="hosting" />;
               })}
             </div>
             <Link
-              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
               href={"/hosting"}
             >
-              Tous les hébergements
+              Voir tous nos hébergements
             </Link>
           </div>
         ) : (
@@ -100,7 +102,9 @@ export default function Home() {
       <div className="md:px-20 lg:px-40 xl:px-80 py-4 px-4 mb-5 bg-secondary">
         {activities && activities.length > 0 ? (
           <div>
-            <h2 className="text-xl font-bold mb-2">Découvrez nos activités</h2>
+            <h2 className="md:text-5xl text-3xl font-ligth mb-4">
+              Pour vous occuper pendant votre séjour découvrez nos activités
+            </h2>
             <div className="gap-3 mb-3 grid grid-cols-1 lg:grid-cols-2">
               {activities.map((activity) => {
                 return (
@@ -111,10 +115,10 @@ export default function Home() {
               })}
             </div>
             <Link
-              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
               href={"/activity"}
             >
-              Toutes les activités
+              Découvrir toutes nos activités
             </Link>
           </div>
         ) : (
@@ -129,13 +133,13 @@ export default function Home() {
               {events.map((event) => {
                 return (
                   <div className="w-full" key={event._id}>
-                    <LongCard item={event} type="event" />
+                    {event.name}
                   </div>
                 );
               })}
             </div>
             <Link
-              className="w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white"
+              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
               href={"/event"}
             >
               Tous les événements
