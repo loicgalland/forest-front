@@ -3,11 +3,6 @@ const nextConfig = {
     images: {
         domains: ['localhost', 'picsum.photos'],
     },
-    experimental: {
-        images: {
-            allowFutureImage: true,
-        },
-    },
     reactStrictMode: false,
     webpack: (config) => {
         config.module.rules.push({
