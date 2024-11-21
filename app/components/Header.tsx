@@ -16,6 +16,7 @@ export function Header() {
   const { setUserId } = useAuth();
   const { userRole, setUserRole } = useAuth();
   const userMenuRef = useRef<HTMLUListElement | null>(null);
+  const [userConnected, setUserConnected] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -29,7 +30,7 @@ export function Header() {
 
   const handleMenu = () => {
     setIsMenuActive(!isMenuActive);
-    if (!isMenuActive) {
+    if (!isMenuActive && isMobile) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -72,6 +73,10 @@ export function Header() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = window.localStorage.getItem("userConnected");
+      setUserConnected(storedUser !== null);
+    }
     getUserRole();
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -86,9 +91,9 @@ export function Header() {
   return (
     <>
       <header>
-        <div className=" md:px-20 lg:px-40 xl:px-60 flex justify-between items-center bg-beige h-[80px] font-bold text-xl font-happy">
+        <div className="md:px-20 lg:px-40 xl:px-80 flex justify-between items-center md:bg-beige h-[80px] font-bold text-xl font-happy z-10 relative">
           <div className="w-full relative flex justify-between items-center">
-            <h1 className="text-[30px] font-bold uppercase py-2">
+            <h1 className="text-[30px] font-light uppercase py-2 px-4 md:px-0">
               <Link
                 href="/home"
                 onClick={() => {
@@ -110,7 +115,8 @@ export function Header() {
                 !isMobile
                   ? "flex"
                   : isMenuActive
-                    ? "absolute top-[-20px] left-0 flex flex-col z-20 w-full h-[100vh] py-2 px-4 bg-beige justify-center"
+                    ? "absolute top-[-20px] left-0 flex flex-col z-20 w-full h-[100vh] py-2 px-4 bg-beige" +
+                      " justify-center font-light"
                     : "hidden"
               }
             >
@@ -126,7 +132,7 @@ export function Header() {
                   return (
                     <li
                       key={index}
-                      className="mt-6 md:ml-4 md:mt-0 text-[19px] md:text-[15px]"
+                      className="mt-6 md:ml-4 md:mt-0 text-[19px] md:text-[15px] font-light"
                       onClick={handleMenu}
                     >
                       <Link
@@ -146,15 +152,11 @@ export function Header() {
                       onClick={toggleUserMenu}
                       className={
                         "w-[40px] h-[40px] rounded-full border-2 border-primary flex justify-center items-center " +
-                        (window.localStorage.getItem("userConnected") &&
-                        userRole
-                          ? " bg-success"
-                          : "")
+                        (userConnected && userRole ? " bg-success" : "")
                       }
                     >
                       {" "}
-                      {window.localStorage.getItem("userConnected") &&
-                      userRole ? (
+                      {userConnected && userRole ? (
                         <UserIconWhite />
                       ) : (
                         <UserIcon />
@@ -163,7 +165,7 @@ export function Header() {
                   ) : (
                     ""
                   )}
-                  {window.localStorage.getItem("userConnected") && userRole ? (
+                  {userConnected && userRole ? (
                     <ul
                       ref={userMenuRef}
                       className={
@@ -177,7 +179,7 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center">
+                      <li className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center font-light">
                         <Link
                           href={"/profile"}
                           onClick={() => {
@@ -188,7 +190,7 @@ export function Header() {
                         </Link>
                       </li>
                       <li
-                        className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center"
+                        className="cursor-pointer mt-6 pt-1 md:mt-0 md:mb-2 text-center font-light"
                         onClick={() => {
                           signOut();
                           setUserMenu(false);
@@ -211,7 +213,7 @@ export function Header() {
                             : "hidden"
                       }
                     >
-                      <li className="mt-6 md:mt-0 md:mb-2 text-center">
+                      <li className="mt-6 md:mt-0 md:mb-2 text-center font-light">
                         <Link
                           href="/login"
                           onClick={() => {
@@ -222,7 +224,7 @@ export function Header() {
                           Connexion
                         </Link>
                       </li>
-                      <li className="mt-6 md:mt-0 md:mb-2 text-center bg-success text-secondary w-full rounded-[10px] px-4">
+                      <li className="mt-6 md:mt-0 md:mb-2 text-center bg-success text-secondary w-full rounded-[10px] px-4 font-light">
                         <Link
                           href="/register"
                           onClick={() => {

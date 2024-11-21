@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { LongCard } from "@/app/components/LongCard";
 import { EventInterface } from "@/app/interface/Event.interface";
 import { EventRepository } from "@/app/repository/EventRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 import { Loader } from "@/app/components/Loader";
+import { EventCard } from "@/app/components/EventCard";
 
 export default function Event() {
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function Event() {
       fullAccess: role === "admin",
       spotlight: false,
     });
-    if (response.data.data) {
+    if (response.data.success) {
       setEvents(response.data.data);
       setLoading(false);
     }
@@ -28,14 +28,14 @@ export default function Event() {
 
   useFetchDataWithUserRole([fetchData]);
   return (
-    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5 mt-8">
       {loading ? <Loader /> : null}
-      <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-bold">Nos événements</h2>
+      <div className="flex justify-between mb-4 items-center">
+        <h1 className="md:text-5xl text-3xl font-ligth">Nos événements</h1>
         {userRole === "admin" ? (
           <Link
             href="/event/add"
-            className="bg-success text-white p-2 rounded-lg"
+            className="bg-success text-white p-2 rounded-lg h-fit font-light"
           >
             <i className="fa-solid fa-plus"></i>
           </Link>
@@ -43,10 +43,17 @@ export default function Event() {
           ""
         )}
       </div>
-      <div className="flex gap-3 flex-wrap">
+      <div className="gap-3 grid grid-cols-1 md:grid-cols-2">
         {events && events.length > 0 ? (
           events.map((event) => {
-            return <LongCard item={event} type="event" key={event._id} />;
+            return (
+              <EventCard
+                item={event}
+                type="event"
+                key={event._id}
+                dark={true}
+              />
+            );
           })
         ) : (
           <div>

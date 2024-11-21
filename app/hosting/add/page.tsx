@@ -128,7 +128,7 @@ export default function HostingAdd() {
   useFetchDataWithUserRole([fetchEquipmentsList, fetchBedsList]);
 
   return (
-    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
       {loading ? <Loader /> : null}
       <h2 className="text-2xl font-bold">
         <button

@@ -16,19 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          title="Forest"
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />
-      </head>
-      <body className="text-text bg-secondary box-border">
+      <head></head>
+      <body className="text-text bg-secondary box-border relative font-light ">
         <AuthProvider>
-          <Header />
-          <div>{children}</div>
+          <div className="relative overflow-x-hidden ">
+            <Header />
+            <div>{children}</div>
+          </div>
         </AuthProvider>
       </body>
     </html>

@@ -47,7 +47,7 @@ const EventDetail = () => {
   useFetchDataWithUserRole([fetchData]);
 
   return (
-    <div className="md:px-20 lg:px-40 xl:px-60 py-2 px-4 mb-5">
+    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-28 md:mb-5 mt-8">
       {loading ? <Loader /> : null}
       {event && event._id ? (
         <ConfirmationModal
@@ -63,46 +63,13 @@ const EventDetail = () => {
         type="event"
         price={event?.price ? event.price : "Prix non définit"}
       />
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold mb-3">
-          <button
-            aria-label="go back  to previous page"
-            type="button"
-            onClick={() => {
-              router.push("/event");
-            }}
-            className="mr-2"
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-          </button>
-          {event?.name}
-        </h2>
-        {userRole === "admin" && event && (
-          <div>
-            <Link
-              href={"/event/edit/" + event?._id}
-              className="bg-success text-white p-2 rounded-lg"
-            >
-              <i className="fa-regular fa-pen-to-square"></i>
-            </Link>
-            <button
-              type="button"
-              aria-label="delete"
-              className="bg-danger text-white p-2 rounded-lg ml-4"
-              onClick={() => deleteEvent(event._id)}
-            >
-              <i className="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        )}
-      </div>
       <div className="flex flex-col md:flex-row">
         <div className="mb-3 w-full md:w-[33%] grid gap-4">
           {Array.isArray(event?.images) && (
             <>
               {event.images.length > 0 && (
                 <Image
-                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl"
+                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl h-full"
                   src={DB_URL_IMAGE + event.images[0].path}
                   alt={event.images[0].originalName}
                   width={500}
@@ -125,20 +92,44 @@ const EventDetail = () => {
           )}
         </div>
         <div className="w-full md:w-[65%] md:ml-3">
-          <div>{event?.date ? formatDate(event.date) : ""}</div>
-          <div>{event?.description}</div>
-          <p>
-            Places disponibles: {event?.placeAvailable}/{event?.capacity}
-          </p>
-          <div className="hidden md:flex md:w-full items-center justify-between">
-            <p className="text-xl font-bold">{event?.price}€</p>
-            <Link
-              href={"/event/booking/" + event?._id}
-              className="p-2 rounded-lg bg-primary w-fit text-white"
-            >
-              Réserver
-            </Link>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="md:text-5xl text-3xl font-ligth">{event?.name}</h2>
+            {userRole === "admin" && event && (
+              <div>
+                <Link
+                  href={"/event/edit/" + event?._id}
+                  className="bg-success text-white p-2 rounded-lg"
+                >
+                  <i className="fa-regular fa-pen-to-square"></i>
+                </Link>
+                <button
+                  type="button"
+                  aria-label="delete"
+                  className="bg-danger text-white p-2 rounded-lg ml-4"
+                  onClick={() => deleteEvent(event._id)}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            )}
           </div>
+          <div className={"mb-3 font-bold text-xl"}>
+            {event?.date ? formatDate(event.date) : ""}
+          </div>
+          <div className={"mb-3"}>{event?.description}</div>
+          <p className={"mb-3"}>
+            Places disponibles:{" "}
+            <span className={"font-bold"}>
+              {event?.placeAvailable} / {event?.capacity}
+            </span>
+          </p>
+          <p className="text-xl font-bold">{event?.price}€</p>
+          <Link
+            href={"/event/booking/" + event?._id}
+            className="mt-4 w-fit p-1 px-5 rounded-2xl bg-primary text-secondary font-light hidden md:block"
+          >
+            Réserver
+          </Link>
         </div>
       </div>
     </div>
