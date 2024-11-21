@@ -139,11 +139,11 @@ export default function Home() {
             <h2 className="md:text-5xl text-3xl font-ligth mb-4">
               Tout au long de l’année nous organisons plusieurs événements
             </h2>
-            <div className="gap-3 mb-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <div className="gap-3 mb-3 grid grid-cols-1 md:grid-cols-2">
               {events.map((event) => {
                 return (
                   <div className="w-full" key={event._id}>
-                    <EventCard item={event} type="event" />
+                    <EventCard item={event} type="event" dark={false} />
                   </div>
                 );
               })}

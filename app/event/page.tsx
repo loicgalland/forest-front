@@ -8,6 +8,7 @@ import { EventRepository } from "@/app/repository/EventRepository";
 import { useAuth } from "@/app/services/AuthContext";
 import useFetchDataWithUserRole from "@/app/hooks/useFetchDataWithUserRole";
 import { Loader } from "@/app/components/Loader";
+import { EventCard } from "@/app/components/EventCard";
 
 export default function Event() {
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,14 @@ export default function Event() {
       <div className="gap-3 grid grid-cols-1 md:grid-cols-2">
         {events && events.length > 0 ? (
           events.map((event) => {
-            return <LongCard item={event} type="event" key={event._id} />;
+            return (
+              <EventCard
+                item={event}
+                type="event"
+                key={event._id}
+                dark={true}
+              />
+            );
           })
         ) : (
           <div>

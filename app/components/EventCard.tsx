@@ -7,11 +7,17 @@ import Link from "next/link";
 interface EventCardData {
   item: EventInterface;
   type: string;
+  dark: boolean;
 }
 
 export const EventCard: React.FC<EventCardData> = (props: EventCardData) => {
   return (
-    <div className="relative flex bg-secondary shadow-md overflow-hidden rounded-xl w-full text-text mb-2">
+    <div
+      className={
+        "relative flex shadow-md overflow-hidden rounded-xl w-full text-text mb-2 " +
+        (props.dark ? " bg-beige" : " bg-secondary ")
+      }
+    >
       <div className="relative overflow-hidden text-text bg-white bg-clip-border h-52 w-[50%]">
         <Image
           className="object-cover w-full h-full"

@@ -1,26 +1,37 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
-    type: string,
+  type: string;
 }
 
 export const IconComponent: React.FC<Props> = (props: Props) => {
-    const [icon, setIcon] = useState("")
+  const [icon, setIcon] = useState("");
 
+  useEffect(() => {
+    switch (props.type) {
+      case "coffee":
+        setIcon("mug-hot");
+        break;
+      case "food":
+        setIcon("utensils");
+        break;
+      case "wifi":
+        setIcon("wifi");
+        break;
+      case "kitchen":
+        setIcon("kitchen-set");
+        break;
+      case "tv":
+        setIcon("tv");
+        break;
+      case "bathroom":
+        setIcon("bath");
+        break;
+      case "wash":
+        setIcon("hand-sparkles");
+        break;
+    }
+  }, [props.type]);
 
-    useEffect(() => {
-        if(props.type === 'food'){
-            setIcon('utensils')
-        }
-        if(props.type === "wifi"){
-            setIcon('wifi')
-        }
-        if(props.type === "stuff"){
-            setIcon('blender')
-        }
-    }, [props.type]);
-
-    return (
-        <i className={"w-[25px] text-center fa-solid fa-" + icon}></i>
-    )
-}
+  return <i className={"w-[25px] text-center fa-solid fa-" + icon}></i>;
+};

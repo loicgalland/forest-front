@@ -66,7 +66,7 @@ const HostingDetails = () => {
             <>
               {hosting.images.length > 0 && (
                 <Image
-                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl"
+                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl h-full"
                   src={DB_URL_IMAGE + hosting.images[0].path}
                   alt={hosting.images[0].originalName}
                   width={500}
@@ -111,30 +111,52 @@ const HostingDetails = () => {
             )}
           </div>
           <div className={"max-w-[900px] mb-3"}>{hosting?.description}</div>
-          <div className={" mb-3"}>
+          <div className={"mb-3"}>
             Ce logement est prévu pour {hosting?.capacity} personnes
+            <ul>
+              {hosting?.beds.map((bed) => {
+                return (
+                  <li className={"font-normal ml-4"} key={bed.bed._id}>
+                    - {bed.quantity} {bed.bed.name}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-          <div className={"hidden md:block md:w-full text-xl font-bold mb-3"}>
-            {hosting?.price}€ <span className={"font-light"}>/ nuit</span>
-          </div>
-          <div className={"w-full mt-3 pt-2"}>
+          <div className={"w-full"}>
             {hosting?.equipments ? (
-              <h4 className={""}>
+              <h4 className={"mb-3"}>
                 Les équipements présents dans le logement :
               </h4>
             ) : (
               ""
             )}
-            <ul>
+            <ul className={"mb-3 grid grid-cols-1 md:grid-cols-2"}>
               {hosting?.equipments.map((equipment, index) => {
                 return (
-                  <li key={index}>
+                  <li
+                    key={index}
+                    className={"bg-beige px-4 py-1 rounded-full w-fit mb-2"}
+                  >
                     <IconComponent type={equipment.type} />
-                    <span className={"mr-2"}> {equipment.name}</span>
+                    <span className={"ml-2 pl-3 border-l-[1px] border-text"}>
+                      {equipment.name}
+                    </span>
                   </li>
                 );
               })}
+              <li className={"bg-beige px-4 py-1 rounded-full w-fit mb-2"}>
+                <i
+                  className={"w-[25px] text-center fa-solid fa-ban-smoking"}
+                ></i>
+                <span className={"ml-2 pl-3 border-l-[1px] border-text"}>
+                  Non fumeur
+                </span>
+              </li>
             </ul>
+            <div className={"hidden md:block md:w-full text-xl font-bold mb-3"}>
+              {hosting?.price}€ <span className={"font-light"}>/ nuit</span>
+            </div>
           </div>
           <Link
             href={"/hosting/booking/" + hosting?._id}

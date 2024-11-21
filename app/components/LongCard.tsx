@@ -6,13 +6,20 @@ import { EventInterface } from "@/app/interface/Event.interface";
 import Image from "next/image";
 
 interface LongCardData {
-  item: ActivityInterface | EventInterface;
+  item: ActivityInterface;
   type: string;
 }
 
 export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
   return (
     <div className="relative rounded-lg overflow-hidden shadow-md h-[250px] w-full flex flex-col mb-2">
+      {props.item.isSpotlight ? (
+        <div className="absolute top-5 right-5 text-secondary z-10 text-2xl">
+          <i className="fa-solid fa-fire-flame-curved"></i>
+        </div>
+      ) : (
+        ""
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-gradientDarkGrey to-transparent flex flex-col justify-between p-4 text-white">
         <h2 className="text-3xl font-light uppercase">{props.item.name}</h2>
         <div className="w-full flex justify-end">
