@@ -7,11 +7,17 @@ import Image from "next/image";
 interface CardProps {
   hosting: HostingInterface;
   type: string;
+  dark: boolean;
 }
 
 export const Card: React.FC<CardProps> = (props: CardProps) => {
   return (
-    <div className="relative flex flex-col bg-secondary shadow-md overflow-hidden rounded-xl w-full text-text mb-2">
+    <div
+      className={
+        "relative flex flex-col shadow-md overflow-hidden rounded-xl w-full text-text mb-2 " +
+        (props.dark ? " bg-beige" : " bg-secondary ")
+      }
+    >
       {props.hosting.isSpotlight ? (
         <div className="absolute top-5 right-5 text-secondary z-10 text-2xl">
           <i className="fa-solid fa-fire-flame-curved"></i>
@@ -36,7 +42,7 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
           height={300}
         />
       </div>
-      <div className="p-6 h-[50%] flex flex-col justify-between">
+      <div className={"p-6 h-[50%] flex flex-col justify-between "}>
         <div>
           <h3 className="text-xl font-normal">{props.hosting.name}</h3>
           <p className="text-sm font-light line-clamp-2">

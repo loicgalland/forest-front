@@ -86,7 +86,14 @@ export default function Home() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
               {hostings.map((item) => {
-                return <Card key={item._id} hosting={item} type="hosting" />;
+                return (
+                  <Card
+                    key={item._id}
+                    hosting={item}
+                    type="hosting"
+                    dark={false}
+                  />
+                );
               })}
             </div>
             <Link

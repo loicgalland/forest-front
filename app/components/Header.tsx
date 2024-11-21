@@ -30,7 +30,7 @@ export function Header() {
 
   const handleMenu = () => {
     setIsMenuActive(!isMenuActive);
-    if (!isMenuActive) {
+    if (!isMenuActive && isMobile) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
