@@ -16,6 +16,7 @@ export function Header() {
   const { setUserId } = useAuth();
   const { userRole, setUserRole } = useAuth();
   const userMenuRef = useRef<HTMLUListElement | null>(null);
+  const [userConnected, setUserConnected] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -72,6 +73,10 @@ export function Header() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = window.localStorage.getItem("userConnected");
+      setUserConnected(storedUser !== null);
+    }
     getUserRole();
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -147,15 +152,11 @@ export function Header() {
                       onClick={toggleUserMenu}
                       className={
                         "w-[40px] h-[40px] rounded-full border-2 border-primary flex justify-center items-center " +
-                        (window.localStorage.getItem("userConnected") &&
-                        userRole
-                          ? " bg-success"
-                          : "")
+                        (userConnected && userRole ? " bg-success" : "")
                       }
                     >
                       {" "}
-                      {window.localStorage.getItem("userConnected") &&
-                      userRole ? (
+                      {userConnected && userRole ? (
                         <UserIconWhite />
                       ) : (
                         <UserIcon />
@@ -164,7 +165,7 @@ export function Header() {
                   ) : (
                     ""
                   )}
-                  {window.localStorage.getItem("userConnected") && userRole ? (
+                  {userConnected && userRole ? (
                     <ul
                       ref={userMenuRef}
                       className={

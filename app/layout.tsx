@@ -27,7 +27,7 @@ export default function RootLayout({
       </head>
       <body className="text-text bg-secondary box-border relative overflow-x-hidden">
         <AuthProvider>
-          <div className="relative overflow-hidden ">
+          <div className="relative overflow-x-hidden ">
             <Header />
             <div>{children}</div>
           </div>
