@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { LongCard } from "@/app/components/LongCard";
 import { EventInterface } from "@/app/interface/Event.interface";
 import { EventRepository } from "@/app/repository/EventRepository";
 import { useAuth } from "@/app/services/AuthContext";
@@ -21,7 +20,7 @@ export default function Event() {
       fullAccess: role === "admin",
       spotlight: false,
     });
-    if (response.data.data) {
+    if (response.data.success) {
       setEvents(response.data.data);
       setLoading(false);
     }

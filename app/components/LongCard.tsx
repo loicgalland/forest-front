@@ -2,7 +2,6 @@ import Link from "next/link";
 import React from "react";
 import { ActivityInterface } from "@/app/interface/Activity.interface";
 import { DB_URL_IMAGE } from "@/app/config/database";
-import { EventInterface } from "@/app/interface/Event.interface";
 import Image from "next/image";
 
 interface LongCardData {

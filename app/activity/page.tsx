@@ -17,7 +17,9 @@ export default function Activity() {
       fullAccess: role === "admin",
       spotlight: false,
     });
-    setActivities(response.data.data);
+    if (response.data.success) {
+      setActivities(response.data.data);
+    }
   };
 
   useFetchDataWithUserRole([fetchData]);
