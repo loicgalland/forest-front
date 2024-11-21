@@ -44,7 +44,7 @@ const HostingDetails = () => {
   UseFetchDataWithUserRole([fetchData]);
 
   return (
-    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
+    <div className={"md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-28 md:mb-5 mt-8"}>
       {loading ? <Loader /> : null}
       {hosting && hosting._id ? (
         <ConfirmationModal
@@ -57,45 +57,11 @@ const HostingDetails = () => {
         ""
       )}
       <BottomBar
-        type="hosting"
+        type={"hosting"}
         price={hosting?.price ? hosting.price : "Pix non définit"}
       ></BottomBar>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold mb-3">
-          <button
-            aria-label="go back  to previous page"
-            type="button"
-            onClick={() => {
-              router.push("/hosting");
-            }}
-            className="mr-2"
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-          </button>
-          {hosting?.name}
-        </h2>
-        {userRole === "admin" && hosting && (
-          <div>
-            <Link
-              href={"/hosting/edit/" + hosting?._id}
-              className="bg-success text-white p-2 rounded-lg"
-            >
-              <i className="fa-regular fa-pen-to-square"></i>
-            </Link>
-            <button
-              type="button"
-              aria-label="delete"
-              className="bg-danger text-white p-2 rounded-lg ml-4"
-              onClick={() => deleteHosting(hosting._id)}
-            >
-              <i className="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col md:flex-row">
-        <div className="mb-3 w-full md:w-[33%] grid gap-4">
+      <div className={"flex flex-col md:flex-row"}>
+        <div className={"mb-3 w-full md:w-[33%] grid gap-4"}>
           {Array.isArray(hosting?.images) && (
             <>
               {hosting.images.length > 0 && (
@@ -122,28 +88,62 @@ const HostingDetails = () => {
             </>
           )}
         </div>
-        <div className="w-full md:w-[65%] md:ml-3">
-          <div>{hosting?.description}</div>
-          <div className="hidden md:flex md:w-full items-center justify-between">
-            <p className="text-xl font-bold">{hosting?.price}€ par nuit</p>
-            <Link
-              href={"/hosting/booking/" + hosting?._id}
-              className="p-2 rounded-lg bg-primary w-fit text-white"
-            >
-              Réserver
-            </Link>
+        <div className={"w-full md:w-[65%] md:ml-3"}>
+          <div className={"flex justify-between items-center mb-3"}>
+            <h2 className="md:text-5xl text-3xl font-ligth">{hosting?.name}</h2>
+            {userRole === "admin" && hosting && (
+              <div>
+                <Link
+                  href={"/hosting/edit/" + hosting?._id}
+                  className="bg-success text-white p-2 rounded-lg"
+                >
+                  <i className="fa-regular fa-pen-to-square"></i>
+                </Link>
+                <button
+                  type="button"
+                  aria-label="delete"
+                  className="bg-danger text-white p-2 rounded-lg ml-4"
+                  onClick={() => deleteHosting(hosting._id)}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            )}
           </div>
-          <div>Ce logement est prévu pour {hosting?.capacity} personnes</div>
-          <ul className="border-t-[1px] border-dotted border-text w-full md:w-[50%] mt-3 pt-2">
-            {hosting?.equipments.map((equipment, index) => {
-              return (
-                <li key={index}>
-                  <IconComponent type={equipment.type} />
-                  <span className="mr-2"> {equipment.name}</span>
-                </li>
-              );
-            })}
-          </ul>
+          <div className={"max-w-[900px] mb-3"}>{hosting?.description}</div>
+          <div className={" mb-3"}>
+            Ce logement est prévu pour {hosting?.capacity} personnes
+          </div>
+          <div className={"hidden md:block md:w-full text-xl font-bold mb-3"}>
+            {hosting?.price}€ <span className={"font-light"}>/ nuit</span>
+          </div>
+          <div className={"w-full mt-3 pt-2"}>
+            {hosting?.equipments ? (
+              <h4 className={""}>
+                Les équipements présents dans le logement :
+              </h4>
+            ) : (
+              ""
+            )}
+            <ul>
+              {hosting?.equipments.map((equipment, index) => {
+                return (
+                  <li key={index}>
+                    <IconComponent type={equipment.type} />
+                    <span className={"mr-2"}> {equipment.name}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <Link
+            href={"/hosting/booking/" + hosting?._id}
+            className={
+              "mt-4 w-fit p-1 px-5 rounded-2xl bg-primary text-secondary font-light hidden md:block"
+            }
+          >
+            Réserver
+          </Link>
         </div>
       </div>
     </div>
