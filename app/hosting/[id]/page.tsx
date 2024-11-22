@@ -25,7 +25,7 @@ const HostingDetails = () => {
   const fetchData = async () => {
     setLoading(true);
     const response = await HostingRepository.getHosting(id);
-    if (response && response.data) {
+    if (response && response.data.success) {
       setHosting(response.data.data);
       setLoading(false);
     }

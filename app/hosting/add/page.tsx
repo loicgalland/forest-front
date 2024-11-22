@@ -89,7 +89,7 @@ export default function HostingAdd() {
   const fetchBedsList = async () => {
     setLoading(true);
     const response = await BedRepository.getAll();
-    if (response.data.data) {
+    if (response.data.success) {
       setBedList(response.data.data);
       setLoading(false);
     }
@@ -98,7 +98,7 @@ export default function HostingAdd() {
   const fetchEquipmentsList = async () => {
     setLoading(true);
     const response = await EquipmentRepository.getAll();
-    if (response.data.data) {
+    if (response.data.success) {
       setEquipmentList(response.data.data);
       setLoading(false);
     }

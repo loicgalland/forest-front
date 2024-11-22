@@ -29,7 +29,7 @@ export default function Home() {
       fullAccess: false,
       spotlight: true,
     });
-    if (response.data.data) {
+    if (response.data.success) {
       setHostings(response.data.data);
       setLoading(false);
     }
@@ -41,7 +41,7 @@ export default function Home() {
       fullAccess: false,
       spotlight: true,
     });
-    if (response.data.data) {
+    if (response.data.success) {
       setActivities(response.data.data);
       setLoading(false);
     }
@@ -52,7 +52,7 @@ export default function Home() {
     const response = await EventRepository.getAll({
       fullAccess: false,
     });
-    if (response.data.data) {
+    if (response.data.success) {
       setEvents(response.data.data);
       setLoading(false);
     }

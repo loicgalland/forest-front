@@ -6,13 +6,6 @@ class EquipmentRepositoryClass extends AbstractRepository {
   }
 
   async post(name: string, type: string) {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Utilisateur non authentifié");
-    }
-
     return await this.client.post(
       "/api/equipment",
       { name, type },
