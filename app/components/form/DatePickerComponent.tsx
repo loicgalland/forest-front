@@ -36,9 +36,8 @@ export const DatePickerComponent: React.FC<props> = ({
   };
 
   return (
-    <div className="w-full">
-      <span className="block">{label}</span>
-
+    <div className="w-full mb-4">
+      <span className="block mb-2">{label}</span>
       <DatePicker
         selected={olderDate ? olderDate : selectedDate}
         onChange={handleDateChange}
@@ -46,7 +45,7 @@ export const DatePickerComponent: React.FC<props> = ({
         filterDate={(date) => !isDateBlocked(date)}
         isClearable
         placeholderText="Choisissez une date"
-        className="w-full rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
+        className="w-full rounded-md bg-beige text-text placeholder:text-text placeholder:opacity-50 px-2 py-1 shadow-sm font-bold placeholder:font-light"
       />
     </div>
   );

@@ -38,3 +38,26 @@ body {
   background-color: #5d2929 ;
   border-radius: 5px;
 }
+.react-datepicker-popper{
+  overflow: hidden !important;
+  border-radius: 8px !important;
+}
+
+.react-datepicker__month, .react-datepicker__header, .react-datepicker-popper, .react-datepicker__month-container {
+  color: #482A2A !important;
+  background-color: #F2E8B1 !important;
+
+}
+
+.react-datepicker{
+  border: none !important;
+}
+
+.react-datepicker__close-icon::after{
+  background-color: #C74D3A !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #139774 !important;
+  color: #F8F8E5 !important;
+}

@@ -201,19 +201,20 @@ const EditHosting = () => {
   useFetchDataWithUserRole([fetchData, fetchBedsList, fetchEquipmentsList]);
 
   return (
-    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
+    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5 mt-8">
       {loading ? <Loader /> : null}
-      <h2 className="text-2xl font-bold">
+      <div className="flex mb-8 items-center">
         <button
           aria-label="go back  to previous page"
           type="button"
           onClick={router.back}
-          className="mr-2"
+          className="mr-2 text-xl"
         >
           <i className="fa-solid fa-arrow-left"></i>
         </button>
-        Modification du logement : {hosting.name}
-      </h2>
+        <h1 className="md:text-5xl text-3xl font-ligth">Modification</h1>
+      </div>
+
       <form className="flex flex-wrap" onSubmit={submit}>
         <div className="w-full mb-2">
           <InputComponent

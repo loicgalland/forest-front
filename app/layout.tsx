@@ -6,7 +6,8 @@ import { AuthProvider } from "./services/AuthContext";
 export const metadata: Metadata = {
   title: "Forest",
   description:
-    "Forest est un site de réservation de location de vacance écoresponsable",
+    "Venez réserver votre séjour éco-responsable dans le Gers. Grâce à Forest vous pourrez découvrir un lieu" +
+    " préservé et participer à des activités ou a des événements.",
 };
 
 export default function RootLayout({

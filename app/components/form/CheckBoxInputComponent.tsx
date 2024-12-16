@@ -11,7 +11,6 @@ export const CheckBoxInputComponent: React.FC<Props> = (props: Props) => {
     <div className="flex gap-3 w-full">
       <input
         type="checkbox"
-        className="rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
         id={props.id}
         name={props.name}
         checked={props.value}

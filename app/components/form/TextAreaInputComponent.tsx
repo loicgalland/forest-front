@@ -8,13 +8,13 @@ interface Props {
 
 export const TextAreaInputComponent: React.FC<Props> = (props: Props) => {
   return (
-    <div className="flex flex-col gap-3">
-      <label htmlFor={props.id} className="">
+    <div className="flex flex-col mb-4">
+      <label htmlFor={props.id} className="mb-2">
         {props.label}
       </label>
       <textarea
         onChange={props.onChange}
-        className="rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
+        className="rounded-md bg-beige px-2 py-1 shadow-sm placeholder:text-text placeholder:opacity-50 font-bold"
         name={props.name}
         id={props.id}
         value={props.value}

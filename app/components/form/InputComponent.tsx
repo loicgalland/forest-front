@@ -22,14 +22,14 @@ export const InputComponent: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className="flex flex-col ">
-      <label htmlFor={props.id} className="">
+    <div className="flex flex-col mb-4">
+      <label htmlFor={props.id} className="mb-2">
         {props.label}
       </label>
       <div className="relative w-full">
         <input
           type={inputType}
-          className="w-full rounded-md border-[1px] border-solid border-lightGrey px-2 py-1 shadow-sm"
+          className="w-full rounded-md px-2 py-1 shadow-sm bg-beige placeholder:text-text placeholder:opacity-50 font-bold"
           id={props.id}
           name={props.name}
           value={props.value}

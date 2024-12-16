@@ -50,9 +50,9 @@ export const ModalComponent: React.FC<Props> = (props: Props) => {
         <i className="fa-solid fa-plus"></i>
         {props.title}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-secondary">
         <DialogHeader>
-          <DialogTitle className="text-text text-xl mb-2">
+          <DialogTitle className="text-text text-xl mb-2 ">
             {props.title}
           </DialogTitle>
           <DialogDescription>
@@ -88,17 +88,19 @@ export const ModalComponent: React.FC<Props> = (props: Props) => {
               ) : (
                 ""
               )}
-              <input
-                value="Ajouter"
-                type="submit"
-                className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2"
-              />
-              <DialogClose
-                onClick={() => setIsOpen(true)}
-                className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-danger text-white"
-              >
-                Annuler
-              </DialogClose>
+              <div className="flex justify-center">
+                <input
+                  value="Ajouter"
+                  type="submit"
+                  className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-primary text-white mr-0 md:mr-2"
+                />
+                <DialogClose
+                  onClick={() => setIsOpen(true)}
+                  className="mt-2 w-full md:w-fit p-2 md:px-5 rounded-lg bg-danger text-white"
+                >
+                  Annuler
+                </DialogClose>
+              </div>
             </form>
           </DialogDescription>
         </DialogHeader>

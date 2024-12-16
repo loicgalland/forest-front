@@ -59,6 +59,7 @@ const HostingDetails = () => {
       <BottomBar
         type={"hosting"}
         price={hosting?.price ? hosting.price : "Pix non définit"}
+        hostingId={hosting?._id ? hosting?._id : ""}
       ></BottomBar>
       <div className={"flex flex-col md:flex-row"}>
         <div className={"mb-3 w-full md:w-[33%] grid gap-4"}>

@@ -99,7 +99,7 @@ const BookHosting = () => {
       fullAccess: role === "admin",
       spotlight: false,
     });
-    if (response && response.data.data) {
+    if (response && response.data) {
       setActivitiesList(response.data.data);
       setLoading(false);
     }
@@ -111,7 +111,7 @@ const BookHosting = () => {
       startDate: startDate,
       endDate: endDate,
     });
-    if (response && response.data.data) {
+    if (response && response.data) {
       setEventList(response.data.data);
       setLoading(false);
     }
@@ -209,21 +209,24 @@ const BookHosting = () => {
     fetchUser();
   }, []);
   return (
-    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5">
+    <div className="md:px-20 lg:px-40 xl:px-80 py-2 px-4 mb-5 mt-8">
       {loading ? <Loader /> : null}
-      <h1 className="text-2xl font-bold mb-3">
+      <div className="flex mb-8">
         <button
-          aria-label="go back  to previous page"
+          aria-label="go back to previous page"
           type="button"
+          className="mr-2 text-xl"
           onClick={() => {
             router.back();
           }}
-          className="mr-2"
         >
           <i className="fa-solid fa-arrow-left"></i>
         </button>
-        Réservation : {hosting ? hosting.name : ""}
-      </h1>
+        <h1 className="md:text-5xl text-3xl font-ligth">
+          Réservation : {hosting ? hosting.name : ""}
+        </h1>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-4">
         <div className="mb-3 w-full md:w-[33%] grid gap-4">
           {Array.isArray(hosting?.images) && (

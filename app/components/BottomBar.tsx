@@ -1,8 +1,10 @@
 import React from "react";
+import Link from "next/link";
 
 interface Props {
   price: number | string;
   type: string;
+  hostingId: string;
 }
 
 export const BottomBar: React.FC<Props> = (props: Props) => {
@@ -11,9 +13,12 @@ export const BottomBar: React.FC<Props> = (props: Props) => {
       <p className="font-bold text-xl">
         {props.price}€ {props.type === "hosting" ? "par nuit" : ""}
       </p>
-      <button className="p-2 rounded-lg bg-primary w-fit text-white">
+      <Link
+        href={"/hosting/booking/" + props.hostingId}
+        className="p-2 rounded-lg bg-primary w-fit text-white"
+      >
         Réserver
-      </button>
+      </Link>
     </div>
   );
 };
