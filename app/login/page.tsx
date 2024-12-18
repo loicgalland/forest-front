@@ -29,7 +29,7 @@ export default function Login() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const formDataObj = Object.fromEntries(formData.entries());
-    const email = formDataObj.email as string; // Assurer que `email` est un string
+    const email = formDataObj.email as string;
     const password = formDataObj.password as string;
 
     try {

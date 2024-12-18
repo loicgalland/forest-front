@@ -86,7 +86,7 @@ export default function Home() {
             name="email"
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <InputComponent
             id="registerPassword"
             label="Mot de passe"
@@ -111,7 +111,11 @@ export default function Home() {
             ""
           )}
         </div>
-
+        {errorMessage ? (
+          <div className="text-danger mb-4">{errorMessage}</div>
+        ) : (
+          ""
+        )}
         <input
           type="submit"
           value="Créer un compte"
@@ -123,11 +127,6 @@ export default function Home() {
             Se connecter
           </Link>
         </div>
-        {errorMessage ? (
-          <span className="text-danger">{errorMessage}</span>
-        ) : (
-          ""
-        )}
       </form>
     </div>
   );
