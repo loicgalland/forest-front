@@ -51,6 +51,7 @@ const ActivityDetail = () => {
       )}
       <BottomBar
         type="activity"
+        hostingId={activity?._id ? activity?._id : ""}
         price={activity?.price ? activity.price : "Pix non définit"}
       ></BottomBar>
       <div className="flex flex-col md:flex-row">

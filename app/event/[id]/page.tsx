@@ -61,6 +61,7 @@ const EventDetail = () => {
       )}
       <BottomBar
         type="event"
+        hostingId={event?._id ? event?._id : ""}
         price={event?.price ? event.price : "Prix non définit"}
       />
       <div className="flex flex-col md:flex-row">
