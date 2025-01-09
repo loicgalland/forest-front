@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/app/services/AuthContext";
@@ -124,7 +123,6 @@ export function Header() {
                     : "hidden"
               }
             >
-              111
               <ul
                 className={
                   !isMobile
