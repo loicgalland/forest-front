@@ -123,7 +123,6 @@ export function Header() {
                     : "hidden"
               }
             >
-              11
               <ul
                 className={
                   !isMobile
