@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/app/services/AuthContext";
@@ -8,6 +9,7 @@ import UserIcon from "@/app/assets/images/svg/userIcon.svg";
 import UserIconWhite from "@/app/assets/images/svg/userIconWhite.svg";
 import BurgerMenu from "@/app/assets/images/svg/burgerMenu.svg";
 import CloseMenu from "@/app/assets/images/svg/menuClose.svg";
+import ForestIcon from "@/app/assets/images/svg/forest_logo.svg"
 
 export function Header() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
@@ -93,6 +95,7 @@ export function Header() {
       <header>
         <div className="md:px-20 lg:px-40 xl:px-80 flex justify-between items-center md:bg-beige h-[80px] font-bold text-xl font-happy z-10 relative">
           <div className="w-full relative flex justify-between items-center">
+            <Image src={ForestIcon} alt={"logo Forest"} width={100} height={100}></Image>
             <h1 className="text-[30px] font-light uppercase py-2 px-4 md:px-0">
               <Link
                 href="/home"
