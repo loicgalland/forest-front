@@ -60,7 +60,7 @@ const ActivityDetail = () => {
             <>
               {activity.images.length > 0 && (
                 <Image
-                  className="object-cover max-h-[450px] w-full max-w-full rounded-xl h-full"
+                  className="object-cover max-h-[450px] w-full max-w-full rounded-lg h-full"
                   src={DB_URL_IMAGE + activity.images[0].path}
                   alt={activity.images[0].originalName}
                   width={500}
@@ -84,7 +84,10 @@ const ActivityDetail = () => {
         </div>
         <div className="w-full md:w-[65%] md:ml-3">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="md:text-5xl text-3xl font-ligth">
+            <h2 className="md:text-5xl text-3xl font-ligth flex items-center">
+              <Link href={"/activity"} className={"flex items-center"}>
+                <i className="w-[15px] text-lg text-center fa-solid fa-arrow-left mr-2"></i>
+              </Link>
               {activity?.name}
             </h2>
             {userRole === "admin" && activity && (

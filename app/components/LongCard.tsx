@@ -24,7 +24,7 @@ export const LongCard: React.FC<LongCardData> = (props: LongCardData) => {
         <div className="w-full flex justify-end">
           <Link
             href={"/" + props.type + "/" + props.item._id}
-            className="w-fit p-1 px-5 rounded-2xl bg-primary font-light text-secondary shadow-sm"
+            className="w-fit p-1 px-5 rounded-lg bg-primary font-light text-secondary shadow-sm"
           >
             En savoir +
           </Link>

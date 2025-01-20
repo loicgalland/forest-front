@@ -22,7 +22,7 @@ export const Hero: React.FC = () => {
           </p>
         </div>
         <Link
-          className="w-fit p-1 px-5 rounded-2xl bg-primary text-secondary font-light"
+          className="w-fit p-1 px-5 rounded-lg bg-primary text-secondary font-light"
           href={"/hosting"}
         >
           Nos hébergements
@@ -30,11 +30,13 @@ export const Hero: React.FC = () => {
       </div>
 
       <Image
-        className="rounded-xl w-full md:w-[35%] h-[350px] object-cover "
+        className="rounded-xl w-full md:w-[35%] h-[350px] object-cover"
+        style={{ width: "auto", height: "auto" }}
         src={HeroImage}
         alt="Image heor"
         width={300}
         height={350}
+        priority
       />
     </div>
   );

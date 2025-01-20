@@ -91,17 +91,22 @@ export function Header() {
 
   return (
     <>
-      <header>
+      <header className="z-50">
         <div className="md:px-20 lg:px-40 xl:px-80 flex justify-between items-center md:bg-beige h-[80px] font-bold text-xl font-happy z-10 relative">
           <div className="w-full relative flex justify-between items-center">
             <h1 className="text-[30px] font-light uppercase py-2 px-4 md:px-0 flex items-center gap-3">
               <Link
+                className="flex items-center gap-3"
                 href="/home"
                 onClick={() => {
                   setUserMenu(false);
                 }}
               >
-                <ForestIcon width={50} height={50} />
+                <ForestIcon
+                  width={50}
+                  height={50}
+                  style={{ width: "auto", height: "auto" }}
+                />
                 {!isMobile ? <span>FOREST</span> : ""}
               </Link>
             </h1>
@@ -118,7 +123,7 @@ export function Header() {
                 !isMobile
                   ? "flex"
                   : isMenuActive
-                    ? "absolute top-[-20px] left-0 flex flex-col z-20 w-full h-[100vh] py-2 px-4 bg-beige" +
+                    ? "absolute top-[-20px] left-0 flex flex-col z-20 w-full h-[101vh] py-2 px-4 bg-beige" +
                       " justify-center font-light"
                     : "hidden"
               }
