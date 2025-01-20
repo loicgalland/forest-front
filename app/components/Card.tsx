@@ -14,12 +14,12 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
   return (
     <div
       className={
-        "relative flex flex-col shadow-md overflow-hidden rounded-xl w-full text-text mb-2 " +
+        "relative flex flex-col shadow-md overflow-hidden rounded-lg w-full text-text mb-2 " +
         (props.dark ? " bg-beige" : " bg-secondary ")
       }
     >
       {props.hosting.isSpotlight ? (
-        <div className="absolute top-5 right-5 text-secondary z-10 text-2xl">
+        <div className="absolute top-5 right-5 text-secondary z-0 text-2xl">
           <i className="fa-solid fa-fire-flame-curved"></i>
         </div>
       ) : (
@@ -55,7 +55,7 @@ export const Card: React.FC<CardProps> = (props: CardProps) => {
           </p>
           <Link
             href={"/" + props.type + "/" + props.hosting._id}
-            className="text-secondary p-1 px-5 rounded-2xl bg-primary w-fit font-light shadow-sm"
+            className="text-secondary p-1 px-5 rounded-lg bg-primary w-fit font-light shadow-sm"
             type="button"
           >
             Réserver

@@ -97,7 +97,7 @@ export default function Home() {
               })}
             </div>
             <Link
-              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
+              className="mt-4 w-fit p-2 px-5 rounded-lg bg-primary text-secondary font-light"
               href={"/hosting"}
             >
               Voir tous nos hébergements
@@ -123,7 +123,7 @@ export default function Home() {
               })}
             </div>
             <Link
-              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
+              className="mt-4 w-fit p-2 px-5 rounded-lg bg-primary text-secondary font-light"
               href={"/activity"}
             >
               Découvrir toutes nos activités
@@ -149,7 +149,7 @@ export default function Home() {
               })}
             </div>
             <Link
-              className="mt-4 w-fit p-2 px-5 rounded-2xl bg-primary text-secondary font-light"
+              className="mt-4 w-fit p-2 px-5 rounded-lg bg-primary text-secondary font-light"
               href={"/event"}
             >
               Découvrir tous les événements

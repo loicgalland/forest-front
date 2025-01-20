@@ -94,7 +94,12 @@ const EventDetail = () => {
         </div>
         <div className="w-full md:w-[65%] md:ml-3">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="md:text-5xl text-3xl font-ligth">{event?.name}</h2>
+            <h2 className="md:text-5xl text-3xl font-ligth flex items-center">
+              <Link href={"/event"} className={"flex items-center"}>
+                <i className="w-[15px] text-lg text-center fa-solid fa-arrow-left mr-2"></i>
+              </Link>
+              {event?.name}
+            </h2>
             {userRole === "admin" && event && (
               <div>
                 <Link
@@ -127,7 +132,7 @@ const EventDetail = () => {
           <p className="text-xl font-bold">{event?.price}€</p>
           <Link
             href={"/event/booking/" + event?._id}
-            className="mt-4 w-fit p-1 px-5 rounded-2xl bg-primary text-secondary font-light hidden md:block"
+            className="mt-4 w-fit p-1 px-5 rounded-lg bg-primary text-secondary font-light hidden md:block"
           >
             Réserver
           </Link>

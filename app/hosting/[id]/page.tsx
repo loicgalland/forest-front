@@ -91,7 +91,12 @@ const HostingDetails = () => {
         </div>
         <div className={"w-full md:w-[65%] md:ml-3"}>
           <div className={"flex justify-between items-center mb-3"}>
-            <h2 className="md:text-5xl text-3xl font-ligth">{hosting?.name}</h2>
+            <h2 className="md:text-5xl text-3xl font-ligth flex items-center">
+              <Link href={"/hosting"} className={"flex items-center"}>
+                <i className="w-[15px] text-lg text-center fa-solid fa-arrow-left mr-2"></i>
+              </Link>
+              {hosting?.name}
+            </h2>
             {userRole === "admin" && hosting && (
               <div>
                 <Link
@@ -118,7 +123,7 @@ const HostingDetails = () => {
               {hosting?.beds.map((bed) => {
                 return (
                   <li className={"font-normal ml-4"} key={bed.bed._id}>
-                    - {bed.quantity} {bed.bed.name}
+                    • {bed.quantity} {bed.bed.name}
                   </li>
                 );
               })}
@@ -162,7 +167,7 @@ const HostingDetails = () => {
           <Link
             href={"/hosting/booking/" + hosting?._id}
             className={
-              "mt-4 w-fit p-1 px-5 rounded-2xl bg-primary text-secondary font-light hidden md:block"
+              "mt-4 w-fit p-1 px-5 rounded-lg bg-primary text-secondary font-light hidden md:block"
             }
           >
             Réserver
